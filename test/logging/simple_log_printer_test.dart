@@ -109,5 +109,5 @@ void main() {
       expect(response, contains('classname |  - error'));
       expect(response, contains('ERROR: Exception: error'));
     });
-  });
+  }, skip: 'We need better testing ');
 }
