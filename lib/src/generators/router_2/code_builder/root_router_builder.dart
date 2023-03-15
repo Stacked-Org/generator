@@ -114,20 +114,17 @@ Spec buildMethod(RouteConfig r, bool deferredLoading) {
             if ((!r.hasUnparsableRequiredArgs ||
                     r.parameters.any((p) => p.isInheritedPathParam)) &&
                 r.parameters.any((p) => p.isPathParam))
-              refer('routeData')
-                  .property('inheritedPathParams')
-                  .assignFinal('pathParams')
+              declareFinal('pathParams')
+                  .assign(refer('routeData').property('inheritedPathParams'))
                   .statement,
             if (!r.hasUnparsableRequiredArgs &&
                 r.parameters.any((p) => p.isQueryParam))
-              refer('routeData')
-                  .property('queryParams')
-                  .assignFinal('queryParams')
+              declareFinal('queryParams')
+                  .assign(refer('routeData').property('queryParams'))
                   .statement,
             if (r.parameters.where((p) => !p.isInheritedPathParam).isNotEmpty)
-              refer('routeData')
-                  .property('argsAs')
-                  .call([], {
+              declareFinal('args')
+                  .assign(refer('routeData').property('argsAs').call([], {
                     if (!r.hasUnparsableRequiredArgs)
                       'orElse': Method(
                         (b) => b
@@ -153,8 +150,7 @@ Spec buildMethod(RouteConfig r, bool deferredLoading) {
                       ).closure
                   }, [
                     refer('${r.routeName}Args'),
-                  ])
-                  .assignFinal('args')
+                  ]))
                   .statement,
             TypeReference(
               (b) => b
