@@ -1,8 +1,7 @@
 import 'package:code_builder/code_builder.dart';
-import 'package:stacked_generator/route_config_resolver.dart';
-
-import '../route_allocator.dart';
-import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
+import 'package:stacked_generator/src/generators/router_2/code_builder/route_info_builder.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 
 class ArgumentClassBuilderHelper {
   final RouteConfig route;
@@ -29,18 +28,21 @@ class ArgumentClassBuilderHelper {
   String get convertArgumentsToMap {
     Map<String, dynamic> obj = {};
 
-    for (RouteParamConfig param in route.parameters) {
+    for (ParamConfig param in route.parameters) {
       obj['"${param.name}"'] = '"\$${param.name}"';
     }
 
     return obj.toString();
   }
 
-  Constructor get argumentConstructer {
-    return Constructor((b) => _composeConstructer(b));
+  Constructor argumentConstructer(DartEmitter emitter) {
+    return Constructor((b) => _composeConstructer(b, emitter));
   }
 
-  void _composeConstructer(ConstructorBuilder b) {
+  void _composeConstructer(
+    ConstructorBuilder b,
+    DartEmitter emitter,
+  ) {
     b.constant = true;
 
     for (final param in route.parameters) {
@@ -53,10 +55,8 @@ class ArgumentClassBuilderHelper {
 
         // Assign default value
         if (param.defaultValueCode != null) {
-          parameterBuilder.defaultTo = refer(
-            param.defaultValueCode!,
-            _processDefaultValueCodeImport(param),
-          ).code;
+          parameterBuilder.defaultTo =
+              buildCorrectDefaultCode(parameter: param, emitter: emitter);
         }
 
         // Add required keyword
@@ -66,24 +66,5 @@ class ArgumentClassBuilderHelper {
       });
       b.optionalParameters.add(codeBuilderParameter);
     }
-  }
-
-  /// Note: I didn't use this function in [NavigatorExtension] cause the import
-  /// will be dublicated
-  String? _processDefaultValueCodeImport(RouteParamConfig param) {
-    final defaultImport = param.type.import;
-
-    /// If defaultValueCode already has an import return it
-    if (defaultImport != null) return defaultImport;
-
-    /// If import is null check if any of the children arguments have imports
-    /// we use the first cause normally they all have the same import
-    final childArgumentsImport = param.type.typeArguments.isNotEmpty
-        ? param.type.typeArguments.first.import
-        : null;
-
-    /// Add [kFlagToPreventAliasingTheImport] string to mark this import to not
-    /// be aliased
-    return childArgumentsImport + kFlagToPreventAliasingTheImport;
   }
 }

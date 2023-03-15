@@ -1,6 +1,6 @@
-import 'package:stacked_generator/route_config_resolver.dart';
 import 'package:stacked_generator/src/generators/router/generator/router_class/router_class_builder.dart';
 import 'package:stacked_generator/src/generators/router/route_config/material_route_config.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
 import 'package:test/test.dart';
 
 import '../../helpers/class_extension.dart';
@@ -10,12 +10,14 @@ final List<RouteConfig> _routes = [
   const MaterialRouteConfig(
     name: 'loginView',
     pathName: 'pathNamaw',
-    className: MapEntry('LoginClass', 'ui/login_class.dart'),
+    className: 'LoginClass',
+    classImport: 'ui/login_class.dart',
   ),
   const MaterialRouteConfig(
     name: 'homeView',
     pathName: '/family/:fid',
-    className: MapEntry('HomeClass', 'ui/home_class.dart'),
+    className: 'HomeClass',
+    classImport: 'ui/home_class.dart',
   )
 ];
 

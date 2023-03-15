@@ -17,17 +17,22 @@ class StackedLocatorContentGenerator
   });
   @override
   String generate() {
+    final hasRouterService = dependencies
+        .any((depdenency) => depdenency.className == 'RouterService');
     writeLine(
         "// ignore_for_file: public_member_api_docs, implementation_imports, depend_on_referenced_packages");
 
     _generateImports(dependencies);
+    if (hasRouterService) {
+      writeLine('import \'app.router.dart\';');
+    }
 
     newLine();
     writeLine('final $locatorName = StackedLocator.instance;');
     newLine();
 
     writeLine(
-        'Future<void> $locatorSetupName ({String? environment , EnvironmentFilter? environmentFilter}) async {');
+        'Future<void> $locatorSetupName ({String? environment , EnvironmentFilter? environmentFilter, ${hasRouterService ? 'StackedRouterWeb? stackedRouter,' : ''}}) async {');
 
     newLine();
     writeLine('// Register environments');
@@ -45,6 +50,17 @@ class StackedLocatorContentGenerator
       writeLine(registerDependenciesCode);
     }
 
+    if (hasRouterService) {
+      writeLine('''
+if (stackedRouter == null) {
+  throw Exception(
+      'Stacked is building to use the Router (Navigator 2.0) navigation but no stackedRouter is supplied. Pass the stackedRouter to the setupLocator function in main.dart');
+}
+
+$locatorName<RouterService>().setRouter(stackedRouter);
+''');
+    }
+
     writeLine('}');
 
     return serializeStringBuffer;
@@ -52,7 +68,7 @@ class StackedLocatorContentGenerator
 
   void _generateImports(List<DependencyConfig> services) {
     // write route imports
-    final imports = <String?>{"package:stacked_core/stacked_core.dart"};
+    final imports = <String?>{"package:stacked_shared/stacked_shared.dart"};
 
     imports.addAll(services.map((service) => service.import));
     imports.addAll(services.map((service) => service.abstractedImport));
