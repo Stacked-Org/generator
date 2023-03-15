@@ -7,7 +7,8 @@ import 'package:test/test.dart';
 void main() {
   group('SimpleLogPrinterTest -', () {
     test('returns a correct log message.', () async {
-      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig()).addLoggerClassConstantBody();
+      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig())
+          .addLoggerClassConstantBody();
 
       final code = loggerBuilder.serializeStringBuffer;
 
@@ -40,7 +41,8 @@ void main() {
     });
 
     test('attaches the stacktrace if requested.', () async {
-      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig()).addLoggerClassConstantBody();
+      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig())
+          .addLoggerClassConstantBody();
 
       final code = loggerBuilder.serializeStringBuffer;
 
@@ -74,7 +76,8 @@ void main() {
     });
 
     test('prints error object if provided.', () async {
-      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig()).addLoggerClassConstantBody();
+      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig())
+          .addLoggerClassConstantBody();
 
       final code = loggerBuilder.serializeStringBuffer;
 

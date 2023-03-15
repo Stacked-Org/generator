@@ -11,5 +11,6 @@ import '../../../../helpers/dumb_service.dart';
   locatorSetupName: 'setupFactorywithtypeLocator',
 )
 class App {
-  /** This class has no puporse besides housing the annotation that generates the required functionality **/
+  /// This class has no puporse besides housing the annotation that generates the required functionality
+  
 }
