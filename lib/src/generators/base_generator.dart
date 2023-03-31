@@ -40,13 +40,13 @@ mixin StringBufferUtils {
   }
 }
 
-  // void sortAndGenerate(Set<String> imports, {bool withAlias = false}) {
-  //   var sorted = imports.toList()..sort();
+// void sortAndGenerate(Set<String> imports, {bool withAlias = false}) {
+//   var sorted = imports.toList()..sort();
 
-  //   if (withAlias) {
-  //     sorted.asMap().forEach(
-  //         (index, import) => writeLine("import '$import' as i_$index;"));
-  //   } else {
-  //     sorted.forEach((import) => writeLine("import '$import';"));
-  //   }
-  // }
+//   if (withAlias) {
+//     sorted.asMap().forEach(
+//         (index, import) => writeLine("import '$import' as i_$index;"));
+//   } else {
+//     sorted.forEach((import) => writeLine("import '$import';"));
+//   }
+// }

@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
-import 'package:stacked_generator/route_config_resolver.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
 
 class RouterClassBuilderHelper {
@@ -26,9 +27,9 @@ class RouterClassBuilderHelper {
       routes.map((route) =>
           const Reference('RouteDef', 'package:stacked/stacked.dart')
               .newInstance(
-            [Reference(routesClassName).property(route.name)],
+            [Reference(routesClassName).property(route.name ?? '')],
             {
-              'page': Reference(route.className.key, route.className.value),
+              'page': Reference(route.className, route.classImport),
             },
           ));
 
@@ -93,7 +94,7 @@ class RouterClassBuilderHelper {
     return Map.fromEntries(
       routes.map(
         (route) => MapEntry(
-          Reference(route.className.key, route.className.value),
+          Reference(route.className, route.classImport),
           _getRouteRegisteration(route),
         ),
       ),
@@ -129,7 +130,7 @@ class RouterClassBuilderHelper {
   Code _prepareArgs(String argsType) =>
       Code('final args = data.getArgs<$argsType>(');
 
-  Code _eitherNullOkOrElse(List<RouteParamConfig> parameters, String argsType,
+  Code _eitherNullOkOrElse(List<ParamConfig> parameters, String argsType,
       {bool hasConstConstructor = false}) {
     /// if router has any required or positional params
     /// the argument class holder becomes required.
@@ -152,6 +153,59 @@ class RouterClassBuilderHelper {
   ///   settings: data,
   /// );
   Code _returnRouteRegistration(RouteConfig route) {
-    return route.registerRoute();
+    if (route.routeType == RouteType.material) {
+      return route.getRouteRegisterCode(
+        routeType: 'MaterialPageRoute',
+        routeTypeImport: 'package:flutter/material.dart',
+      );
+    } else if (route.routeType == RouteType.custom) {
+      return route.getRouteRegisterCode(
+        routeType: 'PageRouteBuilder',
+        routeTypeImport: 'package:flutter/material.dart',
+        usePageBuilder: true,
+        extra: Block.of([
+          if (!(route.customRouteOpaque ?? false))
+            Code('opaque:${route.customRouteOpaque.toString()},'),
+          if (route.customRouteBarrierDismissible ?? false)
+            Code(
+                'barrierDismissible:${route.customRouteBarrierDismissible.toString()},'),
+          if (route.transitionBuilder != null) ...[
+            const Code('transitionsBuilder: data.transition ?? '),
+            Reference(route.transitionBuilder!.name,
+                    route.transitionBuilder!.import)
+                .code,
+            const Code(',')
+          ],
+          if (route.transitionBuilder == null)
+            const Code('''transitionsBuilder: data.transition??
+              (context, animation, secondaryAnimation, child) {
+            return child;
+          },'''),
+          if (route.durationInMilliseconds != null)
+            Code(
+                'transitionDuration: const Duration(milliseconds: ${route.durationInMilliseconds}),'),
+          if (route.reverseDurationInMilliseconds != null)
+            Code(
+                'reverseTransitionDuration: const Duration(milliseconds: ${route.reverseDurationInMilliseconds}),'),
+        ]),
+      );
+    } else if (route.routeType == RouteType.cupertino) {
+      return route.getRouteRegisterCode(
+          routeType: 'CupertinoPageRoute',
+          routeTypeImport: 'package:flutter/cupertino.dart',
+          extra: route.cupertinoNavTitle != null
+              ? Code("title:'${route.cupertinoNavTitle}',")
+              : null);
+    } else if (route.routeType == RouteType.adaptive) {
+      return route.getRouteRegisterCode(
+        routeType: 'buildAdaptivePageRoute',
+        routeTypeImport: 'package:stacked/stacked.dart',
+        extra: route.cupertinoNavTitle != null
+            ? Code("cupertinoTitle:'${route.cupertinoNavTitle}',")
+            : null,
+      );
+    }
+
+    throw Exception('No config registered for ${route.name} of type ');
   }
 }

@@ -1,3 +1,12 @@
+## 1.0.0
+
+### Features
+
+Adds support for the new RouterService which uses Navigator 2.0 a fork from AutoRouter `5.0.4` to generate the generated code. 
+
+### Fixes
+Updates `stacked_core` to `stacked_shared` because we lost access to `stacked_core` 😞
+
 ## 0.9.4
 
 - Fixes errors not being logged in the stacked logger
@@ -200,7 +209,7 @@ In addition we also have a clearForm function that will clear all the form Text 
 
 ## 0.6.3
 
-- Replace dependency on stacked with stacked_core
+- Replace dependency on stacked with stacked_shared
 
 ## 0.6.2
 

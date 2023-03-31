@@ -7,7 +7,8 @@ import 'package:test/test.dart';
 void main() {
   group('MultiOutputLogger -', () {
     test('correctly calls init on multi output loggers.', () async {
-      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']))
+      final loggerBuilder = LoggerBuilder(
+              loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']))
           .addLoggerClassConstantBody()
           .addLoggerNameAndOutputs();
 
@@ -82,7 +83,8 @@ void main() {
     });
 
     test('correctly calls destroy on multi output loggers.', () async {
-      final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']))
+      final loggerBuilder = LoggerBuilder(
+              loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']))
           .addLoggerClassConstantBody()
           .addLoggerNameAndOutputs();
 
