@@ -1,3 +1,7 @@
+## 1.0.1
+
+- fix: Adds correct parameters when constructing the StackedRouterWeb with `AuthGuards`
+
 ## 1.0.0
 
 ### Features
