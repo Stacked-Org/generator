@@ -9,10 +9,6 @@ import 'library_builder.dart';
 
 const _routeConfigType = Reference("RouteConfig", stackedImport);
 
-// Code('final  = StackedRouterWeb({'
-//             'navigatorKey: ${refer('StackedService.navigatorKey', 'package:stacked_services/stacked_services.dart').accept(emitter)}'
-//             '});')
-
 Field buildRouterInstance({
   required Set<ResolvedType> allGuards,
   required DartEmitter emitter,
