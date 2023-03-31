@@ -9,8 +9,39 @@ import 'library_builder.dart';
 
 const _routeConfigType = Reference("RouteConfig", stackedImport);
 
-Class buildRouterConfig(RouterConfig router, Set<ResolvedType> guards,
-        List<RouteConfig> routes) =>
+Field buildRouterInstance({
+  required Set<ResolvedType> allGuards,
+  required DartEmitter emitter,
+}) {
+  final Map<String, Expression> stackedRouterNamedParams = {
+    'navigatorKey': refer('StackedService.navigatorKey',
+        'package:stacked_services/stacked_services.dart')
+  };
+  for (var guard in allGuards) {
+    stackedRouterNamedParams[toLowerCamelCase(guard.name)] =
+        Reference(guard.name, guard.refer.url).newInstance([]);
+  }
+
+  final stackedRouterExpression = const Reference(
+    'StackedRouterWeb',
+  ).newInstance(
+    [],
+    stackedRouterNamedParams,
+  );
+
+  return Field(
+    (routerField) => routerField
+      ..modifier = FieldModifier.final$
+      ..name = 'stackedRouter'
+      ..assignment = stackedRouterExpression.code,
+  );
+}
+
+Class buildRouterConfig(
+  RouterConfig router,
+  Set<ResolvedType> guards,
+  List<RouteConfig> routes,
+) =>
     Class((b) => b
       ..name = '${router.routerClassName}Web'
       ..extend = refer('RootStackRouter', stackedImport)
@@ -37,6 +68,7 @@ Class buildRouterConfig(RouterConfig router, Set<ResolvedType> guards,
             Parameter(
               (b) => b
                 ..name = 'navigatorKey'
+                ..named = true
                 ..type = TypeReference(
                   (b) => b
                     ..url = materialImport
