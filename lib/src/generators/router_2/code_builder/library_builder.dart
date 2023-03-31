@@ -84,14 +84,20 @@ String generateLibrary(
     (acc, a) => acc..addAll(a.guards),
   );
 
+  final allGuardParameters = allGuards
+      .map(
+        (guard) =>
+            '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
+      )
+      .toList();
+
   final library = Library(
     (b) => b
       ..directives.addAll([
         if (usesPartBuilder) Directive.partOf(fileName),
       ])
       ..body.addAll([
-        Code(
-            'final stackedRouter = StackedRouterWeb(${refer('StackedService.navigatorKey', 'package:stacked_services/stacked_services.dart').accept(emitter)});'),
+        buildRouterInstance(allGuards: allGuards, emitter: emitter),
         buildRouterConfig(config, allGuards, allRoutes),
         ...allRoutes
             .where((r) => r.routeType != RouteType.redirect)
