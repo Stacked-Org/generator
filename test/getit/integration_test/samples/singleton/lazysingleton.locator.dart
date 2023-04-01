@@ -12,8 +12,10 @@ import '../../../../helpers/dumb_service.dart';
 
 final lazySingletonLocator = StackedLocator.instance;
 
-Future<void> setupLazySingletonLocator(
-    {String? environment, EnvironmentFilter? environmentFilter}) async {
+Future<void> setupLazySingletonLocator({
+  String? environment,
+  EnvironmentFilter? environmentFilter,
+}) async {
 // Register environments
   lazySingletonLocator.registerEnvironment(
       environment: environment, environmentFilter: environmentFilter);

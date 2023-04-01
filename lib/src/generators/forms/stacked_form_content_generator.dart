@@ -26,12 +26,12 @@ class StackedFormContentGenerator implements BaseGenerator {
         .addListenerRegistrationsForTextFields()
         .addManualValidation()
         .addFormDataUpdateFunctionTorTextControllers()
-        .addValidationDataUpdateFunctionTorTextControllers()
-        .addGetValidationMessageForTextController()
         .addDisposeForTextControllers()
         .addClosingBracket()
         .addFormViewModelExtensionForGetters()
-        .addFormViewModelExtensionForMethods();
+        .addFormViewModelExtensionForMethods()
+        .addGetValidationMessageForTextController()
+        .addValidationDataUpdateFunctionTorTextControllers();
 
     return formBuilder.serializeStringBuffer;
   }
