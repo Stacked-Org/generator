@@ -1,3 +1,8 @@
+## 1.1.0
+
+- feat: Adds generator for validateForm to FormViewModel extension
+- chore: Moves clearForm from ValueProperties extension to Methods extension
+
 ## 1.0.1
 
 - fix: Adds correct parameters when constructing the StackedRouterWeb with `AuthGuards`
