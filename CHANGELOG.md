@@ -5,6 +5,10 @@
 
 * add validate form to FormViewModel ([#3](https://github.com/Stacked-Org/generator/issues/3)) ([0d424cd](https://github.com/Stacked-Org/generator/commit/0d424cd646ec8d8aad7a57dbdc4ad5cda311556a))
 
+## 1.2.0
+
+- feat: Adds hashCode and eqality operator to `ViewArguments` to ensure equality of objects
+
 ## 1.1.0
 
 - feat: Adds generator for validateForm to FormViewModel extension
