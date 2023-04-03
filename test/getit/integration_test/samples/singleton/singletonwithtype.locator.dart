@@ -12,8 +12,10 @@ import '../../../../helpers/dumb_service.dart';
 
 final singletonWithTypeLocator = StackedLocator.instance;
 
-Future<void> setupSingletonWithTypeLocator(
-    {String? environment, EnvironmentFilter? environmentFilter}) async {
+Future<void> setupSingletonWithTypeLocator({
+  String? environment,
+  EnvironmentFilter? environmentFilter,
+}) async {
 // Register environments
   singletonWithTypeLocator.registerEnvironment(
       environment: environment, environmentFilter: environmentFilter);

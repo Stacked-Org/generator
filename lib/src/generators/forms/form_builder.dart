@@ -148,11 +148,14 @@ class FormBuilder with StringBufferUtils {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     newLine();
     writeLine(''' 
-      TextEditingController _getFormTextEditingController(String key,
-        {String? initialValue}) {
-          if (_${viewName}TextEditingControllers.containsKey(key)) {
-        return _${viewName}TextEditingControllers[key]!;
-      }
+      TextEditingController _getFormTextEditingController(
+        String key, {
+        String? initialValue,
+      }) {
+        if (_${viewName}TextEditingControllers.containsKey(key)) {
+          return _${viewName}TextEditingControllers[key]!;
+        }
+
       _${viewName}TextEditingControllers[key] =
           TextEditingController(text: initialValue);
       return _${viewName}TextEditingControllers[key]!; }
@@ -224,7 +227,7 @@ class FormBuilder with StringBufferUtils {
       /// with the latest textController values
       @Deprecated(
         'Use syncFormWithViewModel instead.'
-        'This feature was deprecated after 3.1.0.'
+        'This feature was deprecated after 3.1.0.',
       )
       void listenToFormUpdated(FormViewModel model) {
     ''');
@@ -270,8 +273,9 @@ class FormBuilder with StringBufferUtils {
     writeLine('''
               }),
           );
+    
     if (_autoTextFieldValidation || forceValidate) {
-          _updateValidationData(model);}}
+          updateValidationData(model);}}
               ''');
     return this;
   }
@@ -279,35 +283,37 @@ class FormBuilder with StringBufferUtils {
   FormBuilder addValidationDataUpdateFunctionTorTextControllers() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     writeLine('''
-        /// Updates the fieldsValidationMessages on the FormViewModel
-        void _updateValidationData(FormViewModel model) => model.setValidationMessages(
-              {
-            ''');
+    /// Updates the fieldsValidationMessages on the FormViewModel
+    void updateValidationData(FormViewModel model) => model.setValidationMessages({
+    ''');
 
     for (final field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
-      writeLine(
-          '${_getFormKeyName(caseName)}: _getValidationMessage(${_getFormKeyName(caseName)}),');
+      writeLine('''
+      ${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),
+      ''');
     }
-    writeLine('''
-              }
-          );
-              ''');
+    writeLine('''});''');
     return this;
   }
 
   FormBuilder addGetValidationMessageForTextController() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
+
     writeLine('''
-        /// Returns the validation message for the given key
-        String? _getValidationMessage(String key) {
+    /// Returns the validation message for the given key
+    String? getValidationMessage(String key) {
       final validatorForKey = _${viewName}TextValidations[key];
       if (validatorForKey == null) return null;
-      String? validationMessageForKey =
-            validatorForKey(_${viewName}TextEditingControllers[key]!.text);
+      
+      String? validationMessageForKey = validatorForKey(
+        _${viewName}TextEditingControllers[key]!.text,
+      );
+
       return validationMessageForKey;
-      }
+    }
     ''');
+
     return this;
   }
 
@@ -316,8 +322,9 @@ class FormBuilder with StringBufferUtils {
     writeLine('''
       /// Calls dispose on all the generated controllers and focus nodes
       void disposeForm() {
-        // The dispose function for a TextEditingController sets all listeners to null
-          ''');
+      // The dispose function for a TextEditingController sets all listeners to null
+    ''');
+
     if (fields.onlyTextFieldConfigs.isNotEmpty) {
       writeLine('''
       for (var controller in _${viewName}TextEditingControllers.values) {
@@ -405,18 +412,6 @@ class FormBuilder with StringBufferUtils {
           'String? get ${caseName.camelCase}ValidationMessage => this.fieldsValidationMessages[${_getFormKeyName(caseName)}];');
     }
 
-    // Write out the clearForm method
-    writeLine('void clearForm() {');
-    for (final field in fields) {
-      if (field is! TextFieldConfig) {
-        continue;
-      }
-
-      final caseName = ReCase(field.name);
-      writeLine("${caseName.camelCase}Value = ''; ");
-    }
-    writeLine('}');
-
     writeLine('}');
     return this;
   }
@@ -465,6 +460,39 @@ class FormBuilder with StringBufferUtils {
       final caseName = ReCase(field.name);
       writeLine(
           'set${caseName.pascalCase}ValidationMessage(String? validationMessage) => this.fieldsValidationMessages[${_getFormKeyName(caseName)}] = validationMessage;');
+    }
+
+    // Write out the clearForm method
+    newLine();
+    writeLine('/// Clears text input fields on the Form');
+    writeLine('void clearForm() {');
+    for (final field in fields) {
+      if (field is! TextFieldConfig) {
+        continue;
+      }
+
+      final caseName = ReCase(field.name);
+      writeLine("${caseName.camelCase}Value = ''; ");
+    }
+    writeLine('}');
+
+    // Write out the validateForm method
+    if (fields.onlyTextFieldConfigs.isNotEmpty) {
+      newLine();
+      writeLine('''
+      /// Validates text input fields on the Form
+      void validateForm() {
+        this.setValidationMessages({
+      ''');
+
+      for (final field in fields.onlyTextFieldConfigs) {
+        final caseName = ReCase(field.name);
+        writeLine('''
+        ${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),
+        ''');
+      }
+      writeLine('''});''');
+      writeLine('}');
     }
 
     writeLine('}');

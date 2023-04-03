@@ -12,8 +12,10 @@ import '../../../../helpers/dumb_service.dart';
 
 final factoryLocator = StackedLocator.instance;
 
-Future<void> setupFactoryLocator(
-    {String? environment, EnvironmentFilter? environmentFilter}) async {
+Future<void> setupFactoryLocator({
+  String? environment,
+  EnvironmentFilter? environmentFilter,
+}) async {
 // Register environments
   factoryLocator.registerEnvironment(
       environment: environment, environmentFilter: environmentFilter);
