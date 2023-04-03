@@ -1,3 +1,7 @@
+## 1.1.0
+
+- Adds hashCode and eqality operator to `ViewArguments` to ensure equality of objects
+
 ## 1.0.1
 
 - fix: Adds correct parameters when constructing the StackedRouterWeb with `AuthGuards`
