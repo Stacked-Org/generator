@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:collection/collection.dart';
+
 const kRouterWithNamePathNameClassName = '''
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:flutter/material.dart';
@@ -926,21 +929,46 @@ class LoginClassArguments {
   String toString() {
     return '{"position": "\$position", "age": "\$age"}';
   }
+
+  @override
+  bool operator ==(covariant LoginClassArguments other) {
+    if (identical(this, other)) return true;
+    return other.position == position && other.age == age;
+  }
+
+  @override
+  int get hashCode {
+    return position.hashCode ^ age.hashCode;
+  }
 }
 
 class HomeClassArguments {
   const HomeClassArguments({
     required this.car,
     this.age,
+    this.color,
   });
 
   final _i2.Car car;
 
   final int age;
 
+  final String color;
+
   @override
   String toString() {
-    return '{"car": "\$car", "age": "\$age"}';
+    return '{"car": "\$car", "age": "\$age", "color": "\$color"}';
+  }
+
+  @override
+  bool operator ==(covariant HomeClassArguments other) {
+    if (identical(this, other)) return true;
+    return other.car == car && other.age == age && other.color == color;
+  }
+
+  @override
+  int get hashCode {
+    return car.hashCode ^ age.hashCode ^ color.hashCode;
   }
 }
 ''';
