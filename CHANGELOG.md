@@ -1,8 +1,8 @@
 # [1.1.0](https://github.com/Stacked-Org/generator/compare/v1.0.0...v1.1.0) (2023-04-03)
 
-## 1.2.0
+## 1.1.1
 
-- feat: Adds hashCode and eqality operator to `ViewArguments` to ensure equality of objects
+- feat: Adds hashCode and eqality operator methosa to `ViewArguments` to ensure equality of objects
 
 ### Features
 
