@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/Stacked-Org/generator/compare/v1.2.0...v1.3.0) (2023-04-14)
+
+
+### Features
+
+* Adds hashCode and eqality operator methosa to ViewArguments to ensure equality of objects ([cd5f4a1](https://github.com/Stacked-Org/generator/commit/cd5f4a1d60aa821ad51aabe0fe21fa889c7c0805))
+
 # [1.2.0](https://github.com/Stacked-Org/generator/compare/v1.1.0...v1.2.0) (2023-04-14)
 
 
