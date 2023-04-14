@@ -1,6 +1,8 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
+import 'package:stacked_generator/src/generators/router_2/code_builder/route_info_builder.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 
 class RouterExtensionBuilderHelper {
   Iterable<Method> buildNavigateToExtensionMethods(
@@ -48,11 +50,15 @@ class RouterExtensionBuilderHelper {
         ? route.processedReturnType
         : '${route.processedReturnType}?';
 
+    final viewParameters = route.parameters
+        .map((parameter) => _extractViewParameters(parameter, emitter));
+
     return Method((b) => b
       ..name = methodName
       ..modifier = MethodModifier.async
       ..returns = Reference('Future<$methodReturnType>')
       ..optionalParameters.addAll([
+        ...viewParameters,
         ..._constParameters,
       ])
       ..body = _body(
@@ -62,13 +68,38 @@ class RouterExtensionBuilderHelper {
       ));
   }
 
+  /// The arguments provided to the view
+  Parameter _extractViewParameters(
+    ParamConfig param,
+    DartEmitter emitter,
+  ) {
+    return Parameter((parameterBuilder) {
+      parameterBuilder
+        ..name = param.name
+        ..type =
+            param is FunctionParamConfig ? param.funRefer : param.type.refer
+        ..named = true;
+
+      // Assign default value
+      if (param.defaultValueCode != null) {
+        parameterBuilder.defaultTo =
+            buildCorrectDefaultCode(parameter: param, emitter: emitter);
+      }
+
+      // Add required keyword
+      if (param.isRequired || param.isPositional) {
+        parameterBuilder.required = true;
+      }
+    });
+  }
+
   /// These are the parameters that exists on every call
   ///
   /// void Function(NavigationFailure)? onFailure,
   List<Parameter> get _constParameters => [
         Parameter(
           (b) => b
-            ..name = 'onFailure,'
+            ..name = 'onFailure'
             ..named = true
             ..type = FunctionType((b) => b
               ..symbol = 'Function'
@@ -86,8 +117,21 @@ class RouterExtensionBuilderHelper {
     required String methodReturnType,
     required String navigationMethod,
   }) {
+    var appendOrNotConst = 'const ';
+    var appendOrNotParameters = '';
+
+    if (route.pathParams.isNotEmpty) {
+      appendOrNotConst = '';
+      appendOrNotParameters = route.parameters
+          .map((p) => '${p.name}: ${p.name},')
+          .join('')
+          .toString();
+    }
+
     return Block.of([
-      Code('return $navigationMethod(const ${route.className}Route(),'),
+      Code(
+        'return $navigationMethod($appendOrNotConst${route.className}Route($appendOrNotParameters),',
+      ),
       ..._constMethodBodyParameters,
     ]);
   }
