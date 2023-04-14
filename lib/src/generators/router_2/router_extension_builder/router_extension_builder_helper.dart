@@ -42,23 +42,21 @@ class RouterExtensionBuilderHelper {
     required RouteConfig route,
     required DartEmitter emitter,
   }) {
-    final methodName = route.parentClassName != null
-        ? '${navigationMethod}Nested${route.name?.capitalize}In${route.parentClassName}'
-        : '$navigationMethod${route.name?.capitalize}';
+    final methodName = '$navigationMethod${route.name?.capitalize}';
 
     final methodReturnType = route.isProcessedReturnTypeDynamic
         ? route.processedReturnType
         : '${route.processedReturnType}?';
 
-    final viewParameters = route.parameters
-        .map((parameter) => _extractViewParameters(parameter, emitter));
+    final viewArgumentsParameter = route.parameters.map(
+        (parameter) => _extractViewArgumentsParameters(parameter, emitter));
 
     return Method((b) => b
       ..name = methodName
       ..modifier = MethodModifier.async
       ..returns = Reference('Future<$methodReturnType>')
       ..optionalParameters.addAll([
-        ...viewParameters,
+        ...viewArgumentsParameter,
         ..._constParameters,
       ])
       ..body = _body(
@@ -69,7 +67,7 @@ class RouterExtensionBuilderHelper {
   }
 
   /// The arguments provided to the view
-  Parameter _extractViewParameters(
+  Parameter _extractViewArgumentsParameters(
     ParamConfig param,
     DartEmitter emitter,
   ) {
@@ -120,7 +118,7 @@ class RouterExtensionBuilderHelper {
     var appendOrNotConst = 'const ';
     var appendOrNotParameters = '';
 
-    if (route.pathParams.isNotEmpty) {
+    if (route.parameters.isNotEmpty) {
       appendOrNotConst = '';
       appendOrNotParameters = route.parameters
           .map((p) => '${p.name}: ${p.name},')
