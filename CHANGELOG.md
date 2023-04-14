@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/Stacked-Org/generator/compare/v1.1.0...v1.2.0) (2023-04-14)
+
+
+### Features
+
+* type safe navigation on router service ([#5](https://github.com/Stacked-Org/generator/issues/5)) ([7f3ed48](https://github.com/Stacked-Org/generator/commit/7f3ed4847ac240f22b77cc249622dacaa0d6495e))
+
 # [1.1.0](https://github.com/Stacked-Org/generator/compare/v1.0.0...v1.1.0) (2023-04-03)
 
 
