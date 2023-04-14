@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/Stacked-Org/generator/compare/v1.3.0...v1.3.1) (2023-04-14)
+
+
+### Bug Fixes
+
+* non arguments parameters on methods ([#6](https://github.com/Stacked-Org/generator/issues/6)) ([711151b](https://github.com/Stacked-Org/generator/commit/711151b52fa7962a83013cd6b33c90b15d385572))
+
 # [1.3.0](https://github.com/Stacked-Org/generator/compare/v1.2.0...v1.3.0) (2023-04-14)
 
 
