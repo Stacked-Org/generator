@@ -245,7 +245,7 @@ class FormBuilder with StringBufferUtils {
   FormBuilder addManualValidation() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     writeLine(
-        "final bool _autoTextFieldValidation = $autoTextFieldValidation;");
+        "static const bool _autoTextFieldValidation = $autoTextFieldValidation;");
     writeLine("""
     bool validateFormFields(FormViewModel model) {
       _updateFormData(model, forceValidate: true);
