@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/Stacked-Org/generator/compare/v1.3.1...v1.3.2) (2023-04-14)
+
+
+### Bug Fixes
+
+* allow views using form mixin to be constants ([#7](https://github.com/Stacked-Org/generator/issues/7)) ([55402fc](https://github.com/Stacked-Org/generator/commit/55402fc3cfb8500b34280758894f1f804b058d3c))
+
 ## [1.3.1](https://github.com/Stacked-Org/generator/compare/v1.3.0...v1.3.1) (2023-04-14)
 
 
