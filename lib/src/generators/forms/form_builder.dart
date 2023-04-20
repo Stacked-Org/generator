@@ -18,7 +18,7 @@ class FormBuilder with StringBufferUtils {
   }
 
   FormBuilder addMixinSignature() {
-    writeLine("mixin \$$viewName on StatelessWidget {");
+    writeLine("mixin \$$viewName {");
     return this;
   }
 
