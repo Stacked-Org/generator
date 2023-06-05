@@ -12,6 +12,7 @@ import 'package:stacked_generator/src/generators/getit/stacked_locator_parameter
 import '../../../utils.dart';
 import 'dependency_config/dependency_config.dart';
 import 'dependency_config/factory_param_dependency.dart';
+import 'dependency_config/initializable_singleton_dependency.dart';
 import 'dependency_config/lazy_singleton.dart';
 
 class DependencyConfigFactory {
@@ -113,6 +114,16 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           presolveFunction: presolveObject?.displayName);
+    } else if (dependencyReader
+        .instanceOf(const TypeChecker.fromRuntime(InitializableSingleton))) {
+      return InitializableSingletonDependency(
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+      );
     } else {
       final Set<FactoryParameter> clazzParams = {};
       var params = constructor?.parameters;
