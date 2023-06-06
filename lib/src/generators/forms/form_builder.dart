@@ -58,7 +58,8 @@ class FormBuilder with StringBufferUtils {
     for (var field in fields) {
       final caseName = ReCase(field.name);
       writeLine(
-          "const String ${_getFormKeyName(caseName)} = '${caseName.camelCase}';");
+        "const String ${_getFormKeyName(caseName)} = '${field.name}';",
+      );
     }
     newLine();
 
@@ -522,7 +523,9 @@ class FormBuilder with StringBufferUtils {
         : 'DateTime';
   }
 
-  String _getFocusNodeName(FieldConfig field) => '${field.name}FocusNode';
-  String _getControllerName(FieldConfig field) => '${field.name}Controller';
+  String _getFocusNodeName(FieldConfig field) =>
+      '${field.name.camelCase}FocusNode';
+  String _getControllerName(FieldConfig field) =>
+      '${field.name.camelCase}Controller';
   String _getFormKeyName(ReCase caseName) => '${caseName.pascalCase}ValueKey';
 }
