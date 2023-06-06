@@ -130,7 +130,8 @@ class FormBuilder with StringBufferUtils {
           ? ",initialValue: '${field.initialValue!}'"
           : '';
       writeLine(
-          'TextEditingController get ${_getControllerName(field)} => _getFormTextEditingController(${_getFormKeyName(caseName)}$initialValue);');
+        'TextEditingController get ${_getControllerName(field)} => _getFormTextEditingController(${_getFormKeyName(caseName)}$initialValue);',
+      );
     }
     return this;
   }
@@ -140,7 +141,8 @@ class FormBuilder with StringBufferUtils {
     for (final field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
       writeLine(
-          'FocusNode get ${_getFocusNodeName(field)} => _getFormFocusNode(${_getFormKeyName(caseName)});');
+        'FocusNode get ${_getFocusNodeName(field)} => _getFormFocusNode(${_getFormKeyName(caseName)});',
+      );
     }
     return this;
   }
@@ -283,18 +285,19 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addValidationDataUpdateFunctionTorTextControllers() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
-    writeLine('''
+    writeLine(
+      '''
     /// Updates the fieldsValidationMessages on the FormViewModel
-    void updateValidationData(FormViewModel model) => model.setValidationMessages({
-    ''');
+    void updateValidationData(FormViewModel model) => model.setValidationMessages({''',
+    );
 
     for (final field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
-      writeLine('''
-      ${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),
-      ''');
+      writeLine(
+        '''      ${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),''',
+      );
     }
-    writeLine('''});''');
+    writeLine('''    });''');
     return this;
   }
 
@@ -473,24 +476,25 @@ class FormBuilder with StringBufferUtils {
       }
 
       final caseName = ReCase(field.name);
-      writeLine("${caseName.camelCase}Value = ''; ");
+      writeLine("${caseName.camelCase}Value = '';");
     }
     writeLine('}');
 
     // Write out the validateForm method
     if (fields.onlyTextFieldConfigs.isNotEmpty) {
       newLine();
-      writeLine('''
+      writeLine(
+        '''
       /// Validates text input fields on the Form
       void validateForm() {
-        this.setValidationMessages({
-      ''');
+        this.setValidationMessages({''',
+      );
 
       for (final field in fields.onlyTextFieldConfigs) {
         final caseName = ReCase(field.name);
-        writeLine('''
-        ${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),
-        ''');
+        writeLine(
+          '''${_getFormKeyName(caseName)}: getValidationMessage(${_getFormKeyName(caseName)}),''',
+        );
       }
       writeLine('''});''');
       writeLine('}');

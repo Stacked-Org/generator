@@ -68,8 +68,10 @@ void main() {
             ),
           ];
 
-          callGeneratorWithServicesConfigAndExpectResult(dependencies,
-              kStackedLocaterWithOneDependencyOutputWithDependencyTypeFactory);
+          callGeneratorWithServicesConfigAndExpectResult(
+            dependencies,
+            kStackedLocaterWithOneDependencyOutputWithDependencyTypeFactory,
+          );
         });
       });
       group('FactoryWithParam -', () {
@@ -384,8 +386,10 @@ with one DependencyConfig that has [type=DependencyType.LazySingleton]''', () {
             ),
           ];
 
-          callGeneratorWithServicesConfigAndExpectResult(dependencies,
-              kStackedLocaterWithOneDependencyOutputWithDependencyTypeLazySinglton);
+          callGeneratorWithServicesConfigAndExpectResult(
+            dependencies,
+            kStackedLocaterWithOneDependencyOutputWithDependencyTypeLazySinglton,
+          );
         });
       });
     });
