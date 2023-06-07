@@ -39,8 +39,8 @@ const kExample1DisposeTextControllers = '''
 
       /// Calls dispose on all the generated controllers and focus nodes
       void disposeForm() {
-        // The dispose function for a TextEditingController sets all listeners to null
-          
+      // The dispose function for a TextEditingController sets all listeners to null
+    
       for (var controller in _TestViewTextEditingControllers.values) {
       controller.dispose();
     }
@@ -75,8 +75,9 @@ NameValueKey: nameController.text,
 EmailValueKey: emailController.text,
               }),
           );
+    
     if (_autoTextFieldValidation || forceValidate) {
-          _updateValidationData(model);}}
+          updateValidationData(model);}}
               
 ''';
 const kExample1ViewModelExtensionForGetters = '''
@@ -161,6 +162,20 @@ setNameValidationMessage(String? validationMessage) => this.fieldsValidationMess
 setEmailValidationMessage(String? validationMessage) => this.fieldsValidationMessages[EmailValueKey] = validationMessage;
 setDateValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DateValueKey] = validationMessage;
 setDropDownValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DropDownValueKey] = validationMessage;
+
+/// Clears text input fields on the Form
+void clearForm() {
+nameValue = '';
+emailValue = '';
+}
+
+      /// Validates text input fields on the Form
+      void validateForm() {
+        this.setValidationMessages({
+NameValueKey: getValidationMessage(NameValueKey),
+EmailValueKey: getValidationMessage(EmailValueKey),
+});
+}
 }
 ''';
 const kExample1AddRegisterationCustomTextEditingController = '''
@@ -186,28 +201,36 @@ const kExample1AddRegisterationForFocusNodes = '''
     
 
 ''';
+
 const kExample1AddRegisterationextEditingController = '''
 
-      TextEditingController _getFormTextEditingController(String key,
-        {String? initialValue}) {
-          if (_TestViewTextEditingControllers.containsKey(key)) {
-        return _TestViewTextEditingControllers[key]!;
-      }
+      TextEditingController _getFormTextEditingController(
+        String key, {
+        String? initialValue,
+      }) {
+        if (_TestViewTextEditingControllers.containsKey(key)) {
+          return _TestViewTextEditingControllers[key]!;
+        }
+
       _TestViewTextEditingControllers[key] =
           TextEditingController(text: initialValue);
       return _TestViewTextEditingControllers[key]!; }
     
 
 ''';
+
 const kExample1AddValidationMessageForTextEditingController = '''
-        /// Returns the validation message for the given key
-        String? _getValidationMessage(String key) {
+    /// Returns the validation message for the given key
+    String? getValidationMessage(String key) {
       final validatorForKey = _TestViewTextValidations[key];
       if (validatorForKey == null) return null;
-      String? validationMessageForKey =
-            validatorForKey(_TestViewTextEditingControllers[key]!.text);
+      
+      String? validationMessageForKey = validatorForKey(
+        _TestViewTextEditingControllers[key]!.text,
+      );
+
       return validationMessageForKey;
-      }
+    }
     
 ''';
 const kExample1AddHeaderComment = '''
@@ -235,7 +258,7 @@ emailController.addListener(() => _updateFormData(model));
       /// with the latest textController values
       @Deprecated(
         'Use syncFormWithViewModel instead.'
-        'This feature was deprecated after 3.1.0.'
+        'This feature was deprecated after 3.1.0.',
       )
       void listenToFormUpdated(FormViewModel model) {
     
@@ -245,19 +268,17 @@ emailController.addListener(() => _updateFormData(model));
 
 ''';
 const kExample1AddValidationDataUpdateFunctionTorTextControllers = '''
-        /// Updates the fieldsValidationMessages on the FormViewModel
-        void _updateValidationData(FormViewModel model) => model.setValidationMessages(
-              {
-            
-NameValueKey: _getValidationMessage(NameValueKey),
-EmailValueKey: _getValidationMessage(EmailValueKey),
-              }
-          );
-              
+    /// Updates the fieldsValidationMessages on the FormViewModel
+    void updateValidationData(FormViewModel model) => model.setValidationMessages({
+      NameValueKey: getValidationMessage(NameValueKey),
+      EmailValueKey: getValidationMessage(EmailValueKey),
+    });
 ''';
+
 const kExample1AddMixinSignature = '''
-mixin \$TestView on StatelessWidget {
+mixin \$TestView {
 ''';
+
 const kExample1AddValidationFunctionsFromAnnotation = '''
 
 final Map<String, String? Function(String?)?> _TestViewTextValidations = {

@@ -90,8 +90,10 @@ void main() {
           ),
         );
         builder.addTextEditingControllersForTextFields();
-        expect(builder.serializeStringBuffer,
-            ksTextEditingControllerGettersForTextFields);
+        expect(
+          builder.serializeStringBuffer,
+          ksTextEditingControllerGettersForTextFields,
+        );
       });
     });
     group('addTextEditingControllersForTextFields -', () {
@@ -172,7 +174,9 @@ void main() {
           builder.addDisposeForTextControllers();
 
           expect(
-              builder.serializeStringBuffer, kExample1DisposeTextControllers);
+            builder.serializeStringBuffer,
+            kExample1DisposeTextControllers,
+          );
         });
       });
       group('addDropdownItemsMap -', () {
@@ -210,8 +214,10 @@ void main() {
         test('When called, Should add extension Methods on FormViewModel', () {
           builder.addFormViewModelExtensionForMethods();
 
-          expect(builder.serializeStringBuffer,
-              kExample1ViewModelExtensionForMethods);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1ViewModelExtensionForMethods,
+          );
         });
       });
       group('addGetCustomTextEditingController -', () {
@@ -239,8 +245,10 @@ void main() {
             () {
           builder.addGetTextEditinController();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddRegisterationextEditingController);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1AddRegisterationextEditingController,
+          );
         });
       });
       group('addGetValidationMessageForTextController -', () {
@@ -249,8 +257,10 @@ void main() {
             () {
           builder.addGetValidationMessageForTextController();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddValidationMessageForTextEditingController);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1AddValidationMessageForTextEditingController,
+          );
         });
       });
       group('addHeaderComment -', () {
@@ -278,8 +288,10 @@ void main() {
         test('When called, Should add listeners for TextFields', () {
           builder.addListenerRegistrationsForTextFields();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddListenerRegistrationsForTextFields);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1AddListenerRegistrationsForTextFields,
+          );
         });
       });
       group('addValidationDataUpdateFunctionTorTextControllers -', () {
@@ -288,8 +300,10 @@ void main() {
             () {
           builder.addValidationDataUpdateFunctionTorTextControllers();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddValidationDataUpdateFunctionTorTextControllers);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1AddValidationDataUpdateFunctionTorTextControllers,
+          );
         });
       });
       group('addMixinSignature -', () {

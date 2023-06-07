@@ -85,12 +85,12 @@ String generateLibrary(
     (acc, a) => acc..addAll(a.guards),
   );
 
-  final allGuardParameters = allGuards
-      .map(
-        (guard) =>
-            '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
-      )
-      .toList();
+  // final allGuardParameters = allGuards
+  //     .map(
+  //       (guard) =>
+  //           '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
+  //     )
+  //     .toList();
 
   /// Generate the extensions code that's required for declarativly supply
   /// arguments to a class navigation call

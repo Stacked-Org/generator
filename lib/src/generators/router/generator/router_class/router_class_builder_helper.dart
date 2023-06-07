@@ -80,14 +80,13 @@ class RouterClassBuilderHelper {
           ..name = '_pagesMap'
           ..modifier = FieldModifier.final$
           ..assignment = literalMap(
-              _pages(routes),
-              const Reference(
-                'Type',
-              ),
-              const Reference(
-                'StackedRouteFactory',
-                'package:stacked/stacked.dart',
-              )).code,
+            _pages(routes),
+            const Reference('Type'),
+            const Reference(
+              'StackedRouteFactory',
+              'package:stacked/stacked.dart',
+            ),
+          ).code,
       );
 
   Map<Reference, Method> _pages(List<RouteConfig> routes) {
@@ -110,9 +109,7 @@ class RouterClassBuilderHelper {
 
     return Method(
       (b) => b
-        ..requiredParameters.add(Parameter(
-          (b) => b..name = 'data',
-        ))
+        ..requiredParameters.add(Parameter((b) => b..name = 'data'))
         ..body = Block.of([
           if (notQueryNorPathParameters.isNotEmpty) ...[
             _prepareArgs(argsType),
