@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/Stacked-Org/generator/compare/v1.3.3...v1.4.0) (2023-06-26)
+
+
+### Features
+
+* Add InitializableSingletonDependency ([#9](https://github.com/Stacked-Org/generator/issues/9)) ([5b34ec0](https://github.com/Stacked-Org/generator/commit/5b34ec0030a92333789897233f39b73b0e3b2fde))
+* Change FormBuilder to avoid changing fields keys ([#11](https://github.com/Stacked-Org/generator/issues/11)) ([f3a54fb](https://github.com/Stacked-Org/generator/commit/f3a54fbb09c3d7215e78c3dcec79b990e10eea2c))
+
 ## [1.3.3](https://github.com/Stacked-Org/generator/compare/v1.3.2...v1.3.3) (2023-04-20)
 
 
