@@ -102,6 +102,7 @@ class DependencyConfigFactory {
           environments: environments,
           resolveFunction: resolveObject?.displayName);
     } else if (dependencyReader
+        // ignore: deprecated_member_use
         .instanceOf(const TypeChecker.fromRuntime(Presolve))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
