@@ -11,8 +11,7 @@ void main() {
     setUp(StackedLocator.instance.reset);
     test('When forget to register singleton, Should throw AssertionError',
         () async {
-      expect(() => singletonLocator<DumpService>(),
-          throwsA(isA<AssertionError>()));
+      expect(() => singletonLocator<DumpService>(), throwsA(isA<StateError>()));
     });
     test('When register singleton, Should returnsNormally', () async {
       setupSingletonLocator();
@@ -24,8 +23,7 @@ void main() {
         () async {
       setupSingletonWithTypeLocator();
 
-      expect(() => singletonLocator<DumpService>(),
-          throwsA(isA<AssertionError>()));
+      expect(() => singletonLocator<DumpService>(), throwsA(isA<StateError>()));
       expect(() => singletonLocator<AbstractDumpService>(), returnsNormally);
     });
     test(
