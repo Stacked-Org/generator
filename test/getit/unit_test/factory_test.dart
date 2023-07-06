@@ -11,8 +11,7 @@ void main() {
     setUp(StackedLocator.instance.reset);
     test('When forget to register factory, Should throw AssertionError',
         () async {
-      expect(
-          () => factoryLocator<DumpService>(), throwsA(isA<AssertionError>()));
+      expect(() => factoryLocator<DumpService>(), throwsA(isA<StateError>()));
     });
     test('When register factory, Should returnsNormally', () async {
       setupFactoryLocator();
@@ -23,8 +22,7 @@ void main() {
         'When register factory with type, Should call it by the type not the implementation',
         () async {
       setupFactorywithtypeLocator();
-      expect(
-          () => factoryLocator<DumpService>(), throwsA(isA<AssertionError>()));
+      expect(() => factoryLocator<DumpService>(), throwsA(isA<StateError>()));
       expect(() => factoryLocator<AbstractDumpService>(), returnsNormally);
     });
     test(
