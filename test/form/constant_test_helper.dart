@@ -135,25 +135,39 @@ String? get dropDownValidationMessage => this.fieldsValidationMessages[DropDownV
 const kExample1ViewModelExtensionForMethods = '''
 
 extension Methods on FormViewModel {
-          Future<void> selectDate(
-              {required BuildContext context,
-              required DateTime initialDate,
-              required DateTime firstDate,
-              required DateTime lastDate}) async {
+          Future<void> selectDate({
+            required BuildContext context,
+            required DateTime initialDate,
+            required DateTime firstDate,
+            required DateTime lastDate,
+          }) async {
             final selectedDate = await showDatePicker(
-                context: context,
-                initialDate: initialDate,
-                firstDate: firstDate,
-                lastDate: lastDate);
+              context: context,
+              initialDate: initialDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
+            );
+
             if (selectedDate != null) {
-              this.setData(
-                  this.formValueMap..addAll({DateValueKey: selectedDate}));
+              this.setData(this.formValueMap..addAll({
+                DateValueKey: selectedDate}),
+              );
+            }
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
             }
           }
     
 
           void setDropDown(String dropDown) {
-            this.setData(this.formValueMap..addAll({DropDownValueKey: dropDown}));
+            this.setData(
+              this.formValueMap..addAll({DropDownValueKey: dropDown}),
+            );
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
+            }
           }
     
 
@@ -180,7 +194,7 @@ EmailValueKey: getValidationMessage(EmailValueKey),
 ''';
 const kExample1AddRegisterationCustomTextEditingController = '''
 
-      null _getCustomFormTextEditingController(String key,) {
+      null _getEmailCustomFormTextEditingController(String key,) {
           if (_TestViewTextEditingControllers.containsKey(key)) {
         return _TestViewTextEditingControllers[key]! as null;
       }
@@ -192,6 +206,7 @@ const kExample1AddRegisterationCustomTextEditingController = '''
 
 ''';
 const kExample1AddRegisterationForFocusNodes = '''
+
       FocusNode _getFormFocusNode(String key) {
         if (_TestViewFocusNodes.containsKey(key)) {
         return _TestViewFocusNodes[key]!;}
@@ -252,6 +267,8 @@ const kExample1AddListenerRegistrationsForTextFields = '''
     
 nameController.addListener(() => _updateFormData(model));
 emailController.addListener(() => _updateFormData(model));
+
+_updateFormData(model, forceValidate: _autoTextFieldValidation);
 }
 
       /// Registers a listener on every generated controller that calls [model.setData()]
@@ -264,6 +281,8 @@ emailController.addListener(() => _updateFormData(model));
     
 nameController.addListener(() => _updateFormData(model));
 emailController.addListener(() => _updateFormData(model));
+
+_updateFormData(model, forceValidate: _autoTextFieldValidation);
 }
 
 ''';
@@ -288,6 +307,7 @@ EmailValueKey: null,
 
 ''';
 const kExample1AddFocusNodesGetters = '''
+
 FocusNode get nameFocusNode => _getFormFocusNode(NameValueKey);
 FocusNode get emailFocusNode => _getFormFocusNode(EmailValueKey);
 ''';
