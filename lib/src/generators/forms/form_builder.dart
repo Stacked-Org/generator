@@ -53,6 +53,16 @@ class FormBuilder with StringBufferUtils {
     return this;
   }
 
+  FormBuilder addAnnotationOptions() {
+    newLine();
+    writeLine(
+      "const bool _autoTextFieldValidation = $autoTextFieldValidation;",
+    );
+    newLine();
+
+    return this;
+  }
+
   FormBuilder addValueMapKeys() {
     newLine();
     for (var field in fields) {
@@ -247,8 +257,7 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addManualValidation() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
-    writeLine(
-        "static const bool _autoTextFieldValidation = $autoTextFieldValidation;");
+
     writeLine("""
     bool validateFormFields(FormViewModel model) {
       _updateFormData(model, forceValidate: true);

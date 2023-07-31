@@ -12,6 +12,7 @@ class StackedFormContentGenerator implements BaseGenerator {
     final formBuilder = FormBuilder(formViewConfig: _formViewConfig)
         .addHeaderComment()
         .addImports()
+        .addAnnotationOptions()
         .addValueMapKeys()
         .addDropdownItemsMap()
         .addTextEditingControllerItemsMap()
