@@ -461,6 +461,9 @@ class FormBuilder with StringBufferUtils {
             if (selectedDate != null) {
               this.setData(
                   this.formValueMap..addAll({${_getFormKeyName(caseName)}: selectedDate}));
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
             }
           }
     ''');
@@ -473,6 +476,10 @@ class FormBuilder with StringBufferUtils {
       writeLine('''
           void set${caseName.pascalCase}(String ${caseName.camelCase}) {
             this.setData(this.formValueMap..addAll({${_getFormKeyName(caseName)}: ${caseName.camelCase}}));
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
+            }
           }
     ''');
       newLine();
