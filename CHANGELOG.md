@@ -1,3 +1,18 @@
+# [1.5.0](https://github.com/Stacked-Org/generator/compare/v1.4.0...v1.5.0) (2023-07-31)
+
+
+### Bug Fixes
+
+* generate a custom controller getter per field ([548922e](https://github.com/Stacked-Org/generator/commit/548922e0e0fba0fe15c506deded02d20e3e8fb8b))
+* update `isFormValid` behavior ([92f0ed3](https://github.com/Stacked-Org/generator/commit/92f0ed32819e2e2a876f6289b4b9920edca64594))
+* update form and validation data on sync ([d576843](https://github.com/Stacked-Org/generator/commit/d576843a5d059cd98f6da2bb342f42a221b75813))
+* validate form on non text field change ([c17a431](https://github.com/Stacked-Org/generator/commit/c17a431b0d843c495f6cbfcec31ef5fef163958f))
+
+
+### Features
+
+* add hasAnyValidationMessage getter ([d2cfa40](https://github.com/Stacked-Org/generator/commit/d2cfa40bf11977bab6f051f42d98880cd4858882))
+
 # [1.4.0](https://github.com/Stacked-Org/generator/compare/v1.3.3...v1.4.0) (2023-06-26)
 
 
