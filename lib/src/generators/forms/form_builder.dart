@@ -1,5 +1,6 @@
 import 'package:recase/recase.dart';
 import 'package:stacked_generator/src/generators/base_generator.dart';
+import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
 import 'package:stacked_generator/src/generators/forms/field_config.dart';
 import 'package:stacked_generator/src/generators/forms/form_view_config.dart';
 
@@ -191,7 +192,7 @@ class FormBuilder with StringBufferUtils {
           tf.customTextEditingController!.returnType;
       newLine();
       writeLine('''
-      $customTextEditingClassName _getCustomFormTextEditingController(String key,) {
+      $customTextEditingClassName _get${tf.name.capitalize}CustomFormTextEditingController(String key,) {
           if (_${viewName}TextEditingControllers.containsKey(key)) {
         return _${viewName}TextEditingControllers[key]! as $customTextEditingClassName;
       }
