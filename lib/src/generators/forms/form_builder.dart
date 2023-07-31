@@ -233,6 +233,11 @@ class FormBuilder with StringBufferUtils {
         '${_getControllerName(field)}.addListener(() => _updateFormData(model));',
       );
     }
+
+    newLine();
+    writeLine(
+      "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
+    );
     writeLine('}');
     newLine();
 
@@ -251,6 +256,11 @@ class FormBuilder with StringBufferUtils {
         '${_getControllerName(field)}.addListener(() => _updateFormData(model));',
       );
     }
+
+    newLine();
+    writeLine(
+      "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
+    );
     writeLine('}');
     newLine();
     return this;
