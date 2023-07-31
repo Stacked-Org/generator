@@ -369,11 +369,17 @@ class FormBuilder with StringBufferUtils {
   FormBuilder addFormViewModelExtensionForGetters() {
     newLine();
     writeLine('extension ValueProperties on FormViewModel {');
-    writeLine("""bool get isFormValid =>
-      this.fieldsValidationMessages.values.every((element) => element == null);""");
     writeLine("""bool get hasAnyValidationMessage =>
       this.fieldsValidationMessages.values.any((validation) => validation != null);""");
 
+    newLine();
+    writeLine("""bool get isFormValid {
+      if (!_autoTextFieldValidation) this.validateForm();
+
+      return !hasAnyValidationMessage;
+    }""");
+
+    newLine();
     for (final field in fields) {
       final caseName = ReCase(field.name);
       final type = _getFormFieldValueType(field);
