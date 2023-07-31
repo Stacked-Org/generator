@@ -14,7 +14,8 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addHeaderComment() {
     writeLine(
-        "// ignore_for_file: public_member_api_docs, constant_identifier_names, non_constant_identifier_names,unnecessary_this");
+      "// ignore_for_file: public_member_api_docs, constant_identifier_names, non_constant_identifier_names,unnecessary_this",
+    );
     return this;
   }
 
@@ -95,9 +96,11 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addTextEditingControllerItemsMap() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
+
     newLine();
     writeLine(
-        "final Map<String, TextEditingController> _${viewName}TextEditingControllers = {};");
+      "final Map<String, TextEditingController> _${viewName}TextEditingControllers = {};",
+    );
     newLine();
     return this;
   }
@@ -115,11 +118,13 @@ class FormBuilder with StringBufferUtils {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     newLine();
     writeLine(
-        "final Map<String, String? Function(String?)?> _${viewName}TextValidations = {");
+      "final Map<String, String? Function(String?)?> _${viewName}TextValidations = {",
+    );
     for (var field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
       writeLine(
-          "${_getFormKeyName(caseName)}: ${field.validatorFunction?.validatorName},");
+        "${_getFormKeyName(caseName)}: ${field.validatorFunction?.validatorName},",
+      );
     }
     writeLine("};");
     newLine();
@@ -133,7 +138,8 @@ class FormBuilder with StringBufferUtils {
       if (field.customTextEditingController != null) {
         final caseName = ReCase(field.name);
         writeLine(
-            '${field.customTextEditingController!.returnType} get ${_getControllerName(field)} => _getCustomFormTextEditingController(${_getFormKeyName(caseName)});');
+          '${field.customTextEditingController!.returnType} get ${_getControllerName(field)} => _get${field.name.capitalize}CustomFormTextEditingController(${_getFormKeyName(caseName)});',
+        );
         continue;
       }
       final caseName = ReCase(field.name);
@@ -149,6 +155,8 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addFocusNodesForTextFields() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
+
+    newLine();
     for (final field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
       writeLine(
@@ -158,7 +166,7 @@ class FormBuilder with StringBufferUtils {
     return this;
   }
 
-  FormBuilder addGetTextEditinController() {
+  FormBuilder addGetTextEditingController() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     newLine();
     writeLine(''' 
@@ -185,6 +193,7 @@ class FormBuilder with StringBufferUtils {
     /// If there is no field that has a [customTextEditingController]
     /// abort this function
     if (textFieldsConfigs.isEmpty) return this;
+
     for (var tf in textFieldsConfigs) {
       final customTextEditingClassNameAndCallingFunction =
           tf.customTextEditingController!.validatorName;
@@ -207,8 +216,10 @@ class FormBuilder with StringBufferUtils {
     return this;
   }
 
-  FormBuilder addGetFocuNode() {
+  FormBuilder addGetFocusNode() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
+
+    newLine();
     writeLine(''' 
       FocusNode _getFormFocusNode(String key) {
         if (_${viewName}FocusNodes.containsKey(key)) {
@@ -400,10 +411,7 @@ class FormBuilder with StringBufferUtils {
       final caseName = ReCase(field.name);
       writeLine('''set ${caseName.camelCase}Value($type? value) {
     this.setData(
-      this.formValueMap
-        ..addAll({
-          ${_getFormKeyName(caseName)}: value,
-        }),
+      this.formValueMap..addAll({${_getFormKeyName(caseName)}: value}),
     );  
 
     if (_${viewName}TextEditingControllers.containsKey(${_getFormKeyName(caseName)})) {
@@ -456,19 +464,24 @@ class FormBuilder with StringBufferUtils {
     for (final field in fields.onlyDateFieldConfigs) {
       final caseName = ReCase(field.name);
       writeLine('''
-          Future<void> select${caseName.pascalCase}(
-              {required BuildContext context,
-              required DateTime initialDate,
-              required DateTime firstDate,
-              required DateTime lastDate}) async {
+          Future<void> select${caseName.pascalCase}({
+            required BuildContext context,
+            required DateTime initialDate,
+            required DateTime firstDate,
+            required DateTime lastDate,
+          }) async {
             final selectedDate = await showDatePicker(
-                context: context,
-                initialDate: initialDate,
-                firstDate: firstDate,
-                lastDate: lastDate);
+              context: context,
+              initialDate: initialDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
+            );
+
             if (selectedDate != null) {
-              this.setData(
-                  this.formValueMap..addAll({${_getFormKeyName(caseName)}: selectedDate}));
+              this.setData(this.formValueMap..addAll({
+                ${_getFormKeyName(caseName)}: selectedDate}),
+              );
+            }
 
             if (_autoTextFieldValidation) {
               this.validateForm();
@@ -483,7 +496,9 @@ class FormBuilder with StringBufferUtils {
       final caseName = ReCase(field.name);
       writeLine('''
           void set${caseName.pascalCase}(String ${caseName.camelCase}) {
-            this.setData(this.formValueMap..addAll({${_getFormKeyName(caseName)}: ${caseName.camelCase}}));
+            this.setData(
+              this.formValueMap..addAll({${_getFormKeyName(caseName)}: ${caseName.camelCase}}),
+            );
 
             if (_autoTextFieldValidation) {
               this.validateForm();
