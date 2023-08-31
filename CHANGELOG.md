@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/Stacked-Org/generator/compare/v1.5.0...v1.5.1) (2023-08-31)
+
+
+### Bug Fixes
+
+* decouple FormStateHelper ([#19](https://github.com/Stacked-Org/generator/issues/19)) ([4174aa3](https://github.com/Stacked-Org/generator/commit/4174aa32874fcdfe418d478bac2d3417a72fef78))
+
 # [1.5.0](https://github.com/Stacked-Org/generator/compare/v1.4.0...v1.5.0) (2023-07-31)
 
 
