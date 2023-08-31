@@ -67,7 +67,7 @@ final Map<String, FocusNode> _TestViewFocusNodes = {};
 ''';
 const kExample1UpdateFormData = '''
         /// Updates the formData on the FormViewModel
-        void _updateFormData(FormViewModel model, {bool forceValidate = false}) { model.setData(
+        void _updateFormData(FormStateHelper model, {bool forceValidate = false}) { model.setData(
               model.formValueMap
                 ..addAll({
             
@@ -263,7 +263,7 @@ import 'validators/path';
 const kExample1AddListenerRegistrationsForTextFields = '''
       /// Registers a listener on every generated controller that calls [model.setData()]
       /// with the latest textController values
-      void syncFormWithViewModel(FormViewModel model) {
+      void syncFormWithViewModel(FormStateHelper model) {
     
 nameController.addListener(() => _updateFormData(model));
 emailController.addListener(() => _updateFormData(model));
@@ -288,7 +288,7 @@ _updateFormData(model, forceValidate: _autoTextFieldValidation);
 ''';
 const kExample1AddValidationDataUpdateFunctionTorTextControllers = '''
     /// Updates the fieldsValidationMessages on the FormViewModel
-    void updateValidationData(FormViewModel model) => model.setValidationMessages({
+    void updateValidationData(FormStateHelper model) => model.setValidationMessages({
       NameValueKey: getValidationMessage(NameValueKey),
       EmailValueKey: getValidationMessage(EmailValueKey),
     });

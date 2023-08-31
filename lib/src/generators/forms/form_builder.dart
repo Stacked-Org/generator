@@ -236,7 +236,7 @@ class FormBuilder with StringBufferUtils {
     writeLine('''
       /// Registers a listener on every generated controller that calls [model.setData()]
       /// with the latest textController values
-      void syncFormWithViewModel(FormViewModel model) {
+      void syncFormWithViewModel(FormStateHelper model) {
     ''');
 
     for (final field in fields.onlyTextFieldConfigs) {
@@ -293,7 +293,7 @@ class FormBuilder with StringBufferUtils {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     writeLine('''
         /// Updates the formData on the FormViewModel
-        void _updateFormData(FormViewModel model, {bool forceValidate = false}) { model.setData(
+        void _updateFormData(FormStateHelper model, {bool forceValidate = false}) { model.setData(
               model.formValueMap
                 ..addAll({
             ''');
@@ -319,7 +319,7 @@ class FormBuilder with StringBufferUtils {
     writeLine(
       '''
     /// Updates the fieldsValidationMessages on the FormViewModel
-    void updateValidationData(FormViewModel model) => model.setValidationMessages({''',
+    void updateValidationData(FormStateHelper model) => model.setValidationMessages({''',
     );
 
     for (final field in fields.onlyTextFieldConfigs) {
@@ -379,7 +379,7 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addFormViewModelExtensionForGetters() {
     newLine();
-    writeLine('extension ValueProperties on FormViewModel {');
+    writeLine('extension ValueProperties on FormStateHelper {');
     writeLine("""bool get hasAnyValidationMessage =>
       this.fieldsValidationMessages.values.any((validation) => validation != null);""");
 
@@ -458,7 +458,7 @@ class FormBuilder with StringBufferUtils {
 
   FormBuilder addFormViewModelExtensionForMethods() {
     newLine();
-    writeLine('extension Methods on FormViewModel {');
+    writeLine('extension Methods on FormStateHelper {');
 
     // Generate the date pickers
     for (final field in fields.onlyDateFieldConfigs) {
