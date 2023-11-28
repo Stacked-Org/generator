@@ -1,10 +1,3 @@
-## [1.5.2](https://github.com/Stacked-Org/stacked/issues/1061) (2023-11-28)
-
-### Features
-
-* Upgrade `analyzer` and `dart_style` version's
-
-
 ## [1.5.1](https://github.com/Stacked-Org/generator/compare/v1.5.0...v1.5.1) (2023-08-31)
 
 
