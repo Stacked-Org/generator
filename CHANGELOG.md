@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/Stacked-Org/generator/compare/v1.5.1...v1.5.2) (2023-12-03)
+
+
+### Bug Fixes
+
+* updates analyzer package to latest ([c9cc754](https://github.com/Stacked-Org/generator/commit/c9cc754ae95d3d82b2c3eca6bf2e61fc4514c394))
+
 ## [1.5.1](https://github.com/Stacked-Org/generator/compare/v1.5.0...v1.5.1) (2023-08-31)
 
 
