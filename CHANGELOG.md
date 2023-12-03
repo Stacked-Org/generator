@@ -83,7 +83,7 @@
 
 ### Features
 
-Adds support for the new RouterService which uses Navigator 2.0 a fork from AutoRouter `5.0.4` to generate the generated code. 
+Adds support for the new RouterService which uses Navigator 2.0 a fork from AutoRouter `5.0.4` to generate the generated code.
 
 ### Fixes
 Updates `stacked_core` to `stacked_shared` because we lost access to `stacked_core` 😞
@@ -113,7 +113,7 @@ Updates `stacked_core` to `stacked_shared` because we lost access to `stacked_co
 ## 0.9.0
 
 ### New Feature
-Two way binding for text fields in Forms. When you want to update the value for a form and have it reflect in the TextField you can now simply set it as using the `fieldValue` property. 
+Two way binding for text fields in Forms. When you want to update the value for a form and have it reflect in the TextField you can now simply set it as using the `fieldValue` property.
 
 **Example**
 To set the value of a form field called email, you can now in the viewmodel simply do:
