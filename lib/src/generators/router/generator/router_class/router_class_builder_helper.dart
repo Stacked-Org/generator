@@ -3,7 +3,7 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
 
-class RouterClassBuilderHelper {
+mixin RouterClassBuilderHelper {
   /// Example
   ///
   /// final _routes = <_i1.RouteDef>[

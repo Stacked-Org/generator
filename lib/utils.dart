@@ -2,6 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
+import 'package:stacked_generator/src/helpers/config_helper.dart';
 
 String toDisplayString(DartType e, {bool withNullability = false}) {
   return e.getDisplayString(withNullability: withNullability);
@@ -62,6 +63,14 @@ String toKababCase(String s) {
 
 String valueOr(String? value, String or) {
   return value == null || value.isEmpty ? or : value;
+}
+
+Future<String> getStackedAppFileName() async {
+  final configHelper = ConfigHelper();
+  await configHelper.composeAndLoadConfigFile();
+
+  final stackedAppFilePath = configHelper.stackedAppFilePath.split('/').last;
+  return stackedAppFilePath.substring(0, stackedAppFilePath.length - 5);
 }
 
 extension IterableExtenstion<E> on Iterable<E> {

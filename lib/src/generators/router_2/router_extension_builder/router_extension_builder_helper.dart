@@ -4,7 +4,7 @@ import 'package:stacked_generator/src/generators/router_2/code_builder/route_inf
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 
-class RouterExtensionBuilderHelper {
+mixin RouterExtensionBuilderHelper {
   Iterable<Method> buildNavigateToExtensionMethods(
     List<RouteConfig> routes,
     DartEmitter emitter,

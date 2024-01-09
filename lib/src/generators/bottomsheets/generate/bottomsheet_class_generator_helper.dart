@@ -16,11 +16,11 @@ class BottomsheetClassGeneratorHelper with StringBufferUtils {
     write(setupBottomsheetHeader(locatorName));
   }
 
-  void writeStackedservicesAndGeneratedLocaterImports() {
+  void writeStackedservicesAndGeneratedLocaterImports(String name) {
     writeLine();
     writeLine("import 'package:stacked_services/stacked_services.dart';");
     writeLine();
-    writeLine("import 'app.locator.dart';");
+    writeLine("import '$name.locator.dart';");
   }
 
   void writeBottomsheetsImports(List<BottomsheetConfig> bottomsheetConfigs) {
