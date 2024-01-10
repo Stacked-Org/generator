@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/src/helpers/config_helper.dart';
+import 'package:stacked_generator/src/helpers/file_helper.dart';
 
 String toDisplayString(DartType e, {bool withNullability = false}) {
   return e.getDisplayString(withNullability: withNullability);
@@ -66,7 +67,7 @@ String valueOr(String? value, String or) {
 }
 
 Future<String> getStackedAppFileName() async {
-  final configHelper = ConfigHelper();
+  final configHelper = ConfigHelper(fileHelper: FileHelper());
   await configHelper.composeAndLoadConfigFile();
 
   final stackedAppFilePath = configHelper.stackedAppFilePath.split('/').last;

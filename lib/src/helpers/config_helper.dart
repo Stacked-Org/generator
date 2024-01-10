@@ -18,7 +18,8 @@ const kDeprecatedPaths =
 
 /// Handles stacked app configuration
 class ConfigHelper {
-  final _fileHelper = FileHelper();
+  final FileHelper fileHelper;
+  ConfigHelper({required this.fileHelper});
 
   /// Default config map used to compare and replace with custom values.
   final Map<String, dynamic> _defaultConfig = StackedConfig().toJson();
@@ -145,7 +146,7 @@ class ConfigHelper {
     String? projectPath,
   }) async {
     if (configFilePath != null) {
-      if (await _fileHelper.fileExists(filePath: configFilePath)) {
+      if (await fileHelper.fileExists(filePath: configFilePath)) {
         return configFilePath;
       }
 
@@ -166,7 +167,7 @@ class ConfigHelper {
   @visibleForTesting
   Future<void> loadConfig(String configFilePath) async {
     try {
-      final data = await _fileHelper.readFileAsString(
+      final data = await fileHelper.readFileAsString(
         filePath: configFilePath,
       );
       _customConfig = StackedConfig.fromJson(jsonDecode(data));
