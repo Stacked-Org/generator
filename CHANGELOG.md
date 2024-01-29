@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/Stacked-Org/generator/compare/v1.5.2...v1.6.0) (2024-01-29)
+
+
+### Features
+
+* read stacked config ([#24](https://github.com/Stacked-Org/generator/issues/24)) ([e9afa20](https://github.com/Stacked-Org/generator/commit/e9afa20ab57fd5d126239e6e486ad5882aa14340))
+
 ## [1.5.2](https://github.com/Stacked-Org/generator/compare/v1.5.1...v1.5.2) (2023-12-03)
 
 
