@@ -62,22 +62,22 @@ class _$GeneratorConfigCopyWithImpl<$Res, $Val extends GeneratorConfig>
 }
 
 /// @nodoc
-abstract class _$$_GeneratorConfigCopyWith<$Res>
+abstract class _$$GeneratorConfigImplCopyWith<$Res>
     implements $GeneratorConfigCopyWith<$Res> {
-  factory _$$_GeneratorConfigCopyWith(
-          _$_GeneratorConfig value, $Res Function(_$_GeneratorConfig) then) =
-      __$$_GeneratorConfigCopyWithImpl<$Res>;
+  factory _$$GeneratorConfigImplCopyWith(_$GeneratorConfigImpl value,
+          $Res Function(_$GeneratorConfigImpl) then) =
+      __$$GeneratorConfigImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({bool navigator2});
 }
 
 /// @nodoc
-class __$$_GeneratorConfigCopyWithImpl<$Res>
-    extends _$GeneratorConfigCopyWithImpl<$Res, _$_GeneratorConfig>
-    implements _$$_GeneratorConfigCopyWith<$Res> {
-  __$$_GeneratorConfigCopyWithImpl(
-      _$_GeneratorConfig _value, $Res Function(_$_GeneratorConfig) _then)
+class __$$GeneratorConfigImplCopyWithImpl<$Res>
+    extends _$GeneratorConfigCopyWithImpl<$Res, _$GeneratorConfigImpl>
+    implements _$$GeneratorConfigImplCopyWith<$Res> {
+  __$$GeneratorConfigImplCopyWithImpl(
+      _$GeneratorConfigImpl _value, $Res Function(_$GeneratorConfigImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -85,7 +85,7 @@ class __$$_GeneratorConfigCopyWithImpl<$Res>
   $Res call({
     Object? navigator2 = null,
   }) {
-    return _then(_$_GeneratorConfig(
+    return _then(_$GeneratorConfigImpl(
       navigator2: null == navigator2
           ? _value.navigator2
           : navigator2 // ignore: cast_nullable_to_non_nullable
@@ -96,11 +96,11 @@ class __$$_GeneratorConfigCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_GeneratorConfig implements _GeneratorConfig {
-  _$_GeneratorConfig({this.navigator2 = false});
+class _$GeneratorConfigImpl implements _GeneratorConfig {
+  _$GeneratorConfigImpl({this.navigator2 = false});
 
-  factory _$_GeneratorConfig.fromJson(Map<String, dynamic> json) =>
-      _$$_GeneratorConfigFromJson(json);
+  factory _$GeneratorConfigImpl.fromJson(Map<String, dynamic> json) =>
+      _$$GeneratorConfigImplFromJson(json);
 
   @override
   @JsonKey()
@@ -112,10 +112,10 @@ class _$_GeneratorConfig implements _GeneratorConfig {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_GeneratorConfig &&
+            other is _$GeneratorConfigImpl &&
             (identical(other.navigator2, navigator2) ||
                 other.navigator2 == navigator2));
   }
@@ -127,27 +127,28 @@ class _$_GeneratorConfig implements _GeneratorConfig {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_GeneratorConfigCopyWith<_$_GeneratorConfig> get copyWith =>
-      __$$_GeneratorConfigCopyWithImpl<_$_GeneratorConfig>(this, _$identity);
+  _$$GeneratorConfigImplCopyWith<_$GeneratorConfigImpl> get copyWith =>
+      __$$GeneratorConfigImplCopyWithImpl<_$GeneratorConfigImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_GeneratorConfigToJson(
+    return _$$GeneratorConfigImplToJson(
       this,
     );
   }
 }
 
 abstract class _GeneratorConfig implements GeneratorConfig {
-  factory _GeneratorConfig({final bool navigator2}) = _$_GeneratorConfig;
+  factory _GeneratorConfig({final bool navigator2}) = _$GeneratorConfigImpl;
 
   factory _GeneratorConfig.fromJson(Map<String, dynamic> json) =
-      _$_GeneratorConfig.fromJson;
+      _$GeneratorConfigImpl.fromJson;
 
   @override
   bool get navigator2;
   @override
   @JsonKey(ignore: true)
-  _$$_GeneratorConfigCopyWith<_$_GeneratorConfig> get copyWith =>
+  _$$GeneratorConfigImplCopyWith<_$GeneratorConfigImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -5,7 +5,7 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
 
-class NavigateExtensionClassBuilderHelper {
+mixin NavigateExtensionClassBuilderHelper {
   Iterable<Method> buildNavigateToExtensionMethods(
     List<RouteConfig> routes,
     DartEmitter emitter,

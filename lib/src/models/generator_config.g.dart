@@ -8,12 +8,14 @@ part of 'generator_config.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$_GeneratorConfig _$$_GeneratorConfigFromJson(Map<String, dynamic> json) =>
-    _$_GeneratorConfig(
+_$GeneratorConfigImpl _$$GeneratorConfigImplFromJson(
+        Map<String, dynamic> json) =>
+    _$GeneratorConfigImpl(
       navigator2: json['navigator2'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$_GeneratorConfigToJson(_$_GeneratorConfig instance) =>
+Map<String, dynamic> _$$GeneratorConfigImplToJson(
+        _$GeneratorConfigImpl instance) =>
     <String, dynamic>{
       'navigator2': instance.navigator2,
     };
