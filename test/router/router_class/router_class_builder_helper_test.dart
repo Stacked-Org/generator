@@ -1,4 +1,4 @@
-import 'package:stacked_generator/src/generators/router/generator/router_class/router_class_builder_helper.dart';
+import 'package:stacked_generator/src/generators/router/generator/router_class/router_class_builder.dart';
 import 'package:stacked_generator/src/generators/router/route_config/material_route_config.dart';
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
@@ -33,9 +33,14 @@ final List<RouteConfig> _routes = [
 ];
 void main() {
   group('RouterClassBuilderHelperTest -', () {
-    late RouterClassBuilderHelper routerClassBuilderHelper;
+    late RouterClassBuilder routerClassBuilderHelper;
 
-    setUp(() => routerClassBuilderHelper = RouterClassBuilderHelper());
+    setUp(() => routerClassBuilderHelper = const RouterClassBuilder(
+          routerClassName: '',
+          routes: [],
+          routesClassName: '',
+        ));
+
     group('listOfRoutes -', () {
       test('list of routes that will assigned to the routes field', () {
         expect(
