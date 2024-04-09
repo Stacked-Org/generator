@@ -1,3 +1,10 @@
+## [1.6.1-pre.1](https://github.com/Stacked-Org/generator/compare/v1.6.0...v1.6.1-pre.1) (2024-04-09)
+
+
+### Bug Fixes
+
+* update SDK constraints ([e828b57](https://github.com/Stacked-Org/generator/commit/e828b570cc3e4be7f0b447f2dfc8a7ab00b20307))
+
 # [1.6.0](https://github.com/Stacked-Org/generator/compare/v1.5.2...v1.6.0) (2024-01-29)
 
 
