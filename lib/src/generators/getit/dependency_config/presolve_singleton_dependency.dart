@@ -7,20 +7,14 @@ class PresolveSingletonDependency extends DependencyConfig {
   final String? presolveFunction;
 
   const PresolveSingletonDependency({
-    required String import,
-    required String className,
-    String? abstractedImport,
-    String? abstractedTypeClassName,
-    Set<String>? environments,
+    required super.import,
+    required super.className,
+    super.abstractedImport,
+    super.abstractedTypeClassName,
+    super.environments,
     this.presolveFunction,
-    String? instanceName,
-  }) : super(
-            instanceName: instanceName,
-            import: import,
-            className: className,
-            abstractedImport: abstractedImport,
-            abstractedTypeClassName: abstractedTypeClassName,
-            environments: environments);
+    super.instanceName,
+  });
 
   @override
   String registerDependencies(String locatorName) {

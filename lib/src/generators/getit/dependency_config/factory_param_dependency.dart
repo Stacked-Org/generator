@@ -9,20 +9,14 @@ class FactoryParamDependency extends DependencyConfig {
   final Set<FactoryParameter>? params;
 
   const FactoryParamDependency({
-    required String import,
-    required String className,
-    String? abstractedImport,
-    String? abstractedTypeClassName,
-    Set<String>? environments,
+    required super.import,
+    required super.className,
+    super.abstractedImport,
+    super.abstractedTypeClassName,
+    super.environments,
     this.params,
-    String? instanceName,
-  }) : super(
-            instanceName: instanceName,
-            import: import,
-            className: className,
-            abstractedImport: abstractedImport,
-            abstractedTypeClassName: abstractedTypeClassName,
-            environments: environments);
+    super.instanceName,
+  });
   Set<String> extraImports() {
     if (params == null) return {};
     return params!.map((e) => e.imports ?? {}).fold(

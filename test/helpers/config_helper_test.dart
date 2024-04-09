@@ -34,8 +34,6 @@ void main() {
   group('ConfigHelper -', () {
     const String customConfigFilePath =
         '/Users/filledstacks/Desktop/stacked.json';
-    const String xdgConfigFilePath =
-        '/Users/filledstacks/.config/stacked/stacked.json';
 
     final StackedConfig customConfig = StackedConfig.fromJson({
       "bottom_sheet_builder_file_path": "ui/setup/setup_bottom_sheet_ui.dart",
