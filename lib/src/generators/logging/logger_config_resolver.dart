@@ -4,10 +4,12 @@ import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/logging/logger_config.dart';
 
-/// Reolves the [LoggerConfig] and returns the object if it's supplied
+/// Resolves the [LoggerConfig] and returns the object if it's supplied
 class LoggerConfigResolver {
   Future<LoggerConfig?> resolve(
-      ConstantReader stackedApp, ImportResolver importResolver) async {
+    ConstantReader stackedApp,
+    ImportResolver importResolver,
+  ) async {
     final loggerReader = stackedApp.peek('logger');
     final multiLogger = loggerReader?.peek('loggerOutputs')?.listValue;
     final logHelperName =
@@ -15,6 +17,9 @@ class LoggerConfigResolver {
 
     final disableReleaseConsoleOutput =
         loggerReader?.peek('disableReleaseConsoleOutput')?.boolValue ?? true;
+
+    final disableTestsConsoleOutput =
+        loggerReader?.peek('disableTestsConsoleOutput')?.boolValue ?? true;
 
     if (loggerReader != null) {
       return LoggerConfig(
@@ -25,6 +30,7 @@ class LoggerConfigResolver {
         ),
         loggerOutputs: _resolveMultiLogger(multiLogger),
         disableReleaseConsoleOutput: disableReleaseConsoleOutput,
+        disableTestsConsoleOutput: disableTestsConsoleOutput,
       );
     }
 

@@ -32,15 +32,38 @@ class LoggerBuilder with StringBufferUtils {
 
   LoggerBuilder addLoggerNameAndOutputs() {
     final withHelperNameInPlace = loggerClassNameAndOutputs.replaceFirst(
-        logHelperNameKey, loggerConfig.logHelperName);
+      logHelperNameKey,
+      loggerConfig.logHelperName,
+    );
 
-    String withConditionalLoggerInPlace = withHelperNameInPlace.replaceFirst(
-        disableConsoleOutputInRelease,
-        loggerConfig.disableReleaseConsoleOutput ? 'if(!kReleaseMode)' : '');
+    String withTestVarsLoggerInPlace = withHelperNameInPlace.replaceFirst(
+      disableConsoleOutputInTest,
+      loggerConfig.disableTestsConsoleOutput
+          ? '''
+            const kIntegrationTestMode = bool.fromEnvironment('INTEGRATION_TEST_MODE');
+            final kUnitTestMode = Platform.environment.containsKey('FLUTTER_TEST');
+            final kTestMode = kIntegrationTestMode || kUnitTestMode;
+            '''
+          : '',
+    );
+
+    String withConditionalLoggerInPlace =
+        withTestVarsLoggerInPlace.replaceFirst(
+      disableConsoleOutputInRelease,
+      loggerConfig.disableReleaseConsoleOutput &&
+              loggerConfig.disableTestsConsoleOutput
+          ? 'if (!kReleaseMode && !kTestMode)'
+          : loggerConfig.disableReleaseConsoleOutput
+              ? 'if (!kReleaseMode)'
+              : loggerConfig.disableTestsConsoleOutput
+                  ? 'if (!kTestMode)'
+                  : '',
+    );
 
     String loggerOutputsInPlace = withConditionalLoggerInPlace.replaceFirst(
-        multipleLoggerOutput,
-        loggerConfig.loggerOutputs.addCheckForReleaseModeToEachLogger);
+      multipleLoggerOutput,
+      loggerConfig.loggerOutputs.addCheckForReleaseModeToEachLogger,
+    );
 
     write(loggerOutputsInPlace);
 

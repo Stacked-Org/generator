@@ -2,6 +2,7 @@ const String logHelperNameKey = 'logHelperName';
 const String multiLoggerImports = 'MultiLoggerImport';
 const String multipleLoggerOutput = 'MultiLoggerList';
 const String disableConsoleOutputInRelease = 'MultiLoggerList';
+const String disableConsoleOutputInTest = 'MultiLoggerList';
 
 const String loggerClassPrefex = '''
 // ignore_for_file: avoid_print, depend_on_referenced_packages
@@ -9,6 +10,8 @@ const String loggerClassPrefex = '''
 /// Maybe this should be generated for the user as well?
 ///
 /// import 'package:customer_app/services/stackdriver/stackdriver_service.dart';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 ''';
@@ -32,8 +35,8 @@ class SimpleLogPrinter extends LogPrinter {
 
   @override
   List<String> log(LogEvent event) {
-    var color = PrettyPrinter.defaultLevelColors[event.level];
-    var emoji = PrettyPrinter.defaultLevelEmojis[event.level];
+    var color = PrettyPrinter.levelColors[event.level];
+    var emoji = PrettyPrinter.levelEmojis[event.level];
     var methodName = _getMethodName();
 
     var methodNameSection =
@@ -149,6 +152,7 @@ Logger $logHelperNameKey(
   List<String> exludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
+  $disableConsoleOutputInTest
   return Logger(
     printer: SimpleLogPrinter(
       className,
