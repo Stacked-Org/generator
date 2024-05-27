@@ -9,23 +9,45 @@ void main() {
     group('generate -', () {
       test('Given this LoggerConfig, Should predict the output', () async {
         final loggerConfig = LoggerConfig(
-            imports: {'importOne', 'importTwo'},
-            logHelperName: 'ebraLogger',
-            loggerOutputs: ['outputOne', 'outputTwo']);
+          imports: {'importOne', 'importTwo'},
+          logHelperName: 'ebraLogger',
+          loggerOutputs: ['outputOne', 'outputTwo'],
+        );
         final generatedCode = LoggerClassGenerator(loggerConfig).generate();
         expect(generatedCode, kloggerClassContent);
       });
+
       test(
           'Given a LoggerConfig with disableReleaseConsoleOutput=false, Should predict the output',
           () async {
         final loggerConfig = LoggerConfig(
-            disableReleaseConsoleOutput: false,
-            imports: {'importOne', 'importTwo'},
-            logHelperName: 'ebraLogger',
-            loggerOutputs: ['outputOne', 'outputTwo']);
+          disableReleaseConsoleOutput: false,
+          imports: {'importOne', 'importTwo'},
+          logHelperName: 'ebraLogger',
+          loggerOutputs: ['outputOne', 'outputTwo'],
+        );
         final generatedCode = LoggerClassGenerator(loggerConfig).generate();
         expect(
-            generatedCode, kloggerClassContentWithDisableReleaseConsoleOutput);
+          generatedCode,
+          kloggerClassContentWithDisableReleaseConsoleOutput,
+        );
+      });
+
+      test(
+          'Given a LoggerConfig with disableTestsConsoleOutput=true, Should predict the output',
+          () async {
+        final loggerConfig = LoggerConfig(
+          imports: {'importOne', 'importTwo'},
+          logHelperName: 'ebraLogger',
+          loggerOutputs: ['outputOne', 'outputTwo'],
+          disableReleaseConsoleOutput: false,
+          disableTestsConsoleOutput: true,
+        );
+        final generatedCode = LoggerClassGenerator(loggerConfig).generate();
+        expect(
+          generatedCode,
+          kloggerClassContentWithDisableTestsConsoleOutput,
+        );
       });
     });
   });

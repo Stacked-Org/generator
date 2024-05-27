@@ -10,10 +10,11 @@ void main() {
     group('addImports -', () {
       test('loggerConfig has two imports', () {
         final loggerBuilder = LoggerBuilder(
-            loggerConfig: LoggerConfig(imports: {
-          'packageX/importOne.dart',
-          'packageY/importTwo.dart',
-        })).addImports();
+          loggerConfig: LoggerConfig(imports: {
+            'packageX/importOne.dart',
+            'packageY/importTwo.dart',
+          }),
+        ).addImports();
 
         expect(loggerBuilder.serializeStringBuffer, addLoggerClassImports);
       });
@@ -26,13 +27,16 @@ void main() {
         expect(loggerBuilder.serializeStringBuffer, loggerClassConstantBody);
       });
     });
+
     group('addLoggerNameAndOutputs -', () {
       test('loggerConfig default', () {
         final loggerBuilder = LoggerBuilder(loggerConfig: LoggerConfig())
             .addLoggerNameAndOutputs();
 
         expect(
-            loggerBuilder.serializeStringBuffer, addLoggerClassNameAndOutput);
+          loggerBuilder.serializeStringBuffer,
+          addLoggerClassNameAndOutput,
+        );
       });
     });
   });
