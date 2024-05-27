@@ -19,7 +19,7 @@ class LoggerConfigResolver {
         loggerReader?.peek('disableReleaseConsoleOutput')?.boolValue ?? true;
 
     final disableTestsConsoleOutput =
-        loggerReader?.peek('disableTestsConsoleOutput')?.boolValue ?? true;
+        loggerReader?.peek('disableTestsConsoleOutput')?.boolValue ?? false;
 
     if (loggerReader != null) {
       return LoggerConfig(

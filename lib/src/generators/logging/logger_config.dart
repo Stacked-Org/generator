@@ -20,6 +20,6 @@ class LoggerConfig {
     this.loggerOutputs = const [],
     this.logHelperName = 'getLogger',
     this.disableReleaseConsoleOutput = true,
-    this.disableTestsConsoleOutput = true,
+    this.disableTestsConsoleOutput = false,
   });
 }
