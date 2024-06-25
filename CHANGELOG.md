@@ -1,3 +1,10 @@
+# [2.0.0-pre.1](https://github.com/Stacked-Org/generator/compare/v1.6.1-pre.1...v2.0.0-pre.1) (2024-06-25)
+
+
+### Bug Fixes
+
+* add disableTestsConsoleOutput option ([#27](https://github.com/Stacked-Org/generator/issues/27)) ([76a647f](https://github.com/Stacked-Org/generator/commit/76a647f8f7399855aa217c1f2e4dbeeb6fd1736d))
+
 ## [1.6.1-pre.1](https://github.com/Stacked-Org/generator/compare/v1.6.0...v1.6.1-pre.1) (2024-04-09)
 
 
