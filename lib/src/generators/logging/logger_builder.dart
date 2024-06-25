@@ -43,7 +43,9 @@ class LoggerBuilder with StringBufferUtils {
     String withTestVarsLoggerInPlace = withHelperNameInPlace.replaceFirst(
       disableConsoleOutputInTest,
       loggerConfig.disableTestsConsoleOutput
-          ? '''const kIntegrationTestMode = bool.fromEnvironment('INTEGRATION_TEST_MODE');
+          ? '''
+  const kForceConsoleOutput = bool.fromEnvironment('FORCE_CONSOLE_OUTPUT');
+  const kIntegrationTestMode = bool.fromEnvironment('INTEGRATION_TEST_MODE');
   final kUnitTestMode = Platform.environment.containsKey('FLUTTER_TEST');
   final kTestMode = kIntegrationTestMode || kUnitTestMode;
 '''
@@ -55,11 +57,11 @@ class LoggerBuilder with StringBufferUtils {
       disableConsoleOutputInRelease,
       loggerConfig.disableReleaseConsoleOutput &&
               loggerConfig.disableTestsConsoleOutput
-          ? 'if (!kReleaseMode && !kTestMode)'
+          ? 'if ((!kReleaseMode && !kTestMode) || kForceConsoleOutput)'
           : loggerConfig.disableReleaseConsoleOutput
               ? 'if (!kReleaseMode)'
               : loggerConfig.disableTestsConsoleOutput
-                  ? 'if (!kTestMode)'
+                  ? 'if (!kTestMode || kForceConsoleOutput)'
                   : '',
     );
 

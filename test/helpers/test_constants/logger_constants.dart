@@ -474,6 +474,7 @@ Logger ebraLogger(
   List<String> exludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
+  const kForceConsoleOutput = bool.fromEnvironment('FORCE_CONSOLE_OUTPUT');
   const kIntegrationTestMode = bool.fromEnvironment('INTEGRATION_TEST_MODE');
   final kUnitTestMode = Platform.environment.containsKey('FLUTTER_TEST');
   final kTestMode = kIntegrationTestMode || kUnitTestMode;
