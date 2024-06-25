@@ -84,9 +84,8 @@ void main() {
 
     test('correctly calls destroy on multi output loggers.', () async {
       final loggerBuilder = LoggerBuilder(
-              loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']))
-          .addLoggerClassConstantBody()
-          .addLoggerNameAndOutputs();
+        loggerConfig: LoggerConfig(loggerOutputs: ['One', 'Two']),
+      ).addLoggerClassConstantBody().addLoggerNameAndOutputs();
 
       final code = loggerBuilder.serializeStringBuffer;
 

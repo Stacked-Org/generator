@@ -9,7 +9,11 @@ class LoggerBuilder with StringBufferUtils {
   LoggerBuilder({required this.loggerConfig});
 
   LoggerBuilder addImports() {
-    write(loggerClassPrefex);
+    final withTestsLoggerImportsInPlace = loggerClassPrefex.replaceFirst(
+      testLoggerImports,
+      loggerConfig.disableTestsConsoleOutput ? '''import 'dart:io';''' : '',
+    );
+    write(withTestsLoggerImportsInPlace);
 
     writeLine();
 
@@ -32,15 +36,39 @@ class LoggerBuilder with StringBufferUtils {
 
   LoggerBuilder addLoggerNameAndOutputs() {
     final withHelperNameInPlace = loggerClassNameAndOutputs.replaceFirst(
-        logHelperNameKey, loggerConfig.logHelperName);
+      logHelperNameKey,
+      loggerConfig.logHelperName,
+    );
 
-    String withConditionalLoggerInPlace = withHelperNameInPlace.replaceFirst(
-        disableConsoleOutputInRelease,
-        loggerConfig.disableReleaseConsoleOutput ? 'if(!kReleaseMode)' : '');
+    String withTestVarsLoggerInPlace = withHelperNameInPlace.replaceFirst(
+      disableConsoleOutputInTest,
+      loggerConfig.disableTestsConsoleOutput
+          ? '''
+  const kForceConsoleOutput = bool.fromEnvironment('FORCE_CONSOLE_OUTPUT');
+  const kIntegrationTestMode = bool.fromEnvironment('INTEGRATION_TEST_MODE');
+  final kUnitTestMode = Platform.environment.containsKey('FLUTTER_TEST');
+  final kTestMode = kIntegrationTestMode || kUnitTestMode;
+'''
+          : '',
+    );
+
+    String withConditionalLoggerInPlace =
+        withTestVarsLoggerInPlace.replaceFirst(
+      disableConsoleOutputInRelease,
+      loggerConfig.disableReleaseConsoleOutput &&
+              loggerConfig.disableTestsConsoleOutput
+          ? 'if ((!kReleaseMode && !kTestMode) || kForceConsoleOutput)'
+          : loggerConfig.disableReleaseConsoleOutput
+              ? 'if (!kReleaseMode)'
+              : loggerConfig.disableTestsConsoleOutput
+                  ? 'if (!kTestMode || kForceConsoleOutput)'
+                  : '',
+    );
 
     String loggerOutputsInPlace = withConditionalLoggerInPlace.replaceFirst(
-        multipleLoggerOutput,
-        loggerConfig.loggerOutputs.addCheckForReleaseModeToEachLogger);
+      multipleLoggerOutput,
+      loggerConfig.loggerOutputs.addCheckForReleaseModeToEachLogger,
+    );
 
     write(loggerOutputsInPlace);
 
