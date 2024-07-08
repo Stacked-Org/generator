@@ -3,7 +3,7 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
 
-class RouterClassBuilderHelper {
+mixin RouterClassBuilderHelper {
   /// Example
   ///
   /// final _routes = <_i1.RouteDef>[
@@ -80,14 +80,13 @@ class RouterClassBuilderHelper {
           ..name = '_pagesMap'
           ..modifier = FieldModifier.final$
           ..assignment = literalMap(
-              _pages(routes),
-              const Reference(
-                'Type',
-              ),
-              const Reference(
-                'StackedRouteFactory',
-                'package:stacked/stacked.dart',
-              )).code,
+            _pages(routes),
+            const Reference('Type'),
+            const Reference(
+              'StackedRouteFactory',
+              'package:stacked/stacked.dart',
+            ),
+          ).code,
       );
 
   Map<Reference, Method> _pages(List<RouteConfig> routes) {
@@ -110,9 +109,7 @@ class RouterClassBuilderHelper {
 
     return Method(
       (b) => b
-        ..requiredParameters.add(Parameter(
-          (b) => b..name = 'data',
-        ))
+        ..requiredParameters.add(Parameter((b) => b..name = 'data'))
         ..body = Block.of([
           if (notQueryNorPathParameters.isNotEmpty) ...[
             _prepareArgs(argsType),

@@ -48,6 +48,12 @@ final List<RouteConfig> _routes = [
           isQueryParam: false,
           name: 'age',
           type: ResolvedType(name: 'int'),
+        ),
+        ParamConfig(
+          isPathParam: false,
+          isQueryParam: false,
+          name: 'color',
+          type: ResolvedType(name: 'String'),
         )
       ])
 ];

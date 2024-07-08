@@ -1,9 +1,88 @@
-# [1.1.0](https://github.com/Stacked-Org/generator/compare/v1.0.0...v1.1.0) (2023-04-03)
+# [1.6.0](https://github.com/Stacked-Org/generator/compare/v1.5.2...v1.6.0) (2024-01-29)
 
 
 ### Features
 
+* read stacked config ([#24](https://github.com/Stacked-Org/generator/issues/24)) ([e9afa20](https://github.com/Stacked-Org/generator/commit/e9afa20ab57fd5d126239e6e486ad5882aa14340))
+
+## [1.5.2](https://github.com/Stacked-Org/generator/compare/v1.5.1...v1.5.2) (2023-12-03)
+
+
+### Bug Fixes
+
+* updates analyzer package to latest ([c9cc754](https://github.com/Stacked-Org/generator/commit/c9cc754ae95d3d82b2c3eca6bf2e61fc4514c394))
+
+## [1.5.1](https://github.com/Stacked-Org/generator/compare/v1.5.0...v1.5.1) (2023-08-31)
+
+
+### Bug Fixes
+
+* decouple FormStateHelper ([#19](https://github.com/Stacked-Org/generator/issues/19)) ([4174aa3](https://github.com/Stacked-Org/generator/commit/4174aa32874fcdfe418d478bac2d3417a72fef78))
+
+# [1.5.0](https://github.com/Stacked-Org/generator/compare/v1.4.0...v1.5.0) (2023-07-31)
+
+
+### Bug Fixes
+
+* generate a custom controller getter per field ([548922e](https://github.com/Stacked-Org/generator/commit/548922e0e0fba0fe15c506deded02d20e3e8fb8b))
+* update `isFormValid` behavior ([92f0ed3](https://github.com/Stacked-Org/generator/commit/92f0ed32819e2e2a876f6289b4b9920edca64594))
+* update form and validation data on sync ([d576843](https://github.com/Stacked-Org/generator/commit/d576843a5d059cd98f6da2bb342f42a221b75813))
+* validate form on non text field change ([c17a431](https://github.com/Stacked-Org/generator/commit/c17a431b0d843c495f6cbfcec31ef5fef163958f))
+
+
+### Features
+
+* add hasAnyValidationMessage getter ([d2cfa40](https://github.com/Stacked-Org/generator/commit/d2cfa40bf11977bab6f051f42d98880cd4858882))
+
+# [1.4.0](https://github.com/Stacked-Org/generator/compare/v1.3.3...v1.4.0) (2023-06-26)
+
+
+### Features
+
+* Add InitializableSingletonDependency ([#9](https://github.com/Stacked-Org/generator/issues/9)) ([5b34ec0](https://github.com/Stacked-Org/generator/commit/5b34ec0030a92333789897233f39b73b0e3b2fde))
+* Change FormBuilder to avoid changing fields keys ([#11](https://github.com/Stacked-Org/generator/issues/11)) ([f3a54fb](https://github.com/Stacked-Org/generator/commit/f3a54fbb09c3d7215e78c3dcec79b990e10eea2c))
+
+## [1.3.3](https://github.com/Stacked-Org/generator/compare/v1.3.2...v1.3.3) (2023-04-20)
+
+
+### Bug Fixes
+
+* **generator:** Remove Type from form Mixin ([#8](https://github.com/Stacked-Org/generator/issues/8)) ([aee39e1](https://github.com/Stacked-Org/generator/commit/aee39e1de010931c90941519265601bd9efcb894))
+
+## [1.3.2](https://github.com/Stacked-Org/generator/compare/v1.3.1...v1.3.2) (2023-04-14)
+
+
+### Bug Fixes
+
+* allow views using form mixin to be constants ([#7](https://github.com/Stacked-Org/generator/issues/7)) ([55402fc](https://github.com/Stacked-Org/generator/commit/55402fc3cfb8500b34280758894f1f804b058d3c))
+
+## [1.3.1](https://github.com/Stacked-Org/generator/compare/v1.3.0...v1.3.1) (2023-04-14)
+
+
+### Bug Fixes
+
+* non arguments parameters on methods ([#6](https://github.com/Stacked-Org/generator/issues/6)) ([711151b](https://github.com/Stacked-Org/generator/commit/711151b52fa7962a83013cd6b33c90b15d385572))
+
+# [1.3.0](https://github.com/Stacked-Org/generator/compare/v1.2.0...v1.3.0) (2023-04-14)
+
+
+### Features
+
+* Adds hashCode and eqality operator methosa to ViewArguments to ensure equality of objects ([cd5f4a1](https://github.com/Stacked-Org/generator/commit/cd5f4a1d60aa821ad51aabe0fe21fa889c7c0805))
+
+# [1.2.0](https://github.com/Stacked-Org/generator/compare/v1.1.0...v1.2.0) (2023-04-14)
+
+
+### Features
+
+* type safe navigation on router service ([#5](https://github.com/Stacked-Org/generator/issues/5)) ([7f3ed48](https://github.com/Stacked-Org/generator/commit/7f3ed4847ac240f22b77cc249622dacaa0d6495e))
+
+# [1.1.0](https://github.com/Stacked-Org/generator/compare/v1.0.0...v1.1.0) (2023-04-03)
+
+### Features
+
 * add validate form to FormViewModel ([#3](https://github.com/Stacked-Org/generator/issues/3)) ([0d424cd](https://github.com/Stacked-Org/generator/commit/0d424cd646ec8d8aad7a57dbdc4ad5cda311556a))
+
 
 ## 1.1.0
 
@@ -18,7 +97,7 @@
 
 ### Features
 
-Adds support for the new RouterService which uses Navigator 2.0 a fork from AutoRouter `5.0.4` to generate the generated code. 
+Adds support for the new RouterService which uses Navigator 2.0 a fork from AutoRouter `5.0.4` to generate the generated code.
 
 ### Fixes
 Updates `stacked_core` to `stacked_shared` because we lost access to `stacked_core` 😞
@@ -48,7 +127,7 @@ Updates `stacked_core` to `stacked_shared` because we lost access to `stacked_co
 ## 0.9.0
 
 ### New Feature
-Two way binding for text fields in Forms. When you want to update the value for a form and have it reflect in the TextField you can now simply set it as using the `fieldValue` property. 
+Two way binding for text fields in Forms. When you want to update the value for a form and have it reflect in the TextField you can now simply set it as using the `fieldValue` property.
 
 **Example**
 To set the value of a form field called email, you can now in the viewmodel simply do:

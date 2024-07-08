@@ -1,11 +1,12 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:stacked_generator/src/generators/router/generator/route_allocator.dart';
+import 'package:stacked_generator/src/generators/router_2/router_extension_builder/router_extension_builder.dart';
+import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
+import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/src/generators/router_common/models/router_config.dart';
 import 'package:stacked_generator/utils.dart';
 
-import '../../router_common/models/importable_type.dart';
-import '../../router_common/models/route_config.dart';
-import '../../router_common/models/router_config.dart';
 import 'deferred_pages_allocator.dart';
 import 'root_router_builder.dart';
 import 'route_info_builder.dart';
@@ -84,12 +85,18 @@ String generateLibrary(
     (acc, a) => acc..addAll(a.guards),
   );
 
-  final allGuardParameters = allGuards
-      .map(
-        (guard) =>
-            '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
-      )
-      .toList();
+  // final allGuardParameters = allGuards
+  //     .map(
+  //       (guard) =>
+  //           '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
+  //     )
+  //     .toList();
+
+  /// Generate the extensions code that's required for declarativly supply
+  /// arguments to a class navigation call
+  final routerExtensionBuilder = RouterExtensionBuilder(
+    routes: checkedRoutes,
+  ).build(emitter);
 
   final library = Library(
     (b) => b
@@ -104,19 +111,9 @@ String generateLibrary(
             .distinctBy((e) => e.routeName)
             .map((r) => buildRouteInfoAndArgs(r, config, emitter))
             .reduce((acc, a) => acc..addAll(a)),
+        routerExtensionBuilder,
       ]),
   );
 
-  return [_header, DartFormatter().format(library.accept(emitter).toString())]
-      .join('\n');
+  return DartFormatter().format(library.accept(emitter).toString());
 }
-
-const String _header = '''
-// GENERATED CODE - DO NOT MODIFY BY HAND
-
-// **************************************************************************
-// StackedRouterGenerator
-// **************************************************************************
-//
-// ignore_for_file: type=lint
-''';

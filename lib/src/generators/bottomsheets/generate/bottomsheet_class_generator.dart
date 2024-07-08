@@ -1,6 +1,7 @@
 import 'package:stacked_generator/src/generators/base_generator.dart';
 import 'package:stacked_generator/src/generators/bottomsheets/bottomsheet_config.dart';
 import 'package:stacked_generator/src/generators/bottomsheets/generate/bottomsheet_class_generator_helper.dart';
+import 'package:stacked_generator/utils.dart';
 
 import 'bottomsheet_class_content.dart';
 
@@ -12,8 +13,10 @@ class BottomsheetClassGenerator extends BottomsheetClassGeneratorHelper
   BottomsheetClassGenerator(this.bottomsheetConfigs, {this.locatorName});
 
   @override
-  String generate() {
-    writeStackedservicesAndGeneratedLocaterImports();
+  Future<String> generate() async {
+    writeStackedservicesAndGeneratedLocaterImports(
+      await getStackedAppFileName(),
+    );
 
     writeBottomsheetsImports(bottomsheetConfigs);
 

@@ -32,7 +32,8 @@ class StackedLocatorContentGenerator
     newLine();
 
     writeLine(
-        'Future<void> $locatorSetupName ({String? environment , EnvironmentFilter? environmentFilter, ${hasRouterService ? 'StackedRouterWeb? stackedRouter,' : ''}}) async {');
+      'Future<void> $locatorSetupName ({String? environment , EnvironmentFilter? environmentFilter,${hasRouterService ? ' StackedRouterWeb? stackedRouter,' : ''}}) async {',
+    );
 
     newLine();
     writeLine('// Register environments');

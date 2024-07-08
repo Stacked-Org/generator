@@ -2,16 +2,17 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/factory_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/presolve_singleton_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/singleton_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/stacked_locator_parameter_resolver.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 import '../../../utils.dart';
 import 'dependency_config/dependency_config.dart';
 import 'dependency_config/factory_param_dependency.dart';
+import 'dependency_config/initializable_singleton_dependency.dart';
 import 'dependency_config/lazy_singleton.dart';
 
 class DependencyConfigFactory {
@@ -101,6 +102,7 @@ class DependencyConfigFactory {
           environments: environments,
           resolveFunction: resolveObject?.displayName);
     } else if (dependencyReader
+        // ignore: deprecated_member_use
         .instanceOf(const TypeChecker.fromRuntime(Presolve))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
@@ -113,7 +115,18 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           presolveFunction: presolveObject?.displayName);
-    } else {
+    } else if (dependencyReader
+        .instanceOf(const TypeChecker.fromRuntime(InitializableSingleton))) {
+      return InitializableSingletonDependency(
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+      );
+    } else if (dependencyReader
+        .instanceOf(const TypeChecker.fromRuntime(FactoryWithParam))) {
       final Set<FactoryParameter> clazzParams = {};
       var params = constructor?.parameters;
       if (params?.isNotEmpty == true && constructor != null) {
@@ -130,6 +143,10 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           params: clazzParams);
+    } else {
+      throw UnimplementedError(
+        'This Dependency ${dependencyReader.typeValue} is not implemented yet upgrading stacked_generator package to the latest version may fix the issue',
+      );
     }
   }
 }

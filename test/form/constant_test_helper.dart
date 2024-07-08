@@ -39,8 +39,8 @@ const kExample1DisposeTextControllers = '''
 
       /// Calls dispose on all the generated controllers and focus nodes
       void disposeForm() {
-        // The dispose function for a TextEditingController sets all listeners to null
-          
+      // The dispose function for a TextEditingController sets all listeners to null
+    
       for (var controller in _TestViewTextEditingControllers.values) {
       controller.dispose();
     }
@@ -67,7 +67,7 @@ final Map<String, FocusNode> _TestViewFocusNodes = {};
 ''';
 const kExample1UpdateFormData = '''
         /// Updates the formData on the FormViewModel
-        void _updateFormData(FormViewModel model, {bool forceValidate = false}) { model.setData(
+        void _updateFormData(FormStateHelper model, {bool forceValidate = false}) { model.setData(
               model.formValueMap
                 ..addAll({
             
@@ -75,8 +75,9 @@ NameValueKey: nameController.text,
 EmailValueKey: emailController.text,
               }),
           );
+    
     if (_autoTextFieldValidation || forceValidate) {
-          _updateValidationData(model);}}
+          updateValidationData(model);}}
               
 ''';
 const kExample1ViewModelExtensionForGetters = '''
@@ -134,25 +135,39 @@ String? get dropDownValidationMessage => this.fieldsValidationMessages[DropDownV
 const kExample1ViewModelExtensionForMethods = '''
 
 extension Methods on FormViewModel {
-          Future<void> selectDate(
-              {required BuildContext context,
-              required DateTime initialDate,
-              required DateTime firstDate,
-              required DateTime lastDate}) async {
+          Future<void> selectDate({
+            required BuildContext context,
+            required DateTime initialDate,
+            required DateTime firstDate,
+            required DateTime lastDate,
+          }) async {
             final selectedDate = await showDatePicker(
-                context: context,
-                initialDate: initialDate,
-                firstDate: firstDate,
-                lastDate: lastDate);
+              context: context,
+              initialDate: initialDate,
+              firstDate: firstDate,
+              lastDate: lastDate,
+            );
+
             if (selectedDate != null) {
-              this.setData(
-                  this.formValueMap..addAll({DateValueKey: selectedDate}));
+              this.setData(this.formValueMap..addAll({
+                DateValueKey: selectedDate}),
+              );
+            }
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
             }
           }
     
 
           void setDropDown(String dropDown) {
-            this.setData(this.formValueMap..addAll({DropDownValueKey: dropDown}));
+            this.setData(
+              this.formValueMap..addAll({DropDownValueKey: dropDown}),
+            );
+
+            if (_autoTextFieldValidation) {
+              this.validateForm();
+            }
           }
     
 
@@ -161,11 +176,25 @@ setNameValidationMessage(String? validationMessage) => this.fieldsValidationMess
 setEmailValidationMessage(String? validationMessage) => this.fieldsValidationMessages[EmailValueKey] = validationMessage;
 setDateValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DateValueKey] = validationMessage;
 setDropDownValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DropDownValueKey] = validationMessage;
+
+/// Clears text input fields on the Form
+void clearForm() {
+nameValue = '';
+emailValue = '';
+}
+
+      /// Validates text input fields on the Form
+      void validateForm() {
+        this.setValidationMessages({
+NameValueKey: getValidationMessage(NameValueKey),
+EmailValueKey: getValidationMessage(EmailValueKey),
+});
+}
 }
 ''';
 const kExample1AddRegisterationCustomTextEditingController = '''
 
-      null _getCustomFormTextEditingController(String key,) {
+      null _getEmailCustomFormTextEditingController(String key,) {
           if (_TestViewTextEditingControllers.containsKey(key)) {
         return _TestViewTextEditingControllers[key]! as null;
       }
@@ -177,6 +206,7 @@ const kExample1AddRegisterationCustomTextEditingController = '''
 
 ''';
 const kExample1AddRegisterationForFocusNodes = '''
+
       FocusNode _getFormFocusNode(String key) {
         if (_TestViewFocusNodes.containsKey(key)) {
         return _TestViewFocusNodes[key]!;}
@@ -186,28 +216,36 @@ const kExample1AddRegisterationForFocusNodes = '''
     
 
 ''';
+
 const kExample1AddRegisterationextEditingController = '''
 
-      TextEditingController _getFormTextEditingController(String key,
-        {String? initialValue}) {
-          if (_TestViewTextEditingControllers.containsKey(key)) {
-        return _TestViewTextEditingControllers[key]!;
-      }
+      TextEditingController _getFormTextEditingController(
+        String key, {
+        String? initialValue,
+      }) {
+        if (_TestViewTextEditingControllers.containsKey(key)) {
+          return _TestViewTextEditingControllers[key]!;
+        }
+
       _TestViewTextEditingControllers[key] =
           TextEditingController(text: initialValue);
       return _TestViewTextEditingControllers[key]!; }
     
 
 ''';
+
 const kExample1AddValidationMessageForTextEditingController = '''
-        /// Returns the validation message for the given key
-        String? _getValidationMessage(String key) {
+    /// Returns the validation message for the given key
+    String? getValidationMessage(String key) {
       final validatorForKey = _TestViewTextValidations[key];
       if (validatorForKey == null) return null;
-      String? validationMessageForKey =
-            validatorForKey(_TestViewTextEditingControllers[key]!.text);
+      
+      String? validationMessageForKey = validatorForKey(
+        _TestViewTextEditingControllers[key]!.text,
+      );
+
       return validationMessageForKey;
-      }
+    }
     
 ''';
 const kExample1AddHeaderComment = '''
@@ -225,39 +263,41 @@ import 'validators/path';
 const kExample1AddListenerRegistrationsForTextFields = '''
       /// Registers a listener on every generated controller that calls [model.setData()]
       /// with the latest textController values
-      void syncFormWithViewModel(FormViewModel model) {
+      void syncFormWithViewModel(FormStateHelper model) {
     
 nameController.addListener(() => _updateFormData(model));
 emailController.addListener(() => _updateFormData(model));
+
+_updateFormData(model, forceValidate: _autoTextFieldValidation);
 }
 
       /// Registers a listener on every generated controller that calls [model.setData()]
       /// with the latest textController values
       @Deprecated(
         'Use syncFormWithViewModel instead.'
-        'This feature was deprecated after 3.1.0.'
+        'This feature was deprecated after 3.1.0.',
       )
       void listenToFormUpdated(FormViewModel model) {
     
 nameController.addListener(() => _updateFormData(model));
 emailController.addListener(() => _updateFormData(model));
+
+_updateFormData(model, forceValidate: _autoTextFieldValidation);
 }
 
 ''';
 const kExample1AddValidationDataUpdateFunctionTorTextControllers = '''
-        /// Updates the fieldsValidationMessages on the FormViewModel
-        void _updateValidationData(FormViewModel model) => model.setValidationMessages(
-              {
-            
-NameValueKey: _getValidationMessage(NameValueKey),
-EmailValueKey: _getValidationMessage(EmailValueKey),
-              }
-          );
-              
+    /// Updates the fieldsValidationMessages on the FormViewModel
+    void updateValidationData(FormStateHelper model) => model.setValidationMessages({
+      NameValueKey: getValidationMessage(NameValueKey),
+      EmailValueKey: getValidationMessage(EmailValueKey),
+    });
 ''';
+
 const kExample1AddMixinSignature = '''
-mixin \$TestView on StatelessWidget {
+mixin \$TestView {
 ''';
+
 const kExample1AddValidationFunctionsFromAnnotation = '''
 
 final Map<String, String? Function(String?)?> _TestViewTextValidations = {
@@ -267,6 +307,7 @@ EmailValueKey: null,
 
 ''';
 const kExample1AddFocusNodesGetters = '''
+
 FocusNode get nameFocusNode => _getFormFocusNode(NameValueKey);
 FocusNode get emailFocusNode => _getFormFocusNode(EmailValueKey);
 ''';
