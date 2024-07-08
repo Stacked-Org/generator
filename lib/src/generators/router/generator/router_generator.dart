@@ -42,15 +42,15 @@ class RouterGenerator implements BaseGenerator {
     ).build(emitter);
 
     /// Remove duplicate classes from nested routers
-    List<String> classesNames = [];
-    List<Spec> parsedClasses = [];
+    List<Class> parsedClasses = [];
     for (var c in classes) {
       if (c is! Class) continue;
 
-      if (classesNames.contains(c.name)) continue;
+      if (parsedClasses.any((parsedClass) => parsedClass.name == c.name)) {
+        continue;
+      }
 
       parsedClasses.add(c);
-      classesNames.add(c.name);
     }
 
     final library = Library(
