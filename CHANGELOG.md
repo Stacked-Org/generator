@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/Stacked-Org/generator/compare/v1.6.0...v1.6.1) (2024-07-09)
+
+
+### Bug Fixes
+
+* remove duplicate classes from nested routers ([#28](https://github.com/Stacked-Org/generator/issues/28)) ([57b3475](https://github.com/Stacked-Org/generator/commit/57b347518beeed53ef30d23407bc5635a1a9320d))
+
 # [1.6.0](https://github.com/Stacked-Org/generator/compare/v1.5.2...v1.6.0) (2024-01-29)
 
 
