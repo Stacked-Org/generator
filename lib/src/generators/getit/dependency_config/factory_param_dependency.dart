@@ -65,7 +65,7 @@ class FactoryParamDependency extends DependencyConfig {
     final constructerParams = constructorParams.join(',');
     final constructerParamtypes = constructorParamTypes.join(',');
 
-    return '$locatorName.registerFactoryParam<$className,$constructerParamtypes>${abstractedTypeClassName.surroundWithAngleBracketsOrReturnEmptyIfNull}((param1, param2) => $className($constructerParams)  ${environments.getFromatedEnvs}${instanceName.addInstanceNameIfNotNull});';
+    return '$locatorName.registerFactoryParam<${abstractedTypeClassName ?? className},$constructerParamtypes>((param1, param2) => $className($constructerParams)  ${environments.getFromatedEnvs}${instanceName.addInstanceNameIfNotNull});';
   }
 }
 
