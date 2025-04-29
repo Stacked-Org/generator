@@ -6,7 +6,9 @@ extension SpecExtension on Spec {
     final library = Library((b) => b..body.add(this));
 
     final emitter = DartEmitter.scoped();
-    final result = DartFormatter().format('${library.accept(emitter)}');
+    final result =
+        DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+            .format('${library.accept(emitter)}');
     //print(result);
     return result;
   }
@@ -17,7 +19,9 @@ extension SpecsExtension on Iterable<Spec> {
     final library = Library((b) => b..body.addAll(this));
 
     final emitter = DartEmitter.scoped();
-    final result = DartFormatter().format('${library.accept(emitter)}');
+    final result =
+        DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+            .format('${library.accept(emitter)}');
 
     return result;
   }
@@ -28,7 +32,9 @@ extension ListExpressionExtension on Iterable<Expression> {
     final library = Library((b) => b..body.addAll(this));
 
     final emitter = DartEmitter.scoped();
-    final result = DartFormatter().format('${library.accept(emitter)}');
+    final result =
+        DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+            .format('${library.accept(emitter)}');
 
     return result;
   }
