@@ -19,7 +19,7 @@ dependencies:
   dart_style: ^2.3.4
   code_builder: ^4.3.0
   collection: ^1.16.0
-  freezed_annotation: ^2.2.0
+  freezed_annotation: ^3.0.0
   json_annotation: ^4.8.0
   xdg_directories: ^1.0.4
 
