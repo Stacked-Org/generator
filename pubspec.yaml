@@ -28,6 +28,6 @@ dev_dependencies:
   test: ^1.20.1
   build_test: ^2.1.5
   flutter_lints: ^3.0.1
-  freezed: ^2.3.2
+  freezed: ^3.0.0
   json_serializable: ^6.6.1
   mockito: ^5.4.4
