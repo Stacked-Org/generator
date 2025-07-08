@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:stacked_generator/src/generators/base_generator.dart';
 import 'package:stacked_generator/src/generators/extensions/routes_extension.dart';
 import 'package:stacked_generator/src/generators/router/generator/routes_class/routes_class_builder.dart';
@@ -62,7 +63,8 @@ class RouterGenerator implements BaseGenerator {
         ..body.addAll([...parsedClasses, navigationExtensionClassBuilder]),
     );
 
-    return DartFormatter().format('${library.accept(emitter)}');
+    return DartFormatter(languageVersion: Version.parse('2.19.0'))
+        .format('${library.accept(emitter)}');
   }
 
   /// The classes are:

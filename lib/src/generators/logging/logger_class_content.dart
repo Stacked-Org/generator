@@ -30,10 +30,14 @@ class SimpleLogPrinter extends LogPrinter {
     this.showOnlyClass,
   });
 
+  final printer = PrettyPrinter(
+    levelColors: PrettyPrinter.defaultLevelColors,
+    levelEmojis: PrettyPrinter.defaultLevelEmojis,
+  );
   @override
   List<String> log(LogEvent event) {
-    var color = PrettyPrinter.levelColors[event.level];
-    var emoji = PrettyPrinter.levelEmojis[event.level];
+    var color = printer.levelColors?[event.level];
+    var emoji = printer.levelEmojis?[event.level];
     var methodName = _getMethodName();
 
     var methodNameSection =
@@ -42,9 +46,12 @@ class SimpleLogPrinter extends LogPrinter {
     var output =
         '\$emoji \$className\$methodNameSection - \${event.message}\${event.error != null ? '\\nERROR: \${event.error}\\n' : ''}\${printCallStack ? '\\nSTACKTRACE:\\n\$stackLog' : ''}';
 
-    if (exludeLogsFromClasses
-            .any((excludeClass) => className == excludeClass) ||
-        (showOnlyClass != null && className != showOnlyClass)) return [];
+    if (exludeLogsFromClasses.any(
+          (excludeClass) => className == excludeClass,
+        ) ||
+        (showOnlyClass != null && className != showOnlyClass)) {
+      return [];
+    }
 
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     List<String> result = [];

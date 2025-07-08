@@ -17,21 +17,20 @@ class TextFieldConfig extends FieldConfig {
   final ExecutableElementData? validatorFunction;
   final ExecutableElementData? customTextEditingController;
   const TextFieldConfig({
-    required String name,
+    required super.name,
     this.initialValue,
     this.validatorFunction,
     this.customTextEditingController,
-  }) : super(name: name);
+  });
 }
 
 class DateFieldConfig extends FieldConfig {
-  const DateFieldConfig({required String name}) : super(name: name);
+  const DateFieldConfig({required super.name});
 }
 
 class DropdownFieldConfig extends FieldConfig {
   final List<DropdownFieldItem> items;
-  const DropdownFieldConfig({required String name, required this.items})
-      : super(name: name);
+  const DropdownFieldConfig({required super.name, required this.items});
 }
 
 class DropdownFieldItem {
@@ -83,5 +82,5 @@ extension ExecutableElementDataExtension on ExecutableElement? {
       ? '$enclosingElementName.${this?.name}'
       : this?.name;
   bool get hasEnclosingElementName => enclosingElementName != null;
-  String? get enclosingElementName => this?.enclosingElement.name;
+  String? get enclosingElementName => this?.enclosingElement3.name;
 }

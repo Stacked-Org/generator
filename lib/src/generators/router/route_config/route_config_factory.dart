@@ -1,7 +1,7 @@
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 import '../../router_common/models/route_parameter_config.dart';
 import 'adaptive_route_config.dart';
@@ -80,7 +80,7 @@ class RouteConfigFactory {
       if (function != null) {
         final displayName = function.displayName.replaceFirst(RegExp('^_'), '');
         final functionName = function.isStatic
-            ? '${function.enclosingElement.displayName}.$displayName'
+            ? '${function.enclosingElement3.displayName}.$displayName'
             : displayName;
 
         customTransitionBuilder = ResolvedType(
