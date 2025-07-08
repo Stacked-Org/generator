@@ -77,9 +77,9 @@ class TypeResolver {
     final displayName = function.displayName.replaceFirst(RegExp('^_'), '');
     var functionName = displayName;
     Element elementToImport = function;
-    if (function.enclosingElement is ClassElement) {
-      functionName = '${function.enclosingElement.displayName}.$displayName';
-      elementToImport = function.enclosingElement;
+    if (function.enclosingElement3 is ClassElement) {
+      functionName = '${function.enclosingElement3.displayName}.$displayName';
+      elementToImport = function.enclosingElement3;
     }
     return ResolvedType(
       name: functionName,

@@ -1,5 +1,6 @@
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:stacked_generator/src/generators/router/generator/route_allocator.dart';
 import 'package:stacked_generator/src/generators/router_2/router_extension_builder/router_extension_builder.dart';
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
@@ -115,5 +116,6 @@ String generateLibrary(
       ]),
   );
 
-  return DartFormatter().format(library.accept(emitter).toString());
+  return DartFormatter(languageVersion: Version.parse('2.19.0'))
+      .format(library.accept(emitter).toString());
 }
