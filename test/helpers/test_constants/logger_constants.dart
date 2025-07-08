@@ -30,8 +30,9 @@ class SimpleLogPrinter extends LogPrinter {
 
   @override
   List<String> log(LogEvent event) {
-    var color = PrettyPrinter.levelColors[event.level];
-    var emoji = PrettyPrinter.levelEmojis[event.level];
+    var printer = PrettyPrinter();
+    var color = printer.levelColors?[event.level];
+    var emoji = printer.levelEmojis?[event.level];
     var methodName = _getMethodName();
 
     var methodNameSection =
@@ -315,7 +316,7 @@ Logger ebraLogger(
       exludeLogsFromClasses: exludeLogsFromClasses,
     ),
     output: MultiOutput([
-      
+
       ConsoleOutput(),
        if(kReleaseMode) outputOne(), if(kReleaseMode) outputTwo(),
     ]),
@@ -368,7 +369,7 @@ Logger ebraLogger(
       exludeLogsFromClasses: exludeLogsFromClasses,
     ),
     output: MultipleLoggerOutput([
-      
+
       ConsoleOutput(),
        if(kReleaseMode) outputOne(), if(kReleaseMode) outputTwo(),
     ]),
@@ -409,7 +410,7 @@ Logger getLogger(
     output: MultiOutput([
       if(!kReleaseMode)
       ConsoleOutput(),
-      
+
     ]),
   );
 }
