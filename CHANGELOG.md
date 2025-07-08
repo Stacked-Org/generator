@@ -1,3 +1,6 @@
+# [1.7.0](https://github.com/Stacked-Org/generator/compare/v1.6.1...v1.7.0) (2025-07-08)
+* Update dependencies to latest versions
+
 ## [1.6.1](https://github.com/Stacked-Org/generator/compare/v1.6.0...v1.6.1) (2024-07-09)
 
 
