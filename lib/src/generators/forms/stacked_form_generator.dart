@@ -1,27 +1,29 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/forms/field_config.dart';
 import 'package:stacked_generator/src/generators/forms/form_view_config.dart';
 import 'package:stacked_generator/src/generators/forms/stacked_form_content_generator.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 class StackedFormGenerator extends GeneratorForAnnotation<FormView> {
   @override
   FutureOr<String> generateForAnnotatedElement(
     // ignore: avoid_renaming_method_parameters
-    Element classForAnnotation,
+    Element2 classForAnnotation,
     // ignore: avoid_renaming_method_parameters
     ConstantReader formView,
     BuildStep buildStep,
   ) async {
     var libs = await buildStep.resolver.libraries.toList();
-    var importResolver =
-        ImportResolver(libs, classForAnnotation.source?.uri.path ?? '');
+    var importResolver = ImportResolver(
+        libs,
+        classForAnnotation.firstFragment.libraryFragment?.source.uri.path ??
+            '');
 
     final viewName = classForAnnotation.displayName;
 
@@ -82,11 +84,11 @@ FieldConfig _readTextFieldConfig({
 }) {
   final String name = (fieldReader.peek('name')?.stringValue) ?? '';
   final String? initialValue = (fieldReader.peek('initialValue')?.stringValue);
-  final ExecutableElement? validatorFunction =
-      (fieldReader.peek('validator')?.objectValue)?.toFunctionValue();
-  final ExecutableElement? customTextEditingController =
+  final ExecutableElement2? validatorFunction =
+      (fieldReader.peek('validator')?.objectValue)?.toFunctionValue2();
+  final ExecutableElement2? customTextEditingController =
       (fieldReader.peek('customTextEditingController')?.objectValue)
-          ?.toFunctionValue();
+          ?.toFunctionValue2();
   return TextFieldConfig(
     name: name,
     initialValue: initialValue,

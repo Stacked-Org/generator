@@ -47,7 +47,9 @@ Future<void> checkCodeForCompilationError(
     },
     (r) => r.libraries.firstWhere((element) {
       /// [element.source.toString()] will print the name of the file for example 'test.dart'
-      return element.source.toString().contains(fileName);
+      return element.firstFragment.libraryFragment!.source
+          .toString()
+          .contains(fileName);
     }),
   );
 

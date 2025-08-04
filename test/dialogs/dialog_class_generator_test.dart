@@ -7,22 +7,22 @@ import '../helpers/test_constants/dialog_constant.dart';
 void main() {
   group('DialogClassGeneratorTest -', () {
     group('generate -', () {
-      test('When empty', () {
+      test('When empty', () async {
         final generator = DialogClassGenerator([]);
-        expect(generator.generate(), kDialogsEmpty);
+        expect(await generator.generate(), kDialogsEmpty);
       });
-      test('When change locator name', () {
+      test('When change locator name', () async {
         final generator =
             DialogClassGenerator([], locatorName: 'customLocator');
-        expect(generator.generate(), kDialogsWithCustomNamedLocator);
+        expect(await generator.generate(), kDialogsWithCustomNamedLocator);
       });
-      test('One dialog', () {
+      test('One dialog', () async {
         final generator = DialogClassGenerator([
           const DialogConfig(import: 'one.dart', dialogClassName: 'BasicDialog')
         ]);
-        expect(generator.generate(), kOneDialog);
+        expect(await generator.generate(), kOneDialog);
       });
-      test('Two dialogs', () {
+      test('Two dialogs', () async {
         final generator = DialogClassGenerator([
           const DialogConfig(
               import: 'one.dart', dialogClassName: 'BasicDialog'),
@@ -30,7 +30,7 @@ void main() {
               import: 'two.dart', dialogClassName: 'ComplexDialog')
         ]);
 
-        expect(generator.generate(), kTwoDialogs);
+        expect(await generator.generate(), kTwoDialogs);
       });
     });
   });

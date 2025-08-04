@@ -7,23 +7,23 @@ import '../helpers/test_constants/bottomsheets_constants.dart';
 void main() {
   group('BottomsheetClassGeneratorTest -', () {
     group('generate -', () {
-      test('When empty', () {
+      test('When empty', () async {
         final generator = BottomsheetClassGenerator([]);
-        expect(generator.generate(), kBottomsheetsEmpty);
+        expect(await generator.generate(), kBottomsheetsEmpty);
       });
-      test('When change locator name', () {
+      test('When change locator name', () async {
         final generator =
             BottomsheetClassGenerator([], locatorName: 'customLocator');
-        expect(generator.generate(), kBottomsheetsWithCustomNamedLocator);
+        expect(await generator.generate(), kBottomsheetsWithCustomNamedLocator);
       });
-      test('One bottomsheet', () {
+      test('One bottomsheet', () async {
         final generator = BottomsheetClassGenerator([
           const BottomsheetConfig(
               import: 'one.dart', bottomsheetClassName: 'BasicBottomsheet')
         ]);
-        expect(generator.generate(), kOneBottomsheet);
+        expect(await generator.generate(), kOneBottomsheet);
       });
-      test('Two bottomsheets', () {
+      test('Two bottomsheets', () async {
         final generator = BottomsheetClassGenerator([
           const BottomsheetConfig(
               import: 'one.dart', bottomsheetClassName: 'BasicBottomsheet'),
@@ -31,7 +31,7 @@ void main() {
               import: 'two.dart', bottomsheetClassName: 'ComplexBottomsheet')
         ]);
 
-        expect(generator.generate(), kTwoBottomsheets);
+        expect(await generator.generate(), kTwoBottomsheets);
       });
     });
   });
