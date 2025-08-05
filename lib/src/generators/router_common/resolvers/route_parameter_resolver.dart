@@ -1,10 +1,10 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/src/generators/router_common/resolvers/type_resolver.dart';
 import 'package:stacked_generator/utils.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 const _pathParamChecker = TypeChecker.fromRuntime(PathParam);
 const _queryParamChecker = TypeChecker.fromRuntime(QueryParam);
@@ -15,7 +15,7 @@ class RouteParameterResolver {
   RouteParameterResolver(this._typeResolver);
 
   ParamConfig resolve(
-    ParameterElement parameterElement, {
+    FormalParameterElement parameterElement, {
     List<PathParamConfig> pathParams = const [],
     List<PathParamConfig> inheritedPathParams = const [],
   }) {
@@ -24,7 +24,7 @@ class RouteParameterResolver {
       return _resolveFunctionType(parameterElement);
     }
     var type = _typeResolver.resolveType(paramType);
-    final paramName = parameterElement.name.replaceFirst("_", '');
+    final paramName = parameterElement.name3?.replaceFirst("_", '');
     var pathParamAnnotation =
         _pathParamChecker.firstAnnotationOfExact(parameterElement);
     String? paramAlias;
@@ -54,17 +54,17 @@ class RouteParameterResolver {
 
     throwIf(
       pathParamAnnotation != null && queryParamAnnotation != null,
-      '${parameterElement.name} can not be both a pathParam and a queryParam!',
+      '${parameterElement.name3} can not be both a pathParam and a queryParam!',
       element: parameterElement,
     );
 
     return ParamConfig(
       type: type,
       element: parameterElement,
-      name: paramName,
+      name: paramName!,
       alias: paramAlias,
       isPositional: parameterElement.isPositional,
-      hasRequired: parameterElement.hasRequired,
+      hasRequired: parameterElement.isRequired,
       isRequired: parameterElement.isRequiredNamed,
       isOptional: parameterElement.isOptional,
       isNamed: parameterElement.isNamed,
@@ -76,20 +76,21 @@ class RouteParameterResolver {
     );
   }
 
-  ParamConfig _resolveFunctionType(ParameterElement paramElement) {
+  ParamConfig _resolveFunctionType(FormalParameterElement paramElement) {
     var type = paramElement.type as FunctionType;
     return FunctionParamConfig(
-        returnType: _typeResolver.resolveType(type.returnType),
-        type: _typeResolver.resolveType(type),
-        params: type.parameters.map(resolve).toList(),
-        element: paramElement,
-        name: paramElement.name,
-        defaultValueCode: paramElement.defaultValueCode,
-        isRequired: paramElement.isRequiredNamed,
-        isPositional: paramElement.isPositional,
-        hasRequired: paramElement.hasRequired,
-        isOptional: paramElement.isOptional,
-        isNamed: paramElement.isNamed);
+      returnType: _typeResolver.resolveType(type.returnType),
+      type: _typeResolver.resolveType(type),
+      params: type.formalParameters.map(resolve).toList(),
+      element: paramElement,
+      name: paramElement.name3!,
+      defaultValueCode: paramElement.defaultValueCode,
+      isRequired: paramElement.isRequiredNamed,
+      isPositional: paramElement.isPositional,
+      hasRequired: paramElement.isRequired,
+      isOptional: paramElement.isOptional,
+      isNamed: paramElement.isNamed,
+    );
   }
 
   static List<PathParamConfig> extractPathParams(String path) {

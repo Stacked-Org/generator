@@ -3,8 +3,8 @@ import 'package:dart_style/dart_style.dart';
 import 'package:stacked_generator/src/generators/base_generator.dart';
 import 'package:stacked_generator/src/generators/extensions/routes_extension.dart';
 import 'package:stacked_generator/src/generators/router/generator/routes_class/routes_class_builder.dart';
+import 'package:stacked_generator/src/generators/router_common/models/router_config.dart';
 
-import '../../router_common/models/router_config.dart';
 import 'arguments_class/arguments_class_builder.dart';
 import 'navigate_extension_class/navigate_extension_class_builder.dart';
 import 'route_allocator.dart';
@@ -17,10 +17,13 @@ class RouterGenerator implements BaseGenerator {
 
   /// Where we store the result of [_generateClasses]
   List<Spec> classes = [];
+
   List<String> notAliasedImports = [];
+
   @override
   String generate() {
     if (_rootRouterConfig.routes.isEmpty) return '';
+
     final emitter = DartEmitter(
       allocator: RouteAllocator(),
       useNullSafetySyntax: true,
@@ -38,16 +41,29 @@ class RouterGenerator implements BaseGenerator {
       routes: _rootRouterConfig.routesIncludingTheirChildren,
     ).build(emitter);
 
+    /// Remove duplicate classes from nested routers
+    List<Class> parsedClasses = [];
+    for (var c in classes) {
+      if (c is! Class) continue;
+
+      if (parsedClasses.any((parsedClass) => parsedClass.name == c.name)) {
+        continue;
+      }
+
+      parsedClasses.add(c);
+    }
+
     final library = Library(
       (b) => b
         ..directives.add(
           // No need to alias this import that's why we're adding it
           Directive.import('package:flutter/material.dart'),
         )
-        ..body.addAll([...classes, navigationExtensionClassBuilder]),
+        ..body.addAll([...parsedClasses, navigationExtensionClassBuilder]),
     );
 
-    return DartFormatter().format('${library.accept(emitter)}');
+    return DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+        .format('${library.accept(emitter)}');
   }
 
   /// The classes are:
@@ -61,9 +77,9 @@ class RouterGenerator implements BaseGenerator {
     if (routerConfig.routes.isEmpty) return;
 
     final routesClassBuilder = RoutesClassBuilder(
-            routes: routerConfig.routes,
-            routesClassName: routerConfig.routesClassName)
-        .buildRoutesClass();
+      routes: routerConfig.routes,
+      routesClassName: routerConfig.routesClassName,
+    ).buildRoutesClass();
 
     final routerClassBuilder = RouterClassBuilder(
       routesClassName: routerConfig.routesClassName,

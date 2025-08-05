@@ -56,6 +56,7 @@ class FormBuilder with StringBufferUtils {
   }
 
   FormBuilder addAnnotationOptions() {
+    if (fields.onlyTextFieldConfigs.isEmpty) return this;
     newLine();
     writeLine(
       "const bool _autoTextFieldValidation = $autoTextFieldValidation;",
@@ -169,7 +170,7 @@ class FormBuilder with StringBufferUtils {
   FormBuilder addGetTextEditingController() {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
     newLine();
-    writeLine(''' 
+    writeLine('''
       TextEditingController _getFormTextEditingController(
         String key, {
         String? initialValue,
@@ -220,7 +221,7 @@ class FormBuilder with StringBufferUtils {
     if (fields.onlyTextFieldConfigs.isEmpty) return this;
 
     newLine();
-    writeLine(''' 
+    writeLine('''
       FocusNode _getFormFocusNode(String key) {
         if (_${viewName}FocusNodes.containsKey(key)) {
         return _${viewName}FocusNodes[key]!;}
@@ -246,9 +247,11 @@ class FormBuilder with StringBufferUtils {
     }
 
     newLine();
-    writeLine(
-      "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
-    );
+    if (fields.onlyTextFieldConfigs.isNotEmpty) {
+      writeLine(
+        "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
+      );
+    }
     writeLine('}');
     newLine();
 
@@ -269,9 +272,11 @@ class FormBuilder with StringBufferUtils {
     }
 
     newLine();
-    writeLine(
-      "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
-    );
+    if (fields.onlyTextFieldConfigs.isNotEmpty) {
+      writeLine(
+        "_updateFormData(model, forceValidate: _autoTextFieldValidation);",
+      );
+    }
     writeLine('}');
     newLine();
     return this;
@@ -385,8 +390,13 @@ class FormBuilder with StringBufferUtils {
 
     newLine();
     writeLine("""bool get isFormValid {
-      if (!_autoTextFieldValidation) this.validateForm();
-
+    """);
+    if (fields.onlyTextFieldConfigs.isNotEmpty) {
+      writeLine("""
+    if (!_autoTextFieldValidation) this.validateForm();
+""");
+    }
+    writeLine("""
       return !hasAnyValidationMessage;
     }""");
 
@@ -482,12 +492,13 @@ class FormBuilder with StringBufferUtils {
                 ${_getFormKeyName(caseName)}: selectedDate}),
               );
             }
-
-            if (_autoTextFieldValidation) {
-              this.validateForm();
-            }
-          }
     ''');
+      if (fields.onlyTextFieldConfigs.isNotEmpty) {
+        writeLine(
+          "if (_autoTextFieldValidation) this.validateForm();",
+        );
+      }
+      writeLine('}');
       newLine();
     }
 
@@ -499,12 +510,13 @@ class FormBuilder with StringBufferUtils {
             this.setData(
               this.formValueMap..addAll({${_getFormKeyName(caseName)}: ${caseName.camelCase}}),
             );
-
-            if (_autoTextFieldValidation) {
-              this.validateForm();
-            }
-          }
     ''');
+      if (fields.onlyTextFieldConfigs.isNotEmpty) {
+        writeLine(
+          "if (_autoTextFieldValidation) this.validateForm();",
+        );
+      }
+      writeLine('}');
       newLine();
     }
 
@@ -513,7 +525,7 @@ class FormBuilder with StringBufferUtils {
     for (final field in fields) {
       final caseName = ReCase(field.name);
       writeLine(
-          'set${caseName.pascalCase}ValidationMessage(String? validationMessage) => this.fieldsValidationMessages[${_getFormKeyName(caseName)}] = validationMessage;');
+          'void set${caseName.pascalCase}ValidationMessage(String? validationMessage) => this.fieldsValidationMessages[${_getFormKeyName(caseName)}] = validationMessage;');
     }
 
     // Write out the clearForm method
