@@ -28,7 +28,6 @@ class SimpleLogPrinter extends LogPrinter {
     this.showOnlyClass,
   });
 
-
   final printer = PrettyPrinter(
     levelColors: PrettyPrinter.defaultLevelColors,
     levelEmojis: PrettyPrinter.defaultLevelEmojis,
@@ -171,9 +170,9 @@ Logger ebraLogger(
 const String kloggerClassContentWithDisableReleaseConsoleOutput = '''
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
-/// Maybe this should be generated for the user as well?
-///
-/// import 'package:customer_app/services/stackdriver/stackdriver_service.dart';
+// Maybe this should be generated for the user as well?
+//
+// import 'package:customer_app/services/stackdriver/stackdriver_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
@@ -198,10 +197,14 @@ class SimpleLogPrinter extends LogPrinter {
     this.showOnlyClass,
   });
 
+  final printer = PrettyPrinter(
+    levelColors: PrettyPrinter.defaultLevelColors,
+    levelEmojis: PrettyPrinter.defaultLevelEmojis,
+  );
   @override
   List<String> log(LogEvent event) {
-    var color = PrettyPrinter.levelColors[event.level];
-    var emoji = PrettyPrinter.levelEmojis[event.level];
+    var color = printer.levelColors?[event.level];
+    var emoji = printer.levelEmojis?[event.level];
     var methodName = _getMethodName();
 
     var methodNameSection =
@@ -210,9 +213,12 @@ class SimpleLogPrinter extends LogPrinter {
     var output =
         '\$emoji \$className\$methodNameSection - \${event.message}\${event.error != null ? '\\nERROR: \${event.error}\\n' : ''}\${printCallStack ? '\\nSTACKTRACE:\\n\$stackLog' : ''}';
 
-    if (exludeLogsFromClasses
-            .any((excludeClass) => className == excludeClass) ||
-        (showOnlyClass != null && className != showOnlyClass)) return [];
+    if (exludeLogsFromClasses.any(
+          (excludeClass) => className == excludeClass,
+        ) ||
+        (showOnlyClass != null && className != showOnlyClass)) {
+      return [];
+    }
 
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     List<String> result = [];
@@ -323,7 +329,7 @@ Logger ebraLogger(
       exludeLogsFromClasses: exludeLogsFromClasses,
     ),
     output: MultiOutput([
-
+      
       ConsoleOutput(),
        if(kReleaseMode) outputOne(), if(kReleaseMode) outputTwo(),
     ]),
@@ -386,9 +392,9 @@ Logger ebraLogger(
 const String addLoggerClassImports = '''
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
-/// Maybe this should be generated for the user as well?
-///
-/// import 'package:customer_app/services/stackdriver/stackdriver_service.dart';
+// Maybe this should be generated for the user as well?
+//
+// import 'package:customer_app/services/stackdriver/stackdriver_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:logger/logger.dart';
 
@@ -417,7 +423,7 @@ Logger getLogger(
     output: MultiOutput([
       if(!kReleaseMode)
       ConsoleOutput(),
-
+      
     ]),
   );
 }

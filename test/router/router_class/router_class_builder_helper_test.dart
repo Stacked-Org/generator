@@ -76,7 +76,6 @@ void main() {
             kMapOfPages,
           );
         },
-        skip: 'Verify when to use material package or not',
       );
     });
   });

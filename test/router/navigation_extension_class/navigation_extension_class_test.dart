@@ -65,15 +65,15 @@ final List<RouteConfig> _routes = [
 
 void main() {
   group('NavigateExtensionClassBuilderTest -', () {
-    Extension getBuilderInstance() => NavigateExtensionClassBuilder(
+    String getBuilderInstance() => NavigateExtensionClassBuilder(
           routes: _routes,
-        ).build(DartEmitter());
+        ).build(DartEmitter()).buildLibraryForClass;
 
     group('build -', () {
       test('Generate extension for strong type navigation', () {
         final builder = getBuilderInstance();
         expect(
-          builder.buildLibraryForClass,
+          builder,
           kRouteNavigationExtension,
         );
       });
