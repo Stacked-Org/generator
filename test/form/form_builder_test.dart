@@ -201,14 +201,14 @@ void main() {
         });
       });
       group('addFormViewModelExtensionForGetters -', () {
-        test('When called, Should add formviewmodel extension', () {
-          builder.addFormViewModelExtensionForGetters();
-
-          expect(builder.serializeStringBuffer,
-              kExample1ViewModelExtensionForGetters);
-        },
-            skip:
-                'This is too fickle. It\'s failing due to spacing issues. I want something more robust here');
+        test(
+          'When called, Should add formviewmodel extension',
+          () {
+            builder.addFormViewModelExtensionForGetters();
+            expect(builder.serializeStringBuffer,
+                kExample1ViewModelExtensionForGetters);
+          },
+        );
       });
       group('addFormViewModelExtensionForMethods -', () {
         test('When called, Should add extension Methods on FormViewModel', () {

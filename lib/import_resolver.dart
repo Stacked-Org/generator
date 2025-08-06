@@ -18,11 +18,15 @@ class ImportResolver {
     for (var lib in libs) {
       if (_isCoreDartType(lib)) continue;
 
-      if (lib.exportNamespace.definedNames2.keys.contains(element?.firstFragment.name2)) {
-        final package = lib.firstFragment.libraryFragment?.source.uri.pathSegments.first;
+      if (lib.exportNamespace.definedNames2.keys
+          .contains(element?.firstFragment.name2)) {
+        final package =
+            lib.firstFragment.libraryFragment?.source.uri.pathSegments.first;
         if (targetFilePath.startsWith(RegExp('^$package/'))) {
           return p.posix
-              .relative(element?.firstFragment.libraryFragment?.source.uri.path ?? '', from: targetFilePath)
+              .relative(
+                  element?.firstFragment.libraryFragment?.source.uri.path ?? '',
+                  from: targetFilePath)
               .replaceFirst('../', '');
         } else {
           return element?.firstFragment.libraryFragment?.source.uri.toString();

@@ -42,7 +42,9 @@ mixin RouterExtensionBuilderHelper {
     required RouteConfig route,
     required DartEmitter emitter,
   }) {
-    final methodName = '$navigationMethod${route.name?.capitalize}';
+    final methodName = route.parentClassName != null
+        ? '${navigationMethod}Nested${route.name?.capitalize}In${route.parentClassName}'
+        : '$navigationMethod${route.name?.capitalize}';
 
     final methodReturnType = route.isProcessedReturnTypeDynamic
         ? route.processedReturnType
