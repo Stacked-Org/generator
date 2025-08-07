@@ -45,10 +45,15 @@ Future<void> checkCodeForCompilationError(
     {
       '$generatorName|$relativePath$fileName.dart': useAssetReader,
     },
-    (r) => r.libraries.firstWhere((element) {
-      /// [element.source.toString()] will print the name of the file for example 'test.dart'
-      return element.source.toString().contains(fileName);
-    }),
+    (r) => r.libraries.firstWhere(
+      (element) {
+        /// [element.firstFragment.libraryFragment.source.toString()] will print the name of the file for example 'test.dart'
+        return element.firstFragment.libraryFragment!.source
+            .toString()
+            .contains(fileName);
+      },
+    ),
+    readAllSourcesFromFilesystem: true,
   );
 
   final errorResult = await main.session

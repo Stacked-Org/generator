@@ -1,30 +1,35 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:path/path.dart' as p;
 
 class ImportResolver {
-  final List<LibraryElement> libs;
+  final List<LibraryElement2> libs;
   final String targetFilePath;
 
   const ImportResolver(this.libs, this.targetFilePath);
 
-  String? resolve(Element? element) {
+  String? resolve(Element2? element) {
     // return early if source is null or element is a core type
-    if (element?.source == null || _isCoreDartType(element)) {
+    if (element?.firstFragment.libraryFragment?.source == null ||
+        _isCoreDartType(element)) {
       return null;
     }
 
     for (var lib in libs) {
       if (_isCoreDartType(lib)) continue;
 
-      if (lib.exportNamespace.definedNames.keys.contains(element?.name)) {
-        final package = lib.source.uri.pathSegments.first;
+      if (lib.exportNamespace.definedNames2.keys
+          .contains(element?.firstFragment.name2)) {
+        final package =
+            lib.firstFragment.libraryFragment?.source.uri.pathSegments.first;
         if (targetFilePath.startsWith(RegExp('^$package/'))) {
           return p.posix
-              .relative(element?.source?.uri.path ?? '', from: targetFilePath)
+              .relative(
+                  element?.firstFragment.libraryFragment?.source.uri.path ?? '',
+                  from: targetFilePath)
               .replaceFirst('../', '');
         } else {
-          return element?.source?.uri.toString();
+          return element?.firstFragment.libraryFragment?.source.uri.toString();
         }
       }
     }
@@ -32,13 +37,14 @@ class ImportResolver {
     return null;
   }
 
-  bool _isCoreDartType(Element? element) {
-    return element?.source?.fullName == 'dart:core';
+  bool _isCoreDartType(Element2? element) {
+    return element?.firstFragment.libraryFragment?.source.fullName ==
+        'dart:core';
   }
 
   Set<String> resolveAll(DartType type) {
     final imports = <String>{};
-    final resolvedValue = resolve(type.element);
+    final resolvedValue = resolve(type.element3);
     if (resolvedValue != null) {
       imports.add(resolvedValue);
     }
@@ -50,7 +56,7 @@ class ImportResolver {
     final imports = <String>{};
     if (typeToCheck is ParameterizedType) {
       for (DartType type in typeToCheck.typeArguments) {
-        final resolvedValue = resolve(type.element);
+        final resolvedValue = resolve(type.element3);
         if (resolvedValue != null) {
           imports.add(resolvedValue);
         }

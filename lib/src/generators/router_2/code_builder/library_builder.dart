@@ -33,7 +33,8 @@ String generateLibrary(
   throwIf(config.element == null,
       'Element is required for the Navigator2 Router. Something is broken');
 
-  final fileName = config.element!.source.uri.pathSegments.last;
+  final fileName = config
+      .element!.firstFragment.libraryFragment.source.uri.pathSegments.last;
 
   throwIf(
     usesPartBuilder && deferredLoading,
@@ -115,5 +116,6 @@ String generateLibrary(
       ]),
   );
 
-  return DartFormatter().format(library.accept(emitter).toString());
+  return DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+      .format(library.accept(emitter).toString());
 }

@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_this
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 
 /// Described a single field to be generated.
 ///
@@ -17,21 +17,20 @@ class TextFieldConfig extends FieldConfig {
   final ExecutableElementData? validatorFunction;
   final ExecutableElementData? customTextEditingController;
   const TextFieldConfig({
-    required String name,
+    required super.name,
     this.initialValue,
     this.validatorFunction,
     this.customTextEditingController,
-  }) : super(name: name);
+  });
 }
 
 class DateFieldConfig extends FieldConfig {
-  const DateFieldConfig({required String name}) : super(name: name);
+  const DateFieldConfig({required super.name});
 }
 
 class DropdownFieldConfig extends FieldConfig {
   final List<DropdownFieldItem> items;
-  const DropdownFieldConfig({required String name, required this.items})
-      : super(name: name);
+  const DropdownFieldConfig({required super.name, required this.items});
 }
 
 class DropdownFieldItem {
@@ -56,13 +55,15 @@ class ExecutableElementData {
   });
 
   factory ExecutableElementData.fromExecutableElement(
-      ExecutableElement executableElement) {
+      ExecutableElement2 executableElement) {
     return ExecutableElementData(
-        returnType: executableElement.declaration.returnType.toString(),
-        enclosingElementName: executableElement.enclosingElementName,
-        hasEnclosingElementName: executableElement.hasEnclosingElementName,
-        validatorName: executableElement.validatorName,
-        validatorPath: executableElement.validatorPath);
+      returnType: executableElement.firstFragment.element.returnType.toString(),
+      enclosingElementName: executableElement.enclosingElement2?.name3,
+      hasEnclosingElementName:
+          executableElement.enclosingElement2?.name3 != null,
+      validatorName: executableElement.validatorName,
+      validatorPath: executableElement.validatorPath,
+    );
   }
 }
 
@@ -77,11 +78,12 @@ extension ListOfFieldConfigs on List<FieldConfig> {
       this.whereType<DropdownFieldConfig>().map((t) => t).toList();
 }
 
-extension ExecutableElementDataExtension on ExecutableElement? {
-  String? get validatorPath => this?.source.uri.toString();
+extension ExecutableElementDataExtension on ExecutableElement2? {
+  String? get validatorPath =>
+      this?.firstFragment.libraryFragment.source.uri.toString();
   String? get validatorName => hasEnclosingElementName
-      ? '$enclosingElementName.${this?.name}'
-      : this?.name;
+      ? '$enclosingElementName.${this?.name3}'
+      : this?.name3;
   bool get hasEnclosingElementName => enclosingElementName != null;
-  String? get enclosingElementName => this?.enclosingElement.name;
+  String? get enclosingElementName => this?.enclosingElement2?.name3;
 }

@@ -1,12 +1,12 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/src/helpers/config_helper.dart';
 import 'package:stacked_generator/src/helpers/file_helper.dart';
 
-String toDisplayString(DartType e, {bool withNullability = false}) {
-  return e.getDisplayString(withNullability: withNullability);
+String toDisplayString(DartType e) {
+  return e.getDisplayString();
 }
 
 String processedReturnType(String? returnType) {
@@ -27,13 +27,13 @@ String processedReturnType(String? returnType) {
 }
 
 void throwIf(bool condition, String message,
-    {Element? element, String todo = ''}) {
+    {Element2? element, String todo = ''}) {
   if (condition) {
     throwError(message, todo: todo, element: element);
   }
 }
 
-void throwError(String message, {Element? element, String todo = ''}) {
+void throwError(String message, {Element2? element, String todo = ''}) {
   throw InvalidGeneratorInputException(
     message,
     todo: todo,

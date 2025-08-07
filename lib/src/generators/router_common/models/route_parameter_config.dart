@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart' show ParameterElement;
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:code_builder/code_builder.dart' as code;
 
 import 'importable_type.dart';
@@ -29,7 +29,7 @@ class ParamConfig {
   final bool isPathParam;
   final bool isQueryParam;
   final String? defaultValueCode;
-  final ParameterElement? element;
+  final FormalParameterElement? element;
   final bool isInheritedPathParam;
 
   ParamConfig({
@@ -98,12 +98,11 @@ class FunctionParamConfig extends ParamConfig {
     required super.isOptional,
     required super.isNamed,
     required super.element,
-    required bool isRequired,
+    required super.isRequired,
     super.defaultValueCode,
   }) : super(
           isPathParam: false,
           isQueryParam: false,
-          isRequired: isRequired,
           isInheritedPathParam: false,
         );
 

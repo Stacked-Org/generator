@@ -82,39 +82,44 @@ EmailValueKey: emailController.text,
 ''';
 const kExample1ViewModelExtensionForGetters = '''
 
-extension ValueProperties on FormViewModel {
-bool get isFormValid =>
-      this.fieldsValidationMessages.values.every((element) => element == null);
+extension ValueProperties on FormStateHelper {
+bool get hasAnyValidationMessage =>
+      this.fieldsValidationMessages.values.any((validation) => validation != null);
+
+bool get isFormValid {
+    
+    if (!_autoTextFieldValidation) this.validateForm();
+
+      return !hasAnyValidationMessage;
+    }
+
 String? get nameValue => this.formValueMap[NameValueKey] as String?;
 String? get emailValue => this.formValueMap[EmailValueKey] as String?;
 DateTime? get dateValue => this.formValueMap[DateValueKey] as DateTime?;
 String? get dropDownValue => this.formValueMap[DropDownValueKey] as String?;
 
 set nameValue(String? value) {
-  this.setData(
-    this.formValueMap
-      ..addAll({
-        NameValueKey: value,
-      }),
-  );
-              
-  if (_TestViewTextEditingControllers.containsKey(NameValueKey)) {
-    _TestViewTextEditingControllers[NameValueKey]?.text = value ?? \'\';
-  }
+    this.setData(
+      this.formValueMap..addAll({NameValueKey: value}),
+    );  
+
+    if (_TestViewTextEditingControllers.containsKey(NameValueKey)) {
+      _TestViewTextEditingControllers[NameValueKey]?.text = value ?? ''  ;
+    }
 }
-              
+
+        
 set emailValue(String? value) {
-  this.setData(
-    this.formValueMap
-      ..addAll({
-        EmailValueKey: value,
-      }),
-  );
-              
-  if (_TestViewTextEditingControllers.containsKey(EmailValueKey)) {
-    _TestViewTextEditingControllers[EmailValueKey]?.text = value ?? \'\';
-  }
-}               
+    this.setData(
+      this.formValueMap..addAll({EmailValueKey: value}),
+    );  
+
+    if (_TestViewTextEditingControllers.containsKey(EmailValueKey)) {
+      _TestViewTextEditingControllers[EmailValueKey]?.text = value ?? ''  ;
+    }
+}
+
+        
 
 bool get hasName => this.formValueMap.containsKey(NameValueKey) && (nameValue?.isNotEmpty ?? false);
 bool get hasEmail => this.formValueMap.containsKey(EmailValueKey) && (emailValue?.isNotEmpty ?? false);
@@ -134,7 +139,7 @@ String? get dropDownValidationMessage => this.fieldsValidationMessages[DropDownV
 ''';
 const kExample1ViewModelExtensionForMethods = '''
 
-extension Methods on FormViewModel {
+extension Methods on FormStateHelper {
           Future<void> selectDate({
             required BuildContext context,
             required DateTime initialDate,
@@ -153,29 +158,23 @@ extension Methods on FormViewModel {
                 DateValueKey: selectedDate}),
               );
             }
-
-            if (_autoTextFieldValidation) {
-              this.validateForm();
-            }
-          }
     
+if (_autoTextFieldValidation) this.validateForm();
+}
 
           void setDropDown(String dropDown) {
             this.setData(
               this.formValueMap..addAll({DropDownValueKey: dropDown}),
             );
-
-            if (_autoTextFieldValidation) {
-              this.validateForm();
-            }
-          }
     
+if (_autoTextFieldValidation) this.validateForm();
+}
 
 
-setNameValidationMessage(String? validationMessage) => this.fieldsValidationMessages[NameValueKey] = validationMessage;
-setEmailValidationMessage(String? validationMessage) => this.fieldsValidationMessages[EmailValueKey] = validationMessage;
-setDateValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DateValueKey] = validationMessage;
-setDropDownValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DropDownValueKey] = validationMessage;
+void setNameValidationMessage(String? validationMessage) => this.fieldsValidationMessages[NameValueKey] = validationMessage;
+void setEmailValidationMessage(String? validationMessage) => this.fieldsValidationMessages[EmailValueKey] = validationMessage;
+void setDateValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DateValueKey] = validationMessage;
+void setDropDownValidationMessage(String? validationMessage) => this.fieldsValidationMessages[DropDownValueKey] = validationMessage;
 
 /// Clears text input fields on the Form
 void clearForm() {
