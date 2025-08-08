@@ -4,60 +4,13 @@ import 'package:test/test.dart';
 
 import 'ast_helper.dart';
 
-/// Router-specific AST validation utilities for testing code generation.
-///
-/// This file contains specialized validators for different router generation scenarios
-/// in the Stacked framework. Each validator class handles a specific aspect of
-/// router code generation testing.
-///
-/// ## Validator Classes:
-/// - **RouterAstValidator**: Basic router class validation
-/// - **RouterHelperAstValidator**: Router helper utilities validation  
-/// - **RouteClassGeneratorAstValidator**: Full route class generation validation
-/// - **CompleteRouterAstValidator**: Complex router generation validation
-///
-/// ## Usage:
-/// ```dart
-/// // Validate basic router structure
-/// RouterAstValidator.validateRouterClassStructure(
-///   generatedCode,
-///   expectedClassName: 'AppRouter',
-///   expectedSuperclass: 'RouterBase',
-/// );
-///
-/// // Validate complete router generation
-/// RouteClassGeneratorAstValidator.validateCompleteRouterGeneration(
-///   generatedCode,
-///   routerClassName: 'AppRouter',
-///   routesClassName: 'Routes',
-///   expectedRoutes: routes,
-/// );
-/// ```
-///
-/// These validators provide semantic validation of generated router code,
-/// ensuring the structure and functionality are correct regardless of
-/// formatting changes.
+/// AST validators for router code generation.
+/// Provide semantic checks for router classes, helpers, and complete systems.
+/// Use structure-aware (AST) validation to avoid brittle string comparisons.
 
-/// Router-specific validation functions for basic router class testing.
-///
-/// This validator focuses on the core structure of generated router classes,
-/// including inheritance, required fields, and getter methods.
+/// Basic router class validation: inheritance, fields, and getters.
 class RouterAstValidator {
-  /// Validates the overall structure of a generated router class.
-  ///
-  /// Checks for:
-  /// - Correct class name and superclass
-  /// - Required fields (_routes, _pagesMap)
-  /// - Required getter methods with @override annotations
-  ///
-  /// Example:
-  /// ```dart
-  /// RouterAstValidator.validateRouterClassStructure(
-  ///   generatedCode,
-  ///   expectedClassName: 'AppRouter',
-  ///   expectedSuperclass: 'RouterBase',
-  /// );
-  /// ```
+  /// Validate the overall structure: class name, superclass, fields, getters.
   static void validateRouterClassStructure(
     String generatedCode, {
     required String expectedClassName,
@@ -94,9 +47,7 @@ class RouterAstValidator {
         reason: 'pagesMap getter should have @override annotation');
   }
 
-  /// Validates that expected imports are present in generated code.
-  ///
-  /// Useful for ensuring all required dependencies are imported.
+  /// Ensure generated code contains the required imports by URI.
   static void validateRequiredImports(
     String generatedCode, {
     required List<String> requiredImports,
@@ -109,9 +60,7 @@ class RouterAstValidator {
     }
   }
 
-  /// Validates the _routes field structure in a router class.
-  ///
-  /// Checks that the field is final and has the correct List<RouteDef> type.
+  /// Ensure _routes field exists, is final, and typed as List<RouteDef>.
   static void validateRoutesField(
     String generatedCode, {
     required int expectedRouteCount,
@@ -131,9 +80,7 @@ class RouterAstValidator {
         reason: '_routes should be List<RouteDef>');
   }
 
-  /// Validates the _pagesMap field structure in a router class.
-  ///
-  /// Checks that the field is final and has the correct Map type.
+  /// Ensure _pagesMap field exists, is final, and typed with StackedRouteFactory.
   static void validatePagesMapField(
     String generatedCode, {
     required int expectedPageCount,
@@ -153,9 +100,7 @@ class RouterAstValidator {
         reason: '_pagesMap should be Map<Type, StackedRouteFactory>');
   }
 
-  /// Validates getter methods return correct types.
-  ///
-  /// Ensures routes and pagesMap getters have appropriate return types.
+  /// Ensure routes/pagesMap getters exist and return correct types.
   static void validateGetterMethods(String generatedCode) {
     final unit = AstHelper.parseCode(generatedCode);
     final routerClass = unit.declarations.whereType<ClassDeclaration>().first;
@@ -176,14 +121,9 @@ class RouterAstValidator {
   }
 }
 
-/// Router Helper-specific validation functions for helper code generation.
-///
-/// This validator focuses on standalone route definitions, helper functions,
-/// and utility code that supports the main router infrastructure.
+/// Validation helpers for standalone route definitions and utilities.
 class RouterHelperAstValidator {
-  /// Validates a standalone list of RouteDef objects.
-  ///
-  /// Checks for proper variable declaration, final modifier, and correct typing.
+  /// Validate a standalone _routes list: final and List<RouteDef> typed.
   static void validateRouteDefList(
     String generatedCode, {
     required int expectedRouteCount,
@@ -207,12 +147,11 @@ class RouterHelperAstValidator {
 
     // Should contain RouteDef in type
     final fieldType = AstHelper.getVariableType(routesVar.variables);
-    expect(fieldType, contains('RouteDef'), reason: 'Should be List of RouteDef');
+    expect(fieldType, contains('RouteDef'),
+        reason: 'Should be List of RouteDef');
   }
 
-  /// Validates a standalone getter method.
-  ///
-  /// Works with both class methods and top-level functions.
+  /// Validate a getter method (class or top-level) by name and return type.
   static void validateGetterMethod(
     String generatedCode, {
     required String methodName,
@@ -252,9 +191,7 @@ class RouterHelperAstValidator {
         reason: '$methodName should return $expectedReturnType');
   }
 
-  /// Validates a map structure (like _pagesMap).
-  ///
-  /// Ensures proper typing and final declaration of map variables.
+  /// Validate a map structure variable: name, final, key/value types.
   static void validateMapStructure(
     String generatedCode, {
     required String mapName,
@@ -286,9 +223,7 @@ class RouterHelperAstValidator {
         reason: 'Should contain $valueType in map type');
   }
 
-  /// Validates that imports are present and properly aliased.
-  ///
-  /// Ensures helper files have the necessary imports with proper aliasing.
+  /// Ensure imports exist and are aliased where expected (e.g., `as _i`).
   static void validateHelperImports(
     String generatedCode, {
     required List<String> expectedImports,
@@ -308,20 +243,10 @@ class RouterHelperAstValidator {
   }
 }
 
-/// Specialized validators for route_class_generator_test.dart.
-///
-/// This validator handles complex router generation scenarios including:
-/// - Complete router systems with multiple routes
-/// - Nested routing with child routes
-/// - Parameter handling and argument classes
-/// - Navigation extensions
-/// - Mixed routing systems
+/// Validators for complete router generation scenarios (simple, nested, mixed).
+/// Covers routes class, router class, navigation extension, and arguments.
 class RouteClassGeneratorAstValidator {
-  /// Validates complete router generation for route_class_generator_test.dart.
-  ///
-  /// This is the main validation method that checks all components of a
-  /// generated router including routes class, router class, navigation
-  /// extension, and argument classes.
+  /// Validate a complete router output (routes, router, extension, args).
   static void validateCompleteRouterGeneration(
     String generatedCode, {
     required String routerClassName,
@@ -335,7 +260,7 @@ class RouteClassGeneratorAstValidator {
     // Validate all components exist
     _validateRoutesClassExists(unit, routesClassName, expectedRoutes);
     _validateRouterClassExists(unit, routerClassName);
-    
+
     if (shouldHaveNavigationExtension) {
       _validateNavigationExtensionExists(unit, expectedRoutes);
     }
@@ -344,9 +269,7 @@ class RouteClassGeneratorAstValidator {
     _validateArgumentClassesExist(unit, expectedRoutes);
   }
 
-  /// Validates a simple router with basic route structure.
-  ///
-  /// Convenience method for testing single-route scenarios.
+  /// Validate a simple single-route router (convenience wrapper).
   static void validateBasicRouterGeneration(
     String generatedCode, {
     required String routerClassName,
@@ -362,10 +285,7 @@ class RouteClassGeneratorAstValidator {
     );
   }
 
-  /// Validates nested router generation.
-  ///
-  /// Handles parent routes that contain child routes, validating both
-  /// the main router and nested router structures.
+  /// Validate nested routers (parent with child routes and nested classes).
   static void validateNestedRouterGeneration(
     String generatedCode, {
     required String routerClassName,
@@ -378,24 +298,22 @@ class RouteClassGeneratorAstValidator {
     // Validate main router components
     _validateRoutesClassExists(unit, routesClassName, [parentRoute]);
     _validateRouterClassExists(unit, routerClassName);
-    
+
     // If parent has children, validate nested router classes
     if (parentRoute.children.isNotEmpty) {
       final parentName = parentRoute.name ?? 'unknown';
       final nestedRouterClassName = '${_capitalize(parentName)}Router';
       final nestedRoutesClassName = '${_capitalize(parentName)}Routes';
-      
-      _validateRoutesClassExists(unit, nestedRoutesClassName, parentRoute.children);
+
+      _validateRoutesClassExists(
+          unit, nestedRoutesClassName, parentRoute.children);
       _validateRouterClassExists(unit, nestedRouterClassName);
     }
 
     _validateNavigationExtensionExists(unit, [parentRoute]);
   }
 
-  /// Validates router with aliased imports and complex parameters.
-  ///
-  /// Ensures proper handling of routes with parameters and
-  /// argument class generation.
+  /// Validate router with aliased imports and parameterized routes.
   static void validateRouterWithAliasedImports(
     String generatedCode, {
     required String routerClassName,
@@ -423,10 +341,7 @@ class RouteClassGeneratorAstValidator {
     }
   }
 
-  /// Validates mixed routing system with multiple route types.
-  ///
-  /// Handles complex routing scenarios with different types of routes
-  /// and ensures all are properly integrated.
+  /// Validate mixed routing systems containing multiple route types.
   static void validateMixedRoutingSystem(
     String generatedCode, {
     required String routerClassName,
@@ -447,14 +362,15 @@ class RouteClassGeneratorAstValidator {
     // Ensure all route types are properly handled
     final routerClass = AstHelper.findClass(unit, routerClassName);
     expect(routerClass, isNotNull, reason: 'Router class should exist');
-    
+
     final pagesMapField = AstHelper.findField(routerClass!, '_pagesMap');
-    expect(pagesMapField, isNotNull, reason: 'Router should have _pagesMap field');
+    expect(pagesMapField, isNotNull,
+        reason: 'Router should have _pagesMap field');
   }
 
   // Private helper methods
 
-  /// Validates that a routes class exists with expected route constants.
+  /// Ensure routes class exists and exposes route constants and `all`.
   static void _validateRoutesClassExists(
     CompilationUnit unit,
     String routesClassName,
@@ -469,7 +385,8 @@ class RouteClassGeneratorAstValidator {
       final routeName = route.name ?? 'unknown';
       final field = AstHelper.findField(routesClass!, routeName);
       expect(field, isNotNull,
-          reason: 'Route $routeName should have a constant in $routesClassName');
+          reason:
+              'Route $routeName should have a constant in $routesClassName');
     }
 
     // Validate 'all' field
@@ -478,7 +395,7 @@ class RouteClassGeneratorAstValidator {
         reason: '$routesClassName should have an "all" field');
   }
 
-  /// Validates that a router class exists with expected structure.
+  /// Ensure router class exists, extends RouterBase, has fields/getters.
   static void _validateRouterClassExists(
     CompilationUnit unit,
     String routerClassName,
@@ -505,27 +422,29 @@ class RouteClassGeneratorAstValidator {
         reason: '$routerClassName should have pagesMap getter');
   }
 
-  /// Validates navigation extension exists with expected methods.
+  /// Ensure navigation extension exists with navigateTo/replaceWith methods.
   static void _validateNavigationExtensionExists(
     CompilationUnit unit,
     List<RouteConfig> expectedRoutes,
   ) {
     bool extensionFound = false;
-    
+
     for (final declaration in unit.declarations) {
       if (declaration is ExtensionDeclaration &&
           declaration.name?.lexeme == 'NavigatorStateExtension') {
         extensionFound = true;
-        
+
         // Check navigation methods exist for each route
         for (final route in expectedRoutes) {
           final routeName = route.name ?? 'unknown';
           final navigateName = 'navigateTo${_capitalize(routeName)}';
           final replaceName = 'replaceWith${_capitalize(routeName)}';
-          
-          final navigateMethod = AstHelper.findMethodInExtension(declaration, navigateName);
-          final replaceMethod = AstHelper.findMethodInExtension(declaration, replaceName);
-          
+
+          final navigateMethod =
+              AstHelper.findMethodInExtension(declaration, navigateName);
+          final replaceMethod =
+              AstHelper.findMethodInExtension(declaration, replaceName);
+
           expect(navigateMethod, isNotNull,
               reason: 'Extension should have $navigateName method');
           expect(replaceMethod, isNotNull,
@@ -539,37 +458,40 @@ class RouteClassGeneratorAstValidator {
         reason: 'NavigatorStateExtension should exist');
   }
 
-  /// Validates that argument classes exist for routes with parameters.
+  /// Ensure argument classes exist for routes with non-query parameters.
   static void _validateArgumentClassesExist(
     CompilationUnit unit,
     List<RouteConfig> expectedRoutes,
   ) {
     for (final route in expectedRoutes) {
       // Only validate argument classes for routes with non-query parameters
-      final nonQueryParams = route.parameters.where((p) => !p.isQueryParam).toList();
-      
+      final nonQueryParams =
+          route.parameters.where((p) => !p.isQueryParam).toList();
+
       if (nonQueryParams.isNotEmpty) {
         final argumentsClassName = '${route.className}Arguments';
         final argumentsClass = AstHelper.findClass(unit, argumentsClassName);
-        
+
         expect(argumentsClass, isNotNull,
             reason: 'Arguments class $argumentsClassName should exist');
-            
+
         if (argumentsClass != null) {
           // Validate constructor exists
-          final constructor = AstHelper.findConstructor(argumentsClass, argumentsClassName);
+          final constructor =
+              AstHelper.findConstructor(argumentsClass, argumentsClassName);
           expect(constructor, isNotNull,
               reason: '$argumentsClassName should have a constructor');
-              
+
           // Validate parameter fields exist for non-query params
           for (final param in nonQueryParams) {
             final field = AstHelper.findField(argumentsClass, param.name);
             expect(field, isNotNull,
                 reason: '$argumentsClassName should have field ${param.name}');
           }
-          
+
           // Validate toString method exists
-          final toStringMethod = AstHelper.findMethod(argumentsClass, 'toString');
+          final toStringMethod =
+              AstHelper.findMethod(argumentsClass, 'toString');
           expect(toStringMethod, isNotNull,
               reason: '$argumentsClassName should have toString method');
         }
@@ -577,7 +499,7 @@ class RouteClassGeneratorAstValidator {
     }
   }
 
-  /// Helper method to capitalize first letter of a string.
+  /// Capitalize the first letter of a string.
   static String _capitalize(String text) {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);

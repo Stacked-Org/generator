@@ -2,40 +2,14 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:test/test.dart';
 
-/// Core AST parsing and navigation utilities for code generation tests.
-///
-/// This class provides low-level utilities for parsing Dart code into AST
-/// and navigating the resulting tree structure. These methods are used by
-/// domain-specific validators to perform semantic validation of generated code.
-///
-/// ## Key Features:
-/// - **AST Parsing**: Parse Dart code strings into CompilationUnit objects
-/// - **Class Navigation**: Find and inspect class declarations
-/// - **Method/Field Discovery**: Locate methods and fields within classes
-/// - **Import Analysis**: Check for required imports
-/// - **Type Analysis**: Extract type information from declarations
-/// - **Extension Support**: Work with extension declarations
-///
-/// ## Usage:
-/// ```dart
-/// final unit = AstHelper.parseCode(generatedCode);
-/// final myClass = AstHelper.findClass(unit, 'MyClass');
-/// final method = AstHelper.findMethod(myClass!, 'myMethod');
-/// ```
-///
-/// This helper is designed to be used by domain-specific validators like:
-/// - RouterAstValidator
-/// - DialogClassGeneratorAstValidator
-/// - And other code generation validators
+/// Core AST utilities for code generation tests.
+/// Provides parsing and navigation helpers (classes, methods, fields, imports,
+/// and types) used by domain validators. Focuses on semantic checks so tests
+/// are resilient to formatting differences.
 class AstHelper {
-  /// Parses Dart code string into a CompilationUnit AST.
-  ///
-  /// Throws a test failure if the code contains parse errors.
-  ///
-  /// Example:
-  /// ```dart
-  /// final unit = AstHelper.parseCode('class MyClass {}');
-  /// ```
+  /// Parse Dart source into a CompilationUnit AST.
+  /// Fails the test if parsing reports any errors.
+  /// Use this as the entrypoint for semantic validation.
   static CompilationUnit parseCode(String code) {
     final result = parseString(content: code);
     if (result.errors.isNotEmpty) {
@@ -46,17 +20,8 @@ class AstHelper {
 
   // ========== Class and Declaration Finders ==========
 
-  /// Finds a class declaration by name in the compilation unit.
-  ///
-  /// Returns null if no class with the given name is found.
-  ///
-  /// Example:
-  /// ```dart
-  /// final myClass = AstHelper.findClass(unit, 'MyClass');
-  /// if (myClass != null) {
-  ///   // Class found, can inspect its members
-  /// }
-  /// ```
+  /// Find a class declaration by name; returns null if not found.
+  /// Useful to locate generated classes for structural validation.
   static ClassDeclaration? findClass(CompilationUnit unit, String className) {
     return unit.declarations
         .whereType<ClassDeclaration>()
@@ -64,10 +29,9 @@ class AstHelper {
         .firstOrNull;
   }
 
-  /// Finds extension declaration by name in the compilation unit.
-  ///
-  /// Returns null if no extension with the given name is found.
-  static ExtensionDeclaration? findExtension(CompilationUnit unit, String extensionName) {
+  /// Find an extension declaration by name; returns null if not found.
+  static ExtensionDeclaration? findExtension(
+      CompilationUnit unit, String extensionName) {
     return unit.declarations
         .whereType<ExtensionDeclaration>()
         .where((e) => e.name?.lexeme == extensionName)
@@ -76,28 +40,17 @@ class AstHelper {
 
   // ========== Class Member Finders ==========
 
-  /// Finds all method declarations in a class.
-  ///
-  /// Returns an empty list if the class has no methods.
+  /// Return all method declarations in a class.
   static List<MethodDeclaration> findMethods(ClassDeclaration classDecl) {
     return classDecl.members.whereType<MethodDeclaration>().toList();
   }
 
-  /// Finds all field declarations in a class.
-  ///
-  /// Returns an empty list if the class has no fields.
+  /// Return all field declarations in a class.
   static List<FieldDeclaration> findFields(ClassDeclaration classDecl) {
     return classDecl.members.whereType<FieldDeclaration>().toList();
   }
 
-  /// Finds a specific method by name in a class.
-  ///
-  /// Returns null if no method with the given name is found.
-  ///
-  /// Example:
-  /// ```dart
-  /// final method = AstHelper.findMethod(myClass, 'myMethod');
-  /// ```
+  /// Find a method by name in a class; returns null if not found.
   static MethodDeclaration? findMethod(
       ClassDeclaration classDecl, String methodName) {
     return findMethods(classDecl)
@@ -105,10 +58,7 @@ class AstHelper {
         .firstOrNull;
   }
 
-  /// Finds a specific field by name in a class.
-  ///
-  /// Returns null if no field with the given name is found.
-  /// Searches through all variables in field declarations.
+  /// Find a field (by variable name) in a class; returns null if not found.
   static FieldDeclaration? findField(
       ClassDeclaration classDecl, String fieldName) {
     return findFields(classDecl)
@@ -116,21 +66,19 @@ class AstHelper {
         .firstOrNull;
   }
 
-  /// Finds a constructor by name in a class.
-  ///
-  /// For default constructors, pass the class name as constructorName.
-  /// Returns null if no constructor with the given name is found.
+  /// Find a constructor by name; use class name for default constructor.
+  /// Returns null when the constructor is not present.
   static ConstructorDeclaration? findConstructor(
       ClassDeclaration classDecl, String constructorName) {
     return classDecl.members
         .whereType<ConstructorDeclaration>()
-        .where((c) => c.name?.lexeme == constructorName || (c.name == null && constructorName == classDecl.name.lexeme))
+        .where((c) =>
+            c.name?.lexeme == constructorName ||
+            (c.name == null && constructorName == classDecl.name.lexeme))
         .firstOrNull;
   }
 
-  /// Finds a method by name in an extension declaration.
-  ///
-  /// Returns null if no method with the given name is found.
+  /// Find a method by name in an extension; returns null if not found.
   static MethodDeclaration? findMethodInExtension(
       ExtensionDeclaration extension, String methodName) {
     return extension.members
@@ -141,19 +89,12 @@ class AstHelper {
 
   // ========== Import Analysis ==========
 
-  /// Gets all import directives from the compilation unit.
-  ///
-  /// Useful for analyzing what packages and files are imported.
+  /// Return all import directives from the compilation unit.
   static List<ImportDirective> getImports(CompilationUnit unit) {
     return unit.directives.whereType<ImportDirective>().toList();
   }
 
-  /// Checks if a specific import exists by URI.
-  ///
-  /// Example:
-  /// ```dart
-  /// final hasFlutter = AstHelper.hasImport(unit, 'package:flutter/material.dart');
-  /// ```
+  /// Check if an import exists by URI string.
   static bool hasImport(CompilationUnit unit, String importUri) {
     return getImports(unit)
         .any((import) => import.uri.stringValue == importUri);
@@ -161,9 +102,7 @@ class AstHelper {
 
   // ========== Type and Metadata Analysis ==========
 
-  /// Gets the superclass name of a class if it extends another class.
-  ///
-  /// Returns null if the class doesn't extend anything.
+  /// Get the superclass name for a class, or null if none.
   static String? getSuperclassName(ClassDeclaration classDecl) {
     final extendsClause = classDecl.extendsClause;
     if (extendsClause?.superclass != null) {
@@ -172,63 +111,47 @@ class AstHelper {
     return null;
   }
 
-  /// Checks if a method has an @override annotation.
-  ///
-  /// Useful for validating generated methods that should override base classes.
+  /// Check whether a method has an @override annotation.
   static bool hasOverrideAnnotation(MethodDeclaration method) {
     return method.metadata
         .any((annotation) => annotation.name.name == 'override');
   }
 
-  /// Gets the return type of a method as a string.
-  ///
-  /// Returns null for void methods or methods without explicit return types.
+  /// Get a method's return type as string, or null for void/implicit.
   static String? getMethodReturnType(MethodDeclaration method) {
     return method.returnType?.toString();
   }
 
   // ========== Field and Variable Analysis ==========
 
-  /// Gets all variable names from a field declaration.
-  ///
-  /// A single field declaration can declare multiple variables:
-  /// `String name, email, phone;` would return ['name', 'email', 'phone']
+  /// Get variable names from a field declaration (handles multiple vars).
   static List<String> getFieldVariableNames(FieldDeclaration field) {
     return field.fields.variables.map((v) => v.name.lexeme).toList();
   }
 
-  /// Gets all variable names from a variable declaration list.
-  ///
-  /// Similar to getFieldVariableNames but works directly with VariableDeclarationList.
+  /// Get variable names from a VariableDeclarationList.
   static List<String> getVariableNames(VariableDeclarationList variables) {
     return variables.variables.map((v) => v.name.lexeme).toList();
   }
 
-  /// Checks if a field is declared as final.
+  /// Check if a field is declared final.
   static bool isFieldFinal(FieldDeclaration field) {
     return field.fields.keyword?.lexeme == 'final';
   }
 
-  /// Checks if a variable declaration list is declared as final.
+  /// Check if a variable declaration list is declared final.
   static bool isVariableFinal(VariableDeclarationList variables) {
     return variables.keyword?.lexeme == 'final';
   }
 
-  /// Gets the type annotation of a field as a string.
-  ///
-  /// If no explicit type annotation exists, tries to infer from initializer.
-  /// Returns null if no type information is available.
+  /// Get a field's declared type; falls back to variable list inference.
   static String? getFieldType(FieldDeclaration field) {
     return getVariableType(field.fields);
   }
 
-  /// Gets the type annotation of a variable list as a string.
-  ///
-  /// This method tries multiple approaches:
-  /// 1. Explicit type annotation (e.g., `List<String> items = [];`)
-  /// 2. Type inference from typed literals (e.g., `var items = <String>[];`)
-  ///
-  /// Returns null if no type information can be determined.
+  /// Get declared type of variables list, with basic inference.
+  /// Tries explicit annotation, then typed literal initializers (e.g. <T>[]).
+  /// Returns null if type cannot be determined.
   static String? getVariableType(VariableDeclarationList variables) {
     // Try explicit type annotation first
     if (variables.type != null) {
