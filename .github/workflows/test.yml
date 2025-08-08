@@ -20,7 +20,7 @@ jobs:
       - run: dart pub get
       - run: dart format .
       - run: dart analyze
-      - run: flutter test --coverage 
+      - run: dart test --coverage=coverage
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
       - name: Report code coverage
