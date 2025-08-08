@@ -1,3 +1,9 @@
+## 2.0.0
+
+Updates all dependencies to latest. No breaking changes to our API, but from upgrade experience, the project will break because of other out dated dependencies. 
+
+That's why this was bumped by a major version instead of a minor/patch version. 
+
 ## [1.6.1](https://github.com/Stacked-Org/generator/compare/v1.6.0...v1.6.1) (2024-07-09)
 
 
