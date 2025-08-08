@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/src/generators/dialogs/dialog_config.dart';
 import 'package:test/test.dart';
 
 /// Helper class for AST-based code comparison and validation
@@ -127,6 +128,32 @@ class AstHelper {
     }
 
     return null;
+  }
+
+  /// Finds a constructor by name in a class
+  static ConstructorDeclaration? findConstructor(
+      ClassDeclaration classDecl, String constructorName) {
+    return classDecl.members
+        .whereType<ConstructorDeclaration>()
+        .where((c) => c.name?.lexeme == constructorName || (c.name == null && constructorName == classDecl.name.lexeme))
+        .firstOrNull;
+  }
+
+  /// Finds a method by name in an extension declaration
+  static MethodDeclaration? findMethodInExtension(
+      ExtensionDeclaration extension, String methodName) {
+    return extension.members
+        .whereType<MethodDeclaration>()
+        .where((m) => m.name.lexeme == methodName)
+        .firstOrNull;
+  }
+
+  /// Finds extension declaration by name
+  static ExtensionDeclaration? findExtension(CompilationUnit unit, String extensionName) {
+    return unit.declarations
+        .whereType<ExtensionDeclaration>()
+        .where((e) => e.name?.lexeme == extensionName)
+        .firstOrNull;
   }
 }
 
@@ -398,6 +425,383 @@ class RouterHelperAstValidator {
   }
 }
 
+/// Specialized validators for route_class_generator_test.dart
+class RouteClassGeneratorAstValidator {
+  /// Validates complete router generation for route_class_generator_test.dart
+  static void validateCompleteRouterGeneration(
+    String generatedCode, {
+    required String routerClassName,
+    required String routesClassName,
+    required List<RouteConfig> expectedRoutes,
+    bool shouldHaveNavigationExtension = true,
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Validate all components exist
+    _validateRoutesClassExists(unit, routesClassName, expectedRoutes);
+    _validateRouterClassExists(unit, routerClassName);
+    
+    if (shouldHaveNavigationExtension) {
+      _validateNavigationExtensionExists(unit, expectedRoutes);
+    }
+
+    // Validate argument classes for routes with parameters
+    _validateArgumentClassesExist(unit, expectedRoutes);
+  }
+
+  /// Validates a simple router with basic route structure
+  static void validateBasicRouterGeneration(
+    String generatedCode, {
+    required String routerClassName,
+    required String routesClassName,
+    required RouteConfig expectedRoute,
+  }) {
+    validateCompleteRouterGeneration(
+      generatedCode,
+      routerClassName: routerClassName,
+      routesClassName: routesClassName,
+      expectedRoutes: [expectedRoute],
+      shouldHaveNavigationExtension: true,
+    );
+  }
+
+  /// Validates nested router generation
+  static void validateNestedRouterGeneration(
+    String generatedCode, {
+    required String routerClassName,
+    required String routesClassName,
+    required RouteConfig parentRoute,
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Validate main router components
+    _validateRoutesClassExists(unit, routesClassName, [parentRoute]);
+    _validateRouterClassExists(unit, routerClassName);
+    
+    // If parent has children, validate nested router classes
+    if (parentRoute.children.isNotEmpty) {
+      final parentName = parentRoute.name ?? 'unknown';
+      final nestedRouterClassName = '${_capitalize(parentName)}Router';
+      final nestedRoutesClassName = '${_capitalize(parentName)}Routes';
+      
+      _validateRoutesClassExists(unit, nestedRoutesClassName, parentRoute.children);
+      _validateRouterClassExists(unit, nestedRouterClassName);
+    }
+
+    _validateNavigationExtensionExists(unit, [parentRoute]);
+  }
+
+  /// Validates router with aliased imports and complex parameters
+  static void validateRouterWithAliasedImports(
+    String generatedCode, {
+    required String routerClassName,
+    required String routesClassName,
+    required RouteConfig routeWithParameters,
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Basic structure validation
+    _validateRoutesClassExists(unit, routesClassName, [routeWithParameters]);
+    _validateRouterClassExists(unit, routerClassName);
+    _validateNavigationExtensionExists(unit, [routeWithParameters]);
+
+    // Validate PageRouteBuilder usage for custom routes
+    final routerClass = AstHelper.findClass(unit, routerClassName);
+    expect(routerClass, isNotNull, reason: 'Router class should exist');
+
+    // Validate argument class for parameters
+    if (routeWithParameters.parameters.isNotEmpty) {
+      final argumentsClassName = '${routeWithParameters.className}Arguments';
+      final argumentsClass = AstHelper.findClass(unit, argumentsClassName);
+      expect(argumentsClass, isNotNull,
+          reason: 'Arguments class should exist for route with parameters');
+    }
+  }
+
+  /// Validates mixed routing system with multiple route types
+  static void validateMixedRoutingSystem(
+    String generatedCode, {
+    required String routerClassName,
+    required String routesClassName,
+    required List<RouteConfig> mixedRoutes,
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Validate basic structure
+    _validateRoutesClassExists(unit, routesClassName, mixedRoutes);
+    _validateRouterClassExists(unit, routerClassName);
+    _validateNavigationExtensionExists(unit, mixedRoutes);
+
+    // Validate argument classes for routes with parameters
+    _validateArgumentClassesExist(unit, mixedRoutes);
+
+    // Ensure all route types are properly handled
+    final routerClass = AstHelper.findClass(unit, routerClassName);
+    expect(routerClass, isNotNull, reason: 'Router class should exist');
+    
+    final pagesMapField = AstHelper.findField(routerClass!, '_pagesMap');
+    expect(pagesMapField, isNotNull, reason: 'Router should have _pagesMap field');
+  }
+
+  // Private helper methods
+  static void _validateRoutesClassExists(
+    CompilationUnit unit,
+    String routesClassName,
+    List<RouteConfig> expectedRoutes,
+  ) {
+    final routesClass = AstHelper.findClass(unit, routesClassName);
+    expect(routesClass, isNotNull,
+        reason: 'Routes class $routesClassName should exist');
+
+    // Validate route constants
+    for (final route in expectedRoutes) {
+      final routeName = route.name ?? 'unknown';
+      final field = AstHelper.findField(routesClass!, routeName);
+      expect(field, isNotNull,
+          reason: 'Route $routeName should have a constant in $routesClassName');
+    }
+
+    // Validate 'all' field
+    final allField = AstHelper.findField(routesClass!, 'all');
+    expect(allField, isNotNull,
+        reason: '$routesClassName should have an "all" field');
+  }
+
+  static void _validateRouterClassExists(
+    CompilationUnit unit,
+    String routerClassName,
+  ) {
+    final routerClass = AstHelper.findClass(unit, routerClassName);
+    expect(routerClass, isNotNull,
+        reason: 'Router class $routerClassName should exist');
+
+    // Check inheritance
+    expect(routerClass!.extendsClause?.superclass.name2.lexeme,
+        contains('RouterBase'),
+        reason: '$routerClassName should extend RouterBase');
+
+    // Check required fields
+    expect(AstHelper.findField(routerClass, '_routes'), isNotNull,
+        reason: '$routerClassName should have _routes field');
+    expect(AstHelper.findField(routerClass, '_pagesMap'), isNotNull,
+        reason: '$routerClassName should have _pagesMap field');
+
+    // Check required getters
+    expect(AstHelper.findMethod(routerClass, 'routes'), isNotNull,
+        reason: '$routerClassName should have routes getter');
+    expect(AstHelper.findMethod(routerClass, 'pagesMap'), isNotNull,
+        reason: '$routerClassName should have pagesMap getter');
+  }
+
+  static void _validateNavigationExtensionExists(
+    CompilationUnit unit,
+    List<RouteConfig> expectedRoutes,
+  ) {
+    bool extensionFound = false;
+    
+    for (final declaration in unit.declarations) {
+      if (declaration is ExtensionDeclaration &&
+          declaration.name?.lexeme == 'NavigatorStateExtension') {
+        extensionFound = true;
+        
+        // Check navigation methods exist for each route
+        for (final route in expectedRoutes) {
+          final routeName = route.name ?? 'unknown';
+          final navigateName = 'navigateTo${_capitalize(routeName)}';
+          final replaceName = 'replaceWith${_capitalize(routeName)}';
+          
+          final navigateMethod = AstHelper.findMethodInExtension(declaration, navigateName);
+          final replaceMethod = AstHelper.findMethodInExtension(declaration, replaceName);
+          
+          expect(navigateMethod, isNotNull,
+              reason: 'Extension should have $navigateName method');
+          expect(replaceMethod, isNotNull,
+              reason: 'Extension should have $replaceName method');
+        }
+        break;
+      }
+    }
+
+    expect(extensionFound, isTrue,
+        reason: 'NavigatorStateExtension should exist');
+  }
+
+  static void _validateArgumentClassesExist(
+    CompilationUnit unit,
+    List<RouteConfig> expectedRoutes,
+  ) {
+    for (final route in expectedRoutes) {
+      // Only validate argument classes for routes with non-query parameters
+      final nonQueryParams = route.parameters.where((p) => !p.isQueryParam).toList();
+      
+      if (nonQueryParams.isNotEmpty) {
+        final argumentsClassName = '${route.className}Arguments';
+        final argumentsClass = AstHelper.findClass(unit, argumentsClassName);
+        
+        expect(argumentsClass, isNotNull,
+            reason: 'Arguments class $argumentsClassName should exist');
+            
+        if (argumentsClass != null) {
+          // Validate constructor exists
+          final constructor = AstHelper.findConstructor(argumentsClass, argumentsClassName);
+          expect(constructor, isNotNull,
+              reason: '$argumentsClassName should have a constructor');
+              
+          // Validate parameter fields exist for non-query params
+          for (final param in nonQueryParams) {
+            final field = AstHelper.findField(argumentsClass, param.name);
+            expect(field, isNotNull,
+                reason: '$argumentsClassName should have field ${param.name}');
+          }
+          
+          // Validate toString method exists
+          final toStringMethod = AstHelper.findMethod(argumentsClass, 'toString');
+          expect(toStringMethod, isNotNull,
+              reason: '$argumentsClassName should have toString method');
+        }
+      }
+    }
+  }
+
+  /// Helper method to capitalize first letter of a string
+  static String _capitalize(String text) {
+    if (text.isEmpty) return text;
+    return text[0].toUpperCase() + text.substring(1);
+  }
+}
+
+/// Specialized validators for dialog_class_generator_test.dart
+class DialogClassGeneratorAstValidator {
+  /// Validates dialog service setup generation with no dialogs
+  static void validateEmptyDialogSetup(
+    String generatedCode, {
+    String expectedLocatorCall = 'locator',
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Should have required imports
+    _validateRequiredImports(unit);
+    
+    // Should have empty DialogType enum
+    _validateDialogTypeEnum(unit, expectedDialogTypes: []);
+    
+    // Should have setupDialogUi function
+    _validateSetupDialogUiFunction(unit, expectedLocatorCall: expectedLocatorCall, expectedDialogCount: 0);
+  }
+
+  /// Validates dialog service setup with specified dialogs
+  static void validateDialogSetup(
+    String generatedCode, {
+    required List<DialogConfig> expectedDialogs,
+    String expectedLocatorCall = 'locator',
+  }) {
+    final unit = AstHelper.parseCode(generatedCode);
+    expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
+
+    // Should have required imports plus dialog imports
+    _validateRequiredImports(unit);
+    _validateDialogImports(unit, expectedDialogs);
+    
+    // Should have DialogType enum with expected entries
+    final expectedDialogTypes = expectedDialogs
+        .map((d) => d.enumValue)
+        .toList();
+    _validateDialogTypeEnum(unit, expectedDialogTypes: expectedDialogTypes);
+    
+    // Should have setupDialogUi function with builders map
+    _validateSetupDialogUiFunction(unit, 
+        expectedLocatorCall: expectedLocatorCall, 
+        expectedDialogCount: expectedDialogs.length);
+  }
+
+  // Private helper methods
+  static void _validateRequiredImports(CompilationUnit unit) {
+    expect(AstHelper.hasImport(unit, 'package:stacked_services/stacked_services.dart'), 
+        isTrue, reason: 'Should import stacked_services');
+    expect(AstHelper.hasImport(unit, 'app.locator.dart'), 
+        isTrue, reason: 'Should import app.locator.dart');
+  }
+
+  static void _validateDialogImports(CompilationUnit unit, List<DialogConfig> dialogs) {
+    for (final dialog in dialogs) {
+      expect(AstHelper.hasImport(unit, dialog.import), 
+          isTrue, reason: 'Should import ${dialog.import} for ${dialog.dialogClassName}');
+    }
+  }
+
+  static void _validateDialogTypeEnum(CompilationUnit unit, {required List<String> expectedDialogTypes}) {
+    // Find the DialogType enum
+    EnumDeclaration? dialogTypeEnum;
+    for (final declaration in unit.declarations) {
+      if (declaration is EnumDeclaration && declaration.name.lexeme == 'DialogType') {
+        dialogTypeEnum = declaration;
+        break;
+      }
+    }
+
+    expect(dialogTypeEnum, isNotNull, reason: 'Should contain DialogType enum');
+    
+    if (dialogTypeEnum != null) {
+      final enumValues = dialogTypeEnum.constants.map((c) => c.name.lexeme).toList();
+      expect(enumValues.length, equals(expectedDialogTypes.length), 
+          reason: 'DialogType enum should have ${expectedDialogTypes.length} values');
+      
+      for (final expectedType in expectedDialogTypes) {
+        expect(enumValues, contains(expectedType), 
+            reason: 'DialogType enum should contain $expectedType');
+      }
+    }
+  }
+
+  static void _validateSetupDialogUiFunction(
+    CompilationUnit unit, {
+    required String expectedLocatorCall,
+    required int expectedDialogCount,
+  }) {
+    // Find the setupDialogUi function
+    FunctionDeclaration? setupFunction;
+    for (final declaration in unit.declarations) {
+      if (declaration is FunctionDeclaration && 
+          declaration.name.lexeme == 'setupDialogUi') {
+        setupFunction = declaration;
+        break;
+      }
+    }
+
+    expect(setupFunction, isNotNull, reason: 'Should contain setupDialogUi function');
+    
+    if (setupFunction != null) {
+      // Validate function signature - should be void (either explicit or implicit)
+      final returnType = setupFunction.returnType?.toString();
+      expect(returnType == null || returnType == 'void', isTrue, 
+          reason: 'setupDialogUi should return void (implicit or explicit)');
+      expect(setupFunction.functionExpression.parameters?.parameters.length ?? 0, 
+          equals(0), reason: 'setupDialogUi should have no parameters');
+
+      // Check function body contains expected elements
+      final functionBody = setupFunction.functionExpression.body.toString();
+      
+      // Should contain locator call (locator or custom locator name)
+      expect(functionBody, contains('$expectedLocatorCall<DialogService>()'), 
+          reason: 'Should call $expectedLocatorCall<DialogService>()');
+      
+      // Should contain builders map declaration
+      expect(functionBody, contains('Map<DialogType, DialogBuilder>'), 
+          reason: 'Should declare builders map');
+      
+      // Should contain registerCustomDialogBuilders call
+      expect(functionBody, contains('registerCustomDialogBuilders(builders)'), 
+          reason: 'Should call registerCustomDialogBuilders');
+    }
+  }
+
+}
+
 /// Complete Router Generation AST validation functions
 class CompleteRouterAstValidator {
   /// Validates a complete router generation output (multiple classes + extensions)
@@ -438,12 +842,12 @@ class CompleteRouterAstValidator {
           expectedRoutes: expectedRoutes);
     }
 
-    // Should contain argument classes for routes with parameters
-    final routesWithParams =
-        expectedRoutes.where((r) => r.parameters.isNotEmpty);
-    if (routesWithParams.isNotEmpty) {
+    // Should contain argument classes for routes with non-query parameters
+    final routesWithNonQueryParams = expectedRoutes.where((r) => 
+        r.parameters.where((p) => !p.isQueryParam).isNotEmpty);
+    if (routesWithNonQueryParams.isNotEmpty) {
       validateArgumentClasses(generatedCode,
-          routesWithParameters: routesWithParams.toList());
+          routesWithParameters: routesWithNonQueryParams.toList());
     }
   }
 
@@ -526,10 +930,11 @@ class CompleteRouterAstValidator {
         expect(constructors, isNotEmpty,
             reason: '$argumentClassName should have constructor');
 
-        // Should have fields for each parameter
+        // Should have fields for each non-query parameter
+        final nonQueryParams = route.parameters.where((p) => !p.isQueryParam).toList();
         final fields = AstHelper.findFields(argumentClass);
-        expect(fields.length, greaterThanOrEqualTo(route.parameters.length),
-            reason: '$argumentClassName should have field for each parameter');
+        expect(fields.length, greaterThanOrEqualTo(nonQueryParams.length),
+            reason: '$argumentClassName should have field for each non-query parameter');
 
         // Should have toString method
         final methods = AstHelper.findMethods(argumentClass);

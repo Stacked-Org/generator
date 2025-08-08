@@ -9,14 +9,14 @@ import 'package:stacked_generator/src/generators/router_common/models/route_para
 import 'package:stacked_generator/src/generators/router_common/models/router_config.dart';
 import 'package:test/test.dart';
 
-import '../helpers/test_constants/router_constants.dart';
+import '../helpers/ast/router_ast_validators.dart';
 
 void main() {
   group('RouteClassGeneratorTest -', () {
-    void generateRouteAndExpectResult(
-      List<RouteConfig> routes,
-      dynamic expectedResult, {
+    void generateRouteAndExpectStructure(
+      List<RouteConfig> routes, {
       bool verbose = false,
+      void Function(String)? customValidation,
     }) {
       final routerBaseGenerator = RouterGenerator(RouterConfig(
         routesClassName: 'RoutesTestClassName',
@@ -28,7 +28,19 @@ void main() {
 
       // ignore: avoid_print
       if (verbose) print(result);
-      expect(result, expectedResult);
+      
+      if (customValidation != null) {
+        customValidation(result);
+      } else {
+        // Default validation for complete router generation
+        RouteClassGeneratorAstValidator.validateCompleteRouterGeneration(
+          result,
+          routerClassName: 'RouterTestClassName',
+          routesClassName: 'RoutesTestClassName',
+          expectedRoutes: routes,
+          shouldHaveNavigationExtension: true,
+        );
+      }
     }
 
     group(
@@ -37,11 +49,13 @@ void main() {
         test('When routes are empty', () {
           List<RouteConfig> routes = [];
 
-          generateRouteAndExpectResult(
+          generateRouteAndExpectStructure(
             routes,
-            '',
+            customValidation: (result) {
+              expect(result, isEmpty, reason: 'Should generate empty result for no routes');
+            },
           );
-        }, skip: 'Need to refactor for better tests');
+        });
 
         test('Given the following RouteConfig, Generate output', () {
           final List<RouteConfig> routes = [
@@ -52,10 +66,8 @@ void main() {
               classImport: 'test.dart',
             )
           ];
-          generateRouteAndExpectResult(
-            routes,
-            kRouterWithNamePathNameClassName,
-          );
+          
+          generateRouteAndExpectStructure(routes);
         });
 
         test('When adding NestedRouter with one child', () {
@@ -78,9 +90,16 @@ void main() {
             )
           ];
 
-          generateRouteAndExpectResult(
+          generateRouteAndExpectStructure(
             routes,
-            kRouterWithNestedRouter,
+            customValidation: (result) {
+              RouteClassGeneratorAstValidator.validateNestedRouterGeneration(
+                result,
+                routerClassName: 'RouterTestClassName',
+                routesClassName: 'RoutesTestClassName',
+                parentRoute: routes.first,
+              );
+            },
           );
         });
 
@@ -106,9 +125,16 @@ When a view parameter inside another data structure,
             )
           ];
 
-          generateRouteAndExpectResult(
+          generateRouteAndExpectStructure(
             routes,
-            kRouterWithAliasedImport,
+            customValidation: (result) {
+              RouteClassGeneratorAstValidator.validateRouterWithAliasedImports(
+                result,
+                routerClassName: 'RouterTestClassName',
+                routesClassName: 'RoutesTestClassName',
+                routeWithParameters: routes.first,
+              );
+            },
           );
         });
         test('When a parameter type is String', () {
@@ -129,9 +155,16 @@ When a view parameter inside another data structure,
             )
           ];
 
-          generateRouteAndExpectResult(
+          generateRouteAndExpectStructure(
             routes,
-            kParameterTypeString,
+            customValidation: (result) {
+              RouteClassGeneratorAstValidator.validateRouterWithAliasedImports(
+                result,
+                routerClassName: 'RouterTestClassName',
+                routesClassName: 'RoutesTestClassName',
+                routeWithParameters: routes.first,
+              );
+            },
           );
         });
 
@@ -194,14 +227,20 @@ When a view parameter inside another data structure,
               ),
             ];
 
-            generateRouteAndExpectResult(
+            generateRouteAndExpectStructure(
               routes,
-              kRouterMixin,
+              customValidation: (result) {
+                RouteClassGeneratorAstValidator.validateMixedRoutingSystem(
+                  result,
+                  routerClassName: 'RouterTestClassName',
+                  routesClassName: 'RoutesTestClassName',
+                  mixedRoutes: routes,
+                );
+              },
             );
           });
         });
       },
-      skip: 'Change the way we do our test comparisons',
     );
   });
 }
