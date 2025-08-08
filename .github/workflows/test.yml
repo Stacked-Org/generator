@@ -21,12 +21,16 @@ jobs:
       - run: dart format .
       - run: dart analyze
       - run: dart test --coverage=coverage
+      - name: Install coverage tools
+        run: dart pub global activate coverage
+      - name: Convert coverage to LCOV format
+        run: dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib
       - name: Setup LCOV
         uses: hrishikesh-kadam/setup-lcov@v1
       - name: Report code coverage
         uses: zgosalvez/github-actions-report-lcov@v4
         with:
-          coverage-files: coverage/lcov*.info
+          coverage-files: coverage/lcov.info
           artifact-name: code-coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
           update-comment: true
