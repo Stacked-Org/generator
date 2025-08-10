@@ -93,7 +93,7 @@ void main() {
 
         void main(_, SendPort port) {
           final logger = SimpleLogPrinter('classname');
-          final result = logger.log(LogEvent(Level.error, 'error', Exception('error')));
+          final result = logger.log(LogEvent(Level.error, 'error', error: Exception('error')));
 
           port.send(result.join('\\n'));
         }
@@ -109,5 +109,5 @@ void main() {
       expect(response, contains('classname |  - error'));
       expect(response, contains('ERROR: Exception: error'));
     });
-  }, skip: 'We need better testing ');
+  });
 }

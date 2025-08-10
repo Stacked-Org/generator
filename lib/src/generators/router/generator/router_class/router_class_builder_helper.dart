@@ -36,7 +36,7 @@ mixin RouterClassBuilderHelper {
   /// Example
   ///
   /// @override
-  /// Map<Type, _i1.StackedRouteFactory> get pagesMap => _pagesMap;
+  /// Map`<Type, _i1.StackedRouteFactory>` get pagesMap => _pagesMap;
   Method get pagesMapGetter => Method((b) => b
     ..name = 'pagesMap'
     ..annotations.add(const Reference('override'))
@@ -74,7 +74,7 @@ mixin RouterClassBuilderHelper {
 
   /// Example
   ///
-  ///  final _pagesMap = <Type, _i1.StackedRouteFactory>{};
+  ///  final _pagesMap = `<Type, _i1.StackedRouteFactory>`{};
   Field mapOfPages(List<RouteConfig> routes) => Field(
         (b) => b
           ..name = '_pagesMap'
@@ -142,7 +142,7 @@ mixin RouterClassBuilderHelper {
 
   /// Example
   ///
-  /// return MaterialPageRoute<dynamic>(
+  /// return MaterialPageRoute`<dynamic>`(
   ///   builder: (context) => HomeView(
   ///     key: args.key,
   ///     title: args.title,

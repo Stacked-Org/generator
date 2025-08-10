@@ -38,6 +38,21 @@ class AstHelper {
         .firstOrNull;
   }
 
+  /// Find all extension declarations in the compilation unit.
+  static List<ExtensionDeclaration> findExtensions(CompilationUnit unit) {
+    return unit.declarations.whereType<ExtensionDeclaration>().toList();
+  }
+
+  /// Find a top-level variable declaration by name.
+  static TopLevelVariableDeclaration? findTopLevelVariableDeclaration(
+      CompilationUnit unit, String variableName) {
+    return unit.declarations
+        .whereType<TopLevelVariableDeclaration>()
+        .where((v) => v.variables.variables
+            .any((variable) => variable.name.lexeme == variableName))
+        .firstOrNull;
+  }
+
   // ========== Class Member Finders ==========
 
   /// Return all method declarations in a class.
@@ -150,7 +165,7 @@ class AstHelper {
   }
 
   /// Get declared type of variables list, with basic inference.
-  /// Tries explicit annotation, then typed literal initializers (e.g. <T>[]).
+  /// Tries explicit annotation, then typed literal initializers (e.g. `<T>`[]).
   /// Returns null if type cannot be determined.
   static String? getVariableType(VariableDeclarationList variables) {
     // Try explicit type annotation first

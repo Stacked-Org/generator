@@ -15,7 +15,7 @@ class RoutesClassBuilder {
   /// static const String loginView = 'pathNamaw';
   /// static const String _homeView = '/family/:fid';
   /// static String homeView({@required dynamic fid}) => '/family/\$fid';
-  /// static const all = <String>{
+  /// static const all = `<String>`{
   /// loginView,_homeView,};}
   ///
   Class buildRoutesClass() {

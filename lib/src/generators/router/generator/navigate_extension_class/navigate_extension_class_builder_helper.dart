@@ -90,8 +90,8 @@ mixin NavigateExtensionClassBuilderHelper {
   ///
   /// int? routerId,
   /// bool preventDuplicates = true,
-  /// Map<String, String>? parameters,
-  /// Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)? transition,
+  /// Map`<String, String>?` parameters,
+  /// Widget Function(BuildContext, Animation`<double>`, Animation`<double>`, Widget)? transition,
   List<Parameter> get _constParameters => [
         Parameter((b) => b
           ..name = 'routerId'

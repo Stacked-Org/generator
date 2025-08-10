@@ -99,7 +99,7 @@ class FileHelper {
   ///   filePath (String): The path to the file to read.
   ///
   /// Returns:
-  ///   A Future<List<String>>
+  ///   A Future`<List<String>>`
   Future<List<String>> readFileAsLines({
     required String filePath,
   }) {

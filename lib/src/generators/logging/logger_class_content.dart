@@ -42,7 +42,7 @@ class SimpleLogPrinter extends LogPrinter {
 
     var methodNameSection =
         printCallingFunctionName && methodName != null ? ' | \$methodName' : '';
-    var stackLog = event.stackTrace.toString();
+    var stackLog = event.stackTrace?.toString() ?? '';
     var output =
         '\$emoji \$className\$methodNameSection - \${event.message}\${event.error != null ? '\\nERROR: \${event.error}\\n' : ''}\${printCallStack ? '\\nSTACKTRACE:\\n\$stackLog' : ''}';
 
@@ -61,7 +61,7 @@ class SimpleLogPrinter extends LogPrinter {
         if (kReleaseMode) {
           return match.group(0)!;
         } else {
-          return color!(match.group(0)!);
+          return color != null ? color(match.group(0)!) : match.group(0)!;
         }
       }));
     }
