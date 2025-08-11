@@ -16,6 +16,7 @@ class MaterialRouteConfig extends RouteConfig {
     super.children,
     super.imports,
     super.parentClassName,
+    super.pageType,
   });
 
   Code registerRoute() {

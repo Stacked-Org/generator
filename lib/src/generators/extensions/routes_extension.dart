@@ -7,11 +7,14 @@ extension RoutesExtension on RouterConfig {
     performAction(this);
 
     for (var route in routes) {
-      RouterConfig(
-        routes: route.children,
-        routerClassName: '${route.name}Router'.capitalize,
-        routesClassName: '${route.name}Routes'.capitalize,
-      ).traverseRoutes(performAction);
+      // Only create and traverse child router config if the route has children
+      if (route.children.isNotEmpty) {
+        RouterConfig(
+          routes: route.children,
+          routerClassName: '${route.name}Router'.capitalize,
+          routesClassName: '${route.name}Routes'.capitalize,
+        ).traverseRoutes(performAction);
+      }
     }
   }
 }

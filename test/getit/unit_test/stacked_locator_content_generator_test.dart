@@ -8,6 +8,7 @@ import 'package:stacked_generator/src/generators/getit/dependency_config/singlet
 import 'package:stacked_generator/src/generators/getit/stacked_locator_content_generator.dart';
 import 'package:test/test.dart';
 
+import '../../helpers/ast/getit_ast_validators.dart';
 import '../../helpers/test_constants/getit_constants.dart';
 
 void main() {
@@ -158,14 +159,33 @@ When params is not empty and DependencyParamConfig type have a question mark '?'
                 className: 'GeolocaorService',
                 params: {
                   FactoryParameter(
+                    name: 'param1',
                     type: 'newType?',
                     isFactoryParam: true,
                   ),
                 }),
           ];
 
-          callGeneratorWithServicesConfigAndExpectResult(dependencies,
-              kStackedLocaterWithOneDependencyOutputWithDependencyTypeFactoryWithParams);
+          final stackedLocaterContentGenerator = StackedLocatorContentGenerator(
+              dependencies: dependencies,
+              locatorName: 'filledstacksLocator',
+              locatorSetupName: 'filledstacksLocatorSetupName');
+          final result = stackedLocaterContentGenerator.generate();
+          
+          // AST-based validation
+          StackedLocatorContentGeneratorAstValidator.validateLocatorSetup(
+            result,
+            expectedDependencies: dependencies,
+            expectedLocatorName: 'filledstacksLocator',
+            expectedSetupName: 'filledstacksLocatorSetupName',
+          );
+          
+          // Validate factory with params registration
+          DependencyRegistrationAstValidator.validateFactoryWithParamsRegistration(
+            result,
+            expectedDependency: dependencies.first,
+            locatorName: 'filledstacksLocator',
+          );
         });
         test('''
 When params is not empty and DependencyParamConfig type is newType? and default value is shit
@@ -277,10 +297,27 @@ When provide two FactoryParamDependency and instanceName''', () {
               className: 'GeolocaorService',
             )
           ];
-          callGeneratorWithServicesConfigAndExpectResult(
-              dependencies, kStackedLocaterWithOneDependencyOutput,
+          
+          final stackedLocaterContentGenerator = StackedLocatorContentGenerator(
+              dependencies: dependencies,
               locatorName: 'ebraLocator',
               locatorSetupName: 'ebraLocatorSetupName');
+          final result = stackedLocaterContentGenerator.generate();
+          
+          // AST-based validation instead of string comparison
+          StackedLocatorContentGeneratorAstValidator.validateLocatorSetup(
+            result,
+            expectedDependencies: dependencies,
+            expectedLocatorName: 'ebraLocator',
+            expectedSetupName: 'ebraLocatorSetupName',
+          );
+          
+          // Validate specific singleton registration
+          DependencyRegistrationAstValidator.validateSingletonRegistration(
+            result,
+            expectedDependency: dependencies.first,
+            locatorName: 'ebraLocator',
+          );
         });
         test('with two dependencies', () {
           final dependencies = [
@@ -294,8 +331,28 @@ When provide two FactoryParamDependency and instanceName''', () {
             )
           ];
 
-          callGeneratorWithServicesConfigAndExpectResult(
-              dependencies, kStackedLocaterWithTwoDependenciesOutput);
+          final stackedLocaterContentGenerator = StackedLocatorContentGenerator(
+              dependencies: dependencies,
+              locatorName: 'filledstacksLocator',
+              locatorSetupName: 'filledstacksLocatorSetupName');
+          final result = stackedLocaterContentGenerator.generate();
+          
+          // AST-based validation
+          StackedLocatorContentGeneratorAstValidator.validateLocatorSetup(
+            result,
+            expectedDependencies: dependencies,
+            expectedLocatorName: 'filledstacksLocator',
+            expectedSetupName: 'filledstacksLocatorSetupName',
+          );
+          
+          // Validate each dependency registration
+          for (final dependency in dependencies) {
+            DependencyRegistrationAstValidator.validateSingletonRegistration(
+              result,
+              expectedDependency: dependency,
+              locatorName: 'filledstacksLocator',
+            );
+          }
         });
         test(
             'with two dependencies and added DependencyParamConfig imports and instanceName',

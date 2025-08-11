@@ -4,7 +4,7 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:test/test.dart';
 
 import '../../helpers/class_extension.dart';
-import '../../helpers/ast_comparison_helper.dart';
+import '../../helpers/ast/router_ast_validators.dart';
 
 final List<RouteConfig> _routes = [
   const MaterialRouteConfig(
