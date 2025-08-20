@@ -17,14 +17,14 @@ class SimpleLogPrinter extends LogPrinter {
   final String className;
   final bool printCallingFunctionName;
   final bool printCallStack;
-  final List<String> exludeLogsFromClasses;
+  final List<String> excludeLogsFromClasses;
   final String? showOnlyClass;
 
   SimpleLogPrinter(
     this.className, {
     this.printCallingFunctionName = true,
     this.printCallStack = false,
-    this.exludeLogsFromClasses = const [],
+    this.excludeLogsFromClasses = const [],
     this.showOnlyClass,
   });
 
@@ -44,7 +44,7 @@ class SimpleLogPrinter extends LogPrinter {
     var output =
         '\$emoji \$className\$methodNameSection - \${event.message}\${event.error != null ? '\\nERROR: \${event.error}\\n' : ''}\${printCallStack ? '\\nSTACKTRACE:\\n\$stackLog' : ''}';
 
-    if (exludeLogsFromClasses.any(
+    if (excludeLogsFromClasses.any(
           (excludeClass) => className == excludeClass,
         ) ||
         (showOnlyClass != null && className != showOnlyClass)) {
@@ -96,7 +96,7 @@ class SimpleLogPrinter extends LogPrinter {
       .toList();
   }
 
-  /// When the faulty word exists in the begging this method will not be very usefull
+  /// When the faulty word exists in the begging this method will not be very useful
   String _findMostMatchedTrace(List<String> stackTraces, List<String> keyWords) {
     String match = stackTraces.firstWhere(
         (trace) => _doesTraceContainsAllKeywords(trace, keyWords),
@@ -148,7 +148,7 @@ Logger ebraLogger(
   String className, {
   bool printCallingFunctionName = true,
   bool printCallstack = false,
-  List<String> exludeLogsFromClasses = const [],
+  List<String> excludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
   return Logger(
@@ -157,7 +157,7 @@ Logger ebraLogger(
       printCallingFunctionName: printCallingFunctionName,
       printCallStack: printCallstack,
       showOnlyClass: showOnlyClass,
-      exludeLogsFromClasses: exludeLogsFromClasses,
+      excludeLogsFromClasses: excludeLogsFromClasses,
     ),
     output: MultiOutput([
       if(!kReleaseMode)
@@ -186,14 +186,14 @@ class SimpleLogPrinter extends LogPrinter {
   final String className;
   final bool printCallingFunctionName;
   final bool printCallStack;
-  final List<String> exludeLogsFromClasses;
+  final List<String> excludeLogsFromClasses;
   final String? showOnlyClass;
 
   SimpleLogPrinter(
     this.className, {
     this.printCallingFunctionName = true,
     this.printCallStack = false,
-    this.exludeLogsFromClasses = const [],
+    this.excludeLogsFromClasses = const [],
     this.showOnlyClass,
   });
 
@@ -213,7 +213,7 @@ class SimpleLogPrinter extends LogPrinter {
     var output =
         '\$emoji \$className\$methodNameSection - \${event.message}\${event.error != null ? '\\nERROR: \${event.error}\\n' : ''}\${printCallStack ? '\\nSTACKTRACE:\\n\$stackLog' : ''}';
 
-    if (exludeLogsFromClasses.any(
+    if (excludeLogsFromClasses.any(
           (excludeClass) => className == excludeClass,
         ) ||
         (showOnlyClass != null && className != showOnlyClass)) {
@@ -265,7 +265,7 @@ class SimpleLogPrinter extends LogPrinter {
       .toList();
   }
 
-  /// When the faulty word exists in the begging this method will not be very usefull
+  /// When the faulty word exists in the begging this method will not be very useful
   String _findMostMatchedTrace(List<String> stackTraces, List<String> keyWords) {
     String match = stackTraces.firstWhere(
         (trace) => _doesTraceContainsAllKeywords(trace, keyWords),
@@ -317,7 +317,7 @@ Logger ebraLogger(
   String className, {
   bool printCallingFunctionName = true,
   bool printCallstack = false,
-  List<String> exludeLogsFromClasses = const [],
+  List<String> excludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
   return Logger(
@@ -326,7 +326,7 @@ Logger ebraLogger(
       printCallingFunctionName: printCallingFunctionName,
       printCallStack: printCallstack,
       showOnlyClass: showOnlyClass,
-      exludeLogsFromClasses: exludeLogsFromClasses,
+      excludeLogsFromClasses: excludeLogsFromClasses,
     ),
     output: MultiOutput([
       
@@ -341,12 +341,13 @@ const String kMultiLoggerImports = 'MultiLoggerImport';
 const String kMultipleLoggerOutput = 'MultiLoggerList';
 const String kDisableConsoleOutputInRelease = 'MultiLoggerList';
 
-const String kloggerClassNameAndOutputs = '''
+const String kloggerClassNameAndOutputs =
+    '''
 Logger $kLogHelperNameKey(
   String className, {
   bool printCallingFunctionName = true,
   bool printCallstack = false,
-  List<String> exludeLogsFromClasses = const [],
+  List<String> excludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
   return Logger(
@@ -355,7 +356,7 @@ Logger $kLogHelperNameKey(
       printCallingFunctionName: printCallingFunctionName,
       printCallStack: printCallstack,
       showOnlyClass: showOnlyClass,
-      exludeLogsFromClasses: exludeLogsFromClasses,
+      excludeLogsFromClasses: excludeLogsFromClasses,
     ),
     output: MultipleLoggerOutput([
       $kDisableConsoleOutputInRelease
@@ -370,7 +371,7 @@ Logger ebraLogger(
   String className, {
   bool printCallingFunctionName = true,
   bool printCallstack = false,
-  List<String> exludeLogsFromClasses = const [],
+  List<String> excludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
   return Logger(
@@ -379,7 +380,7 @@ Logger ebraLogger(
       printCallingFunctionName: printCallingFunctionName,
       printCallStack: printCallstack,
       showOnlyClass: showOnlyClass,
-      exludeLogsFromClasses: exludeLogsFromClasses,
+      excludeLogsFromClasses: excludeLogsFromClasses,
     ),
     output: MultipleLoggerOutput([
 
@@ -409,7 +410,7 @@ Logger getLogger(
   String className, {
   bool printCallingFunctionName = true,
   bool printCallstack = false,
-  List<String> exludeLogsFromClasses = const [],
+  List<String> excludeLogsFromClasses = const [],
   String? showOnlyClass,
 }) {
   return Logger(
@@ -418,7 +419,7 @@ Logger getLogger(
       printCallingFunctionName: printCallingFunctionName,
       printCallStack: printCallstack,
       showOnlyClass: showOnlyClass,
-      exludeLogsFromClasses: exludeLogsFromClasses,
+      excludeLogsFromClasses: excludeLogsFromClasses,
     ),
     output: MultiOutput([
       if(!kReleaseMode)
