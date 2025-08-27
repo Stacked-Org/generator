@@ -282,6 +282,20 @@ Expression getUrlParamAssignment(ParamConfig p) {
   }
 }
 
+Expression getConstructorParamAssignment(ParamConfig p) {
+  if (p.isPathParam) {
+    return refer('data').property('pathParams').property(p.getterMethodName).call([
+      literalString(p.paramName),
+      if (p.defaultValueCode != null && p.type.isNullable) refer(p.defaultValueCode!),
+    ]);
+  } else {
+    return refer('data').property('pathParams').property(p.getterMethodName).call([
+      literalString(p.paramName),
+      if (p.defaultValueCode != null && p.type.isNullable) refer(p.defaultValueCode!),
+    ]);
+  }
+}
+
 Iterable<Object> buildRoutes(List<RouteConfig> routes, {Reference? parent}) =>
     routes.map(
       (r) {
