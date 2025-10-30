@@ -240,7 +240,7 @@ const kExample1AddValidationMessageForTextEditingController = '''
       if (validatorForKey == null) return null;
       
       String? validationMessageForKey = validatorForKey(
-        _TestViewTextEditingControllers[key]!.text,
+        _TestViewTextEditingControllers[key]?.text,
       );
 
       return validationMessageForKey;
