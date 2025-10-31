@@ -347,7 +347,7 @@ class FormBuilder with StringBufferUtils {
       if (validatorForKey == null) return null;
       
       String? validationMessageForKey = validatorForKey(
-        _${viewName}TextEditingControllers[key]!.text,
+        _${viewName}TextEditingControllers[key]?.text,
       );
 
       return validationMessageForKey;
