@@ -11,7 +11,7 @@ dependencies:
   build: ^3.0.0
   path: ^1.9.1
   recase: ^4.1.0
-  source_gen: ^3.0.0
+  source_gen: 4.0.2
   meta: ^1.16.0
   logger: ^2.6.0
   stacked_shared: ^1.4.2
