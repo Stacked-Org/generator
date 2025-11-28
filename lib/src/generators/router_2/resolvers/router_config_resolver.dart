@@ -31,13 +31,13 @@ class RouterConfigResolver {
     bool? customRouteBarrierDismissible;
     ResolvedType? transitionBuilder;
     ResolvedType? customRouteBuilder;
-    if (stackedApp.instanceOf(const TypeChecker.fromRuntime(CupertinoRouter))) {
+    if (stackedApp.instanceOf(const TypeChecker.typeNamed(CupertinoRouter))) {
       routeType = RouteType.cupertino;
     } else if (stackedApp
-        .instanceOf(const TypeChecker.fromRuntime(AdaptiveRouter))) {
+        .instanceOf(const TypeChecker.typeNamed(AdaptiveRouter))) {
       routeType = RouteType.adaptive;
     } else if (stackedApp
-        .instanceOf(const TypeChecker.fromRuntime(CustomRouter))) {
+        .instanceOf(const TypeChecker.typeNamed(CustomRouter))) {
       routeType = RouteType.custom;
 
       durationInMilliseconds =
