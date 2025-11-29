@@ -58,11 +58,11 @@ FieldConfig _readFieldConfig({
   var fieldReader = ConstantReader(fieldConfig);
 
   bool isTextField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormTextField));
+      fieldReader.instanceOf(const TypeChecker.typeNamed(FormTextField));
   bool isDateField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormDateField));
+      fieldReader.instanceOf(const TypeChecker.typeNamed(FormDateField));
   bool isDropdownField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormDropdownField));
+      fieldReader.instanceOf(const TypeChecker.typeNamed(FormDropdownField));
 
   if (isTextField) {
     return _readTextFieldConfig(

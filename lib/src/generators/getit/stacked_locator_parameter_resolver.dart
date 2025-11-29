@@ -6,7 +6,7 @@ import 'package:stacked_shared/stacked_shared.dart';
 
 import 'dependency_config/factory_param_dependency.dart';
 
-const _factoryParamChecker = TypeChecker.fromRuntime(FactoryParam);
+const _factoryParamChecker = TypeChecker.typeNamed(FactoryParam);
 
 class DependencyParameterResolver {
   final ImportResolver _importResolver;

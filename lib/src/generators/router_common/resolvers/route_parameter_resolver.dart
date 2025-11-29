@@ -6,8 +6,8 @@ import 'package:stacked_generator/src/generators/router_common/resolvers/type_re
 import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
-const _pathParamChecker = TypeChecker.fromRuntime(PathParam);
-const _queryParamChecker = TypeChecker.fromRuntime(QueryParam);
+const _pathParamChecker = TypeChecker.typeNamed(PathParam);
+const _queryParamChecker = TypeChecker.typeNamed(QueryParam);
 
 class RouteParameterResolver {
   final TypeResolver _typeResolver;

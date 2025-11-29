@@ -64,7 +64,7 @@ class DependencyConfigFactory {
     // NOTE: This can be used for actual dependency inject. We do service location instead.
     final constructor = classElement.unnamedConstructor2;
 
-    if (dependencyReader.instanceOf(const TypeChecker.fromRuntime(Factory))) {
+    if (dependencyReader.instanceOf(const TypeChecker.typeNamed(Factory))) {
       return FactoryDependency(
         instanceName: instanceName,
         import: import!,
@@ -74,7 +74,7 @@ class DependencyConfigFactory {
         environments: environments,
       );
     } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(Singleton))) {
+        .instanceOf(const TypeChecker.typeNamed(Singleton))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
       final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
@@ -88,7 +88,7 @@ class DependencyConfigFactory {
           environments: environments,
           resolveFunction: resolveObject?.displayName);
     } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(LazySingleton))) {
+        .instanceOf(const TypeChecker.typeNamed(LazySingleton))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
       final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
@@ -103,7 +103,7 @@ class DependencyConfigFactory {
           resolveFunction: resolveObject?.displayName);
     } else if (dependencyReader
         // ignore: deprecated_member_use
-        .instanceOf(const TypeChecker.fromRuntime(Presolve))) {
+        .instanceOf(const TypeChecker.typeNamed(Presolve))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
       final presolveObject = presolveUsing?.objectValue.toFunctionValue2();
@@ -116,7 +116,7 @@ class DependencyConfigFactory {
           environments: environments,
           presolveFunction: presolveObject?.displayName);
     } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(InitializableSingleton))) {
+        .instanceOf(const TypeChecker.typeNamed(InitializableSingleton))) {
       return InitializableSingletonDependency(
         instanceName: instanceName,
         import: import!,
@@ -126,7 +126,7 @@ class DependencyConfigFactory {
         environments: environments,
       );
     } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(FactoryWithParam))) {
+        .instanceOf(const TypeChecker.typeNamed(FactoryWithParam))) {
       final Set<FactoryParameter> clazzParams = {};
       var params = constructor?.formalParameters;
       if (params?.isNotEmpty == true && constructor != null) {
