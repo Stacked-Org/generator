@@ -16,7 +16,10 @@ const TypeChecker autoRouteChecker = TypeChecker.fromUrl(
   'package:stacked_shared/src/code_generation/stacked_app.dart#StackedApp',
 );
 
-const TypeChecker stackedRouteChecker = TypeChecker.fromRuntime(StackedRoute);
+const TypeChecker stackedRouteChecker = TypeChecker.typeNamed(
+  StackedRoute,
+  inPackage: 'stacked_shared',
+);
 
 const validMetaValues = [
   'String',
@@ -127,19 +130,28 @@ class RouteConfigResolver {
     ResolvedType? customRouteBuilder;
     ResolvedType? transitionBuilder;
     int? customRouteBarrierColor;
-    if (stackedRoute.instanceOf(const TypeChecker.fromRuntime(MaterialRoute))) {
+    if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
+      MaterialRoute,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.material;
-    } else if (stackedRoute
-        .instanceOf(const TypeChecker.fromRuntime(CupertinoRoute))) {
+    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
+      CupertinoRoute,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.cupertino;
       cupertinoNavTitle = stackedRoute.peek('title')?.stringValue;
-    } else if (stackedRoute
-        .instanceOf(const TypeChecker.fromRuntime(AdaptiveRoute))) {
+    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
+      AdaptiveRoute,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.adaptive;
       cupertinoNavTitle = stackedRoute.peek('cupertinoPageTitle')?.stringValue;
       customRouteOpaque = stackedRoute.peek('opaque')?.boolValue;
-    } else if (stackedRoute
-        .instanceOf(const TypeChecker.fromRuntime(CustomRoute))) {
+    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
+      CustomRoute,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.custom;
       durationInMilliseconds =
           stackedRoute.peek('durationInMilliseconds')?.intValue;
@@ -241,7 +253,7 @@ class RouteConfigResolver {
       'Route widgets must have an unnamed constructor',
     );
     var hasConstConstructor = false;
-    var params = constructor!.parameters;
+    var params = constructor!.formalParameters;
     var parameters = <ParamConfig>[];
     if (params.isNotEmpty == true) {
       if (constructor.isConst &&
@@ -250,7 +262,7 @@ class RouteConfigResolver {
         hasConstConstructor = true;
       } else {
         final paramResolver = RouteParameterResolver(_typeResolver);
-        for (ParameterElement p in constructor.parameters) {
+        for (FormalParameterElement p in constructor.formalParameters) {
           parameters.add(paramResolver.resolve(
             p,
             pathParams: pathParams,

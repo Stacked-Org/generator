@@ -21,7 +21,7 @@ class StackedFormGenerator extends GeneratorForAnnotation<FormView> {
   ) async {
     var libs = await buildStep.resolver.libraries.toList();
     var importResolver =
-        ImportResolver(libs, classForAnnotation.source?.uri.path ?? '');
+        ImportResolver(libs, classForAnnotation.firstFragment.libraryFragment?.source.uri.path ?? '');
 
     final viewName = classForAnnotation.displayName;
 
@@ -55,12 +55,18 @@ FieldConfig _readFieldConfig({
 }) {
   var fieldReader = ConstantReader(fieldConfig);
 
-  bool isTextField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormTextField));
-  bool isDateField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormDateField));
-  bool isDropdownField =
-      fieldReader.instanceOf(const TypeChecker.fromRuntime(FormDropdownField));
+  bool isTextField = fieldReader.instanceOf(const TypeChecker.typeNamed(
+    FormTextField,
+    inPackage: 'stacked_shared',
+  ));
+  bool isDateField = fieldReader.instanceOf(const TypeChecker.typeNamed(
+    FormDateField,
+    inPackage: 'stacked_shared',
+  ));
+  bool isDropdownField = fieldReader.instanceOf(const TypeChecker.typeNamed(
+    FormDropdownField,
+    inPackage: 'stacked_shared',
+  ));
 
   if (isTextField) {
     return _readTextFieldConfig(

@@ -6,8 +6,14 @@ import 'package:stacked_generator/src/generators/router_common/models/route_para
 import 'package:stacked_generator/src/generators/router_common/resolvers/type_resolver.dart';
 import 'package:stacked_generator/utils.dart';
 
-const _pathParamChecker = TypeChecker.fromRuntime(PathParam);
-const _queryParamChecker = TypeChecker.fromRuntime(QueryParam);
+const _pathParamChecker = TypeChecker.typeNamed(
+  PathParam,
+  inPackage: 'stacked_shared',
+);
+const _queryParamChecker = TypeChecker.typeNamed(
+  QueryParam,
+  inPackage: 'stacked_shared',
+);
 
 class RouteParameterResolver {
   final TypeResolver _typeResolver;
@@ -15,7 +21,7 @@ class RouteParameterResolver {
   RouteParameterResolver(this._typeResolver);
 
   ParamConfig resolve(
-    ParameterElement parameterElement, {
+    FormalParameterElement parameterElement, {
     List<PathParamConfig> pathParams = const [],
     List<PathParamConfig> inheritedPathParams = const [],
   }) {
@@ -24,7 +30,7 @@ class RouteParameterResolver {
       return _resolveFunctionType(parameterElement);
     }
     var type = _typeResolver.resolveType(paramType);
-    final paramName = parameterElement.name.replaceFirst("_", '');
+    final paramName = (parameterElement.name ?? '').replaceFirst("_", '');
     var pathParamAnnotation =
         _pathParamChecker.firstAnnotationOfExact(parameterElement);
     String? paramAlias;
@@ -64,7 +70,7 @@ class RouteParameterResolver {
       name: paramName,
       alias: paramAlias,
       isPositional: parameterElement.isPositional,
-      hasRequired: parameterElement.hasRequired,
+      hasRequired: parameterElement.isRequired,
       isRequired: parameterElement.isRequiredNamed,
       isOptional: parameterElement.isOptional,
       isNamed: parameterElement.isNamed,
@@ -76,18 +82,18 @@ class RouteParameterResolver {
     );
   }
 
-  ParamConfig _resolveFunctionType(ParameterElement paramElement) {
+  ParamConfig _resolveFunctionType(FormalParameterElement paramElement) {
     var type = paramElement.type as FunctionType;
     return FunctionParamConfig(
         returnType: _typeResolver.resolveType(type.returnType),
         type: _typeResolver.resolveType(type),
-        params: type.parameters.map(resolve).toList(),
+        params: type.formalParameters.map(resolve).toList(),
         element: paramElement,
-        name: paramElement.name,
+        name: paramElement.name ?? '',
         defaultValueCode: paramElement.defaultValueCode,
         isRequired: paramElement.isRequiredNamed,
         isPositional: paramElement.isPositional,
-        hasRequired: paramElement.hasRequired,
+        hasRequired: paramElement.isRequired,
         isOptional: paramElement.isOptional,
         isNamed: paramElement.isNamed);
   }

@@ -31,13 +31,20 @@ class RouterConfigResolver {
     bool? customRouteBarrierDismissible;
     ResolvedType? transitionBuilder;
     ResolvedType? customRouteBuilder;
-    if (stackedApp.instanceOf(const TypeChecker.fromRuntime(CupertinoRouter))) {
+    if (stackedApp.instanceOf(const TypeChecker.typeNamed(
+      CupertinoRouter,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.cupertino;
-    } else if (stackedApp
-        .instanceOf(const TypeChecker.fromRuntime(AdaptiveRouter))) {
+    } else if (stackedApp.instanceOf(const TypeChecker.typeNamed(
+      AdaptiveRouter,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.adaptive;
-    } else if (stackedApp
-        .instanceOf(const TypeChecker.fromRuntime(CustomRouter))) {
+    } else if (stackedApp.instanceOf(const TypeChecker.typeNamed(
+      CustomRouter,
+      inPackage: 'stacked_shared',
+    ))) {
       routeType = RouteType.custom;
 
       durationInMilliseconds =

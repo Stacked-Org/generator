@@ -49,7 +49,7 @@ class StackedRouterGenerator extends Generator {
       var libs = await buildStep.resolver.libraries.toList();
       Uri? targetFileUri;
       if (annotation.peek('preferRelativeImports')?.boolValue != false) {
-        targetFileUri = element.source.uri;
+        targetFileUri = element.firstFragment.libraryFragment.source.uri;
       }
       typeResolver = TypeResolver(libs, targetFileUri);
     }
@@ -70,13 +70,19 @@ class StackedRouterGenerator extends Generator {
   }
 
   bool _hasPartDirective(ClassElement clazz) {
-    final fileName = clazz.source.uri.pathSegments.last;
+    final fileName =
+        clazz.firstFragment.libraryFragment.source.uri.pathSegments.last;
     final part = fileName.replaceAll(
       '.dart',
       '.gr.dart',
     );
-    return clazz.library.parts.any(
-      (e) => e.toString().endsWith(part),
-    );
+    return clazz.library.firstFragment.partIncludes.any((include) {
+      final includedPath =
+          include.includedFragment?.source.uri.pathSegments.last;
+      if (includedPath != null) {
+        return includedPath.endsWith(part);
+      }
+      return include.uri.toString().endsWith(part);
+    });
   }
 }

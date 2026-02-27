@@ -10,21 +10,23 @@ class ImportResolver {
 
   String? resolve(Element? element) {
     // return early if source is null or element is a core type
-    if (element?.source == null || _isCoreDartType(element)) {
+    final elementSourceUri = _sourceUriOfElement(element);
+    if (elementSourceUri == null || _isCoreDartType(element)) {
       return null;
     }
 
     for (var lib in libs) {
       if (_isCoreDartType(lib)) continue;
 
-      if (lib.exportNamespace.definedNames.keys.contains(element?.name)) {
-        final package = lib.source.uri.pathSegments.first;
+      if (lib.exportNamespace.definedNames2.values.contains(element)) {
+        final packageSourceUri = lib.firstFragment.source.uri;
+        final package = packageSourceUri.pathSegments.first;
         if (targetFilePath.startsWith(RegExp('^$package/'))) {
           return p.posix
-              .relative(element?.source?.uri.path ?? '', from: targetFilePath)
+              .relative(elementSourceUri.path, from: targetFilePath)
               .replaceFirst('../', '');
         } else {
-          return element?.source?.uri.toString();
+          return elementSourceUri.toString();
         }
       }
     }
@@ -33,7 +35,16 @@ class ImportResolver {
   }
 
   bool _isCoreDartType(Element? element) {
-    return element?.source?.fullName == 'dart:core';
+    if (element == null) {
+      return false;
+    }
+    return element is LibraryElement
+        ? element.isDartCore
+        : element.library?.isDartCore ?? false;
+  }
+
+  Uri? _sourceUriOfElement(Element? element) {
+    return element?.firstFragment.libraryFragment?.source.uri;
   }
 
   Set<String> resolveAll(DartType type) {

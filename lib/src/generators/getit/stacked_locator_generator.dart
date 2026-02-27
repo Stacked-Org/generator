@@ -21,7 +21,10 @@ class StackedLocatorGenerator extends GeneratorForAnnotation<StackedApp> {
     BuildStep buildStep,
   ) async {
     final libs = await buildStep.resolver.libraries.toList();
-    final importResolver = ImportResolver(libs, element.source?.uri.path ?? '');
+    final importResolver = ImportResolver(
+      libs,
+      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+    );
 
     final String locatorName =
         stackedApplication.peek('locatorName')!.stringValue;

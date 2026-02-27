@@ -18,7 +18,10 @@ class StackedLoggerGenerator extends GeneratorForAnnotation<StackedApp> {
   ) async {
     var loggerResolver = LoggerConfigResolver();
     var libs = await buildStep.resolver.libraries.toList();
-    var importResolver = ImportResolver(libs, element.source?.uri.path ?? '');
+    var importResolver = ImportResolver(
+      libs,
+      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+    );
 
     final loggerConfig = await loggerResolver.resolve(
       annotation,

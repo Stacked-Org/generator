@@ -63,7 +63,10 @@ class DependencyConfigFactory {
     // NOTE: This can be used for actual dependency inject. We do service location instead.
     final constructor = classElement.unnamedConstructor;
 
-    if (dependencyReader.instanceOf(const TypeChecker.fromRuntime(Factory))) {
+    if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
+      Factory,
+      inPackage: 'stacked_shared',
+    ))) {
       return FactoryDependency(
         instanceName: instanceName,
         import: import!,
@@ -72,8 +75,10 @@ class DependencyConfigFactory {
         abstractedImport: abstractedImport,
         environments: environments,
       );
-    } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(Singleton))) {
+    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
+      Singleton,
+      inPackage: 'stacked_shared',
+    ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
       final resolveObject = resolveUsing?.objectValue.toFunctionValue();
@@ -86,8 +91,10 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           resolveFunction: resolveObject?.displayName);
-    } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(LazySingleton))) {
+    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
+      LazySingleton,
+      inPackage: 'stacked_shared',
+    ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
       final resolveObject = resolveUsing?.objectValue.toFunctionValue();
@@ -100,8 +107,10 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           resolveFunction: resolveObject?.displayName);
-    } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(Presolve))) {
+    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
+      Presolve,
+      inPackage: 'stacked_shared',
+    ))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
       final presolveObject = presolveUsing?.objectValue.toFunctionValue();
@@ -115,10 +124,10 @@ class DependencyConfigFactory {
           presolveFunction: presolveObject?.displayName);
     } else {
       final Set<FactoryParameter> clazzParams = {};
-      var params = constructor?.parameters;
+      var params = constructor?.formalParameters;
       if (params?.isNotEmpty == true && constructor != null) {
         final paramResolver = DependencyParameterResolver(importResolver);
-        for (ParameterElement p in constructor.parameters) {
+        for (FormalParameterElement p in constructor.formalParameters) {
           clazzParams.add(paramResolver.resolve(p));
         }
       }

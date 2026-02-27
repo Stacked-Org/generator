@@ -6,14 +6,17 @@ import 'package:stacked_generator/utils.dart';
 
 import 'dependency_config/factory_param_dependency.dart';
 
-const _factoryParamChecker = TypeChecker.fromRuntime(FactoryParam);
+const _factoryParamChecker = TypeChecker.typeNamed(
+  FactoryParam,
+  inPackage: 'stacked_shared',
+);
 
 class DependencyParameterResolver {
   final ImportResolver _importResolver;
 
   const DependencyParameterResolver(this._importResolver);
 
-  FactoryParameter resolve(ParameterElement parameterElement) {
+  FactoryParameter resolve(FormalParameterElement parameterElement) {
     final paramType = parameterElement.type;
 
     final isFactoryParam =
@@ -21,7 +24,7 @@ class DependencyParameterResolver {
     return FactoryParameter(
       isFactoryParam: isFactoryParam,
       type: toDisplayString(paramType, withNullability: true),
-      name: parameterElement.name.replaceFirst("_", ''),
+      name: (parameterElement.name ?? '').replaceFirst("_", ''),
       isPositional: parameterElement.isPositional,
       isRequired: !parameterElement.isOptional,
       defaultValueCode: parameterElement.defaultValueCode,

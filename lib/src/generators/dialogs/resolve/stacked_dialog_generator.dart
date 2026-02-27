@@ -18,7 +18,10 @@ class StackedDialogGenerator extends GeneratorForAnnotation<StackedApp> {
   ) async {
     final dialogResolver = DialogConfigResolver();
     final libs = await buildStep.resolver.libraries.toList();
-    final importResolver = ImportResolver(libs, element.source?.uri.path ?? '');
+    final importResolver = ImportResolver(
+      libs,
+      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+    );
 
     /// If the dialogs parameter is not mentioned in the StackedApp
     /// return empty string
