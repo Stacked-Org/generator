@@ -9,8 +9,7 @@ void main() {
   group('FactoryTest -', () {
     /// unregiseter all the services before every test cause [StackedLocator] is a factory
     setUp(StackedLocator.instance.reset);
-    test('When forget to register factory, Should throw AssertionError',
-        () async {
+    test('When forget to register factory, Should throw StateError', () async {
       expect(() => factoryLocator<DumpService>(), throwsA(isA<StateError>()));
     });
     test('When register factory, Should returnsNormally', () async {
@@ -19,19 +18,21 @@ void main() {
       expect(() => factoryLocator<DumpService>(), returnsNormally);
     });
     test(
-        'When register factory with type, Should call it by the type not the implementation',
-        () async {
-      setupFactorywithtypeLocator();
-      expect(() => factoryLocator<DumpService>(), throwsA(isA<StateError>()));
-      expect(() => factoryLocator<AbstractDumpService>(), returnsNormally);
-    });
+      'When register factory with type, Should call it by the type not the implementation',
+      () async {
+        setupFactorywithtypeLocator();
+        expect(() => factoryLocator<DumpService>(), throwsA(isA<StateError>()));
+        expect(() => factoryLocator<AbstractDumpService>(), returnsNormally);
+      },
+    );
     test(
-        'When request multiple instances of a service, Should get a new one for every request',
-        () {
-      setupFactoryLocator();
-      final firstInstance = factoryLocator<DumpService>();
-      final secondInstance = factoryLocator<DumpService>();
-      expect(firstInstance == secondInstance, isFalse);
-    });
+      'When request multiple instances of a service, Should get a new one for every request',
+      () {
+        setupFactoryLocator();
+        final firstInstance = factoryLocator<DumpService>();
+        final secondInstance = factoryLocator<DumpService>();
+        expect(firstInstance == secondInstance, isFalse);
+      },
+    );
   });
 }

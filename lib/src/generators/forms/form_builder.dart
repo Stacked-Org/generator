@@ -123,9 +123,10 @@ class FormBuilder with StringBufferUtils {
     );
     for (var field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
+      final validatorName =
+          _sanitizeExecutableReference(field.validatorFunction?.validatorName);
       writeLine(
-        "${_getFormKeyName(caseName)}: ${field.validatorFunction?.validatorName},",
-      );
+          "${_getFormKeyName(caseName)}: ${validatorName ?? 'null'},");
     }
     writeLine("};");
     newLine();
@@ -187,6 +188,14 @@ class FormBuilder with StringBufferUtils {
     return this;
   }
 
+  @Deprecated(
+    'Use addGetTextEditingController instead. '
+    'This alias exists for backwards compatibility.',
+  )
+  FormBuilder addGetTextEditinController() {
+    return addGetTextEditingController();
+  }
+
   FormBuilder addGetCustomTextEditingController() {
     final textFieldsConfigs = fields.onlyTextFieldConfigs
         .where((element) => element.customTextEditingController != null);
@@ -197,7 +206,11 @@ class FormBuilder with StringBufferUtils {
 
     for (var tf in textFieldsConfigs) {
       final customTextEditingClassNameAndCallingFunction =
-          tf.customTextEditingController!.validatorName;
+          _sanitizeExecutableReference(
+                tf.customTextEditingController!.validatorName,
+              ) ??
+              tf.customTextEditingController!.validatorName ??
+              '';
       final customTextEditingClassName =
           tf.customTextEditingController!.returnType;
       newLine();
@@ -231,6 +244,14 @@ class FormBuilder with StringBufferUtils {
     ''');
     newLine();
     return this;
+  }
+
+  @Deprecated(
+    'Use addGetFocusNode instead. '
+    'This alias exists for backwards compatibility.',
+  )
+  FormBuilder addGetFocuNode() {
+    return addGetFocusNode();
   }
 
   FormBuilder addListenerRegistrationsForTextFields() {
@@ -594,4 +615,15 @@ class FormBuilder with StringBufferUtils {
   String _getControllerName(FieldConfig field) =>
       '${field.name.camelCase}Controller';
   String _getFormKeyName(ReCase caseName) => '${caseName.pascalCase}ValueKey';
+
+  String? _sanitizeExecutableReference(String? reference) {
+    if (reference == null) return null;
+
+    var sanitized = reference.trim();
+    while (sanitized.startsWith('.')) {
+      sanitized = sanitized.substring(1);
+    }
+
+    return sanitized.isEmpty ? null : sanitized;
+  }
 }

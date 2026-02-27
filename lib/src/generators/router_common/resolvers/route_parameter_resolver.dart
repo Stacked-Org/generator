@@ -6,8 +6,14 @@ import 'package:stacked_generator/src/generators/router_common/resolvers/type_re
 import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
-const _pathParamChecker = TypeChecker.fromRuntime(PathParam);
-const _queryParamChecker = TypeChecker.fromRuntime(QueryParam);
+const _pathParamChecker = TypeChecker.typeNamed(
+  PathParam,
+  inPackage: 'stacked_shared',
+);
+const _queryParamChecker = TypeChecker.typeNamed(
+  QueryParam,
+  inPackage: 'stacked_shared',
+);
 
 class RouteParameterResolver {
   final TypeResolver _typeResolver;
@@ -24,7 +30,7 @@ class RouteParameterResolver {
       return _resolveFunctionType(parameterElement);
     }
     var type = _typeResolver.resolveType(paramType);
-    final paramName = parameterElement.name3?.replaceFirst("_", '');
+    final paramName = (parameterElement.name ?? '').replaceFirst("_", '');
     var pathParamAnnotation =
         _pathParamChecker.firstAnnotationOfExact(parameterElement);
     String? paramAlias;
@@ -61,7 +67,7 @@ class RouteParameterResolver {
     return ParamConfig(
       type: type,
       element: parameterElement,
-      name: paramName!,
+      name: paramName,
       alias: paramAlias,
       isPositional: parameterElement.isPositional,
       hasRequired: parameterElement.isRequired,
@@ -79,18 +85,17 @@ class RouteParameterResolver {
   ParamConfig _resolveFunctionType(FormalParameterElement paramElement) {
     var type = paramElement.type as FunctionType;
     return FunctionParamConfig(
-      returnType: _typeResolver.resolveType(type.returnType),
-      type: _typeResolver.resolveType(type),
-      params: type.formalParameters.map(resolve).toList(),
-      element: paramElement,
-      name: paramElement.name3!,
-      defaultValueCode: paramElement.defaultValueCode,
-      isRequired: paramElement.isRequiredNamed,
-      isPositional: paramElement.isPositional,
-      hasRequired: paramElement.isRequired,
-      isOptional: paramElement.isOptional,
-      isNamed: paramElement.isNamed,
-    );
+        returnType: _typeResolver.resolveType(type.returnType),
+        type: _typeResolver.resolveType(type),
+        params: type.formalParameters.map(resolve).toList(),
+        element: paramElement,
+        name: paramElement.name ?? '',
+        defaultValueCode: paramElement.defaultValueCode,
+        isRequired: paramElement.isRequiredNamed,
+        isPositional: paramElement.isPositional,
+        hasRequired: paramElement.isRequired,
+        isOptional: paramElement.isOptional,
+        isNamed: paramElement.isNamed);
   }
 
   static List<PathParamConfig> extractPathParams(String path) {

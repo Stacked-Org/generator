@@ -62,8 +62,9 @@ class RouterGenerator implements BaseGenerator {
         ..body.addAll([...parsedClasses, navigationExtensionClassBuilder]),
     );
 
-    return DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
-        .format('${library.accept(emitter)}');
+    return DartFormatter(
+      languageVersion: DartFormatter.latestShortStyleLanguageVersion,
+    ).format('${library.accept(emitter)}');
   }
 
   /// The classes are:

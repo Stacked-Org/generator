@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart' show FormalParameterElement;
 import 'package:code_builder/code_builder.dart' as code;
 
 import 'importable_type.dart';

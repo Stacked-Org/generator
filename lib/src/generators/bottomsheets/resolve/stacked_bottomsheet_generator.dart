@@ -19,7 +19,9 @@ class StackedBottomsheetGenerator extends GeneratorForAnnotation<StackedApp> {
     final bottomsheetResolver = BottomsheetConfigResolver();
     final libs = await buildStep.resolver.libraries.toList();
     final importResolver = ImportResolver(
-        libs, element.firstFragment.libraryFragment?.source.uri.path ?? '');
+      libs,
+      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+    );
 
     /// If the bottomsheets parameter is not mentioned in the StackedApp
     /// return empty string

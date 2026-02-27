@@ -55,12 +55,13 @@ class ExecutableElementData {
   });
 
   factory ExecutableElementData.fromExecutableElement(
-      ExecutableElement2 executableElement) {
+      ExecutableElement executableElement) {
+    final enclosingElementName = executableElement.enclosingElement?.name;
     return ExecutableElementData(
-      returnType: executableElement.firstFragment.element.returnType.toString(),
-      enclosingElementName: executableElement.enclosingElement2?.name3,
+      returnType: executableElement.returnType.toString(),
+      enclosingElementName: enclosingElementName,
       hasEnclosingElementName:
-          executableElement.enclosingElement2?.name3 != null,
+          enclosingElementName != null && enclosingElementName.isNotEmpty,
       validatorName: executableElement.validatorName,
       validatorPath: executableElement.validatorPath,
     );
@@ -78,12 +79,18 @@ extension ListOfFieldConfigs on List<FieldConfig> {
       this.whereType<DropdownFieldConfig>().map((t) => t).toList();
 }
 
-extension ExecutableElementDataExtension on ExecutableElement2? {
+extension ExecutableElementDataExtension on ExecutableElement? {
   String? get validatorPath =>
       this?.firstFragment.libraryFragment.source.uri.toString();
-  String? get validatorName => hasEnclosingElementName
-      ? '$enclosingElementName.${this?.name3}'
-      : this?.name3;
-  bool get hasEnclosingElementName => enclosingElementName != null;
-  String? get enclosingElementName => this?.enclosingElement2?.name3;
+  String? get validatorName {
+    final enclosingName = enclosingElementName;
+    if (enclosingName != null && enclosingName.isNotEmpty) {
+      return '$enclosingName.${this?.name}';
+    }
+    return this?.name;
+  }
+
+  bool get hasEnclosingElementName =>
+      enclosingElementName != null && enclosingElementName!.isNotEmpty;
+  String? get enclosingElementName => this?.enclosingElement?.name;
 }

@@ -69,15 +69,20 @@ class StackedRouterGenerator extends Generator {
     );
   }
 
-  bool _hasPartDirective(ClassElement2 clazz) {
+  bool _hasPartDirective(ClassElement clazz) {
     final fileName =
         clazz.firstFragment.libraryFragment.source.uri.pathSegments.last;
     final part = fileName.replaceAll(
       '.dart',
       '.gr.dart',
     );
-    return clazz.library2.fragments.any(
-      (e) => e.toString().endsWith(part),
-    );
+    return clazz.library.firstFragment.partIncludes.any((include) {
+      final includedPath =
+          include.includedFragment?.source.uri.pathSegments.last;
+      if (includedPath != null) {
+        return includedPath.endsWith(part);
+      }
+      return include.uri.toString().endsWith(part);
+    });
   }
 }

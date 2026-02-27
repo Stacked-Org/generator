@@ -33,8 +33,8 @@ String generateLibrary(
   throwIf(config.element == null,
       'Element is required for the Navigator2 Router. Something is broken');
 
-  final fileName = config
-      .element!.firstFragment.libraryFragment.source.uri.pathSegments.last;
+  final fileName =
+      config.element!.firstFragment.libraryFragment.source.uri.pathSegments.last;
 
   throwIf(
     usesPartBuilder && deferredLoading,
@@ -86,13 +86,6 @@ String generateLibrary(
     (acc, a) => acc..addAll(a.guards),
   );
 
-  // final allGuardParameters = allGuards
-  //     .map(
-  //       (guard) =>
-  //           '${toLowerCamelCase(guard.name)}: ${refer(guard.name).accept(emitter)}',
-  //     )
-  //     .toList();
-
   /// Generate the extensions code that's required for declarativly supply
   /// arguments to a class navigation call
   final routerExtensionBuilder = RouterExtensionBuilder(
@@ -116,6 +109,7 @@ String generateLibrary(
       ]),
   );
 
-  return DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
-      .format(library.accept(emitter).toString());
+  return DartFormatter(
+    languageVersion: DartFormatter.latestShortStyleLanguageVersion,
+  ).format(library.accept(emitter).toString());
 }

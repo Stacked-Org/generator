@@ -14,9 +14,7 @@ class TypeResolver {
 
   String? resolveImport(Element2? element) {
     // return early if source is null or element is a core type
-    if (libs.isEmpty ||
-        element?.firstFragment.libraryFragment?.source == null ||
-        _isCoreDartType(element!)) {
+    if (libs.isEmpty || element == null || _isCoreDartType(element)) {
       return null;
     }
 
@@ -26,7 +24,7 @@ class TypeResolver {
         return targetFile == null
             ? lib.identifier
             : _relative(
-                lib.firstFragment.libraryFragment?.source.uri,
+                lib.firstFragment.source.uri,
                 targetFile!,
               );
       }
@@ -52,9 +50,10 @@ class TypeResolver {
     }
   }
 
-  bool _isCoreDartType(Element2 element) {
-    return element.firstFragment.libraryFragment?.source.fullName ==
-        'dart:core';
+  bool _isCoreDartType(Element element) {
+    return element is LibraryElement
+        ? element.isDartCore
+        : element.library?.isDartCore ?? false;
   }
 
   List<ResolvedType> _resolveTypeArguments(DartType typeToCheck) {
@@ -79,10 +78,12 @@ class TypeResolver {
   ResolvedType resolveFunctionType(ExecutableElement2 function) {
     final displayName = function.displayName.replaceFirst(RegExp('^_'), '');
     var functionName = displayName;
-    Element2? elementToImport = function;
-    if (function.enclosingElement2 is ClassElement2) {
-      functionName = '${function.enclosingElement2?.displayName}.$displayName';
-      elementToImport = function.enclosingElement2;
+    Element elementToImport = function;
+    final enclosingElement = function.enclosingElement;
+    if (enclosingElement is ClassElement) {
+      final enclosingDisplayName = enclosingElement.displayName;
+      functionName = '$enclosingDisplayName.$displayName';
+      elementToImport = enclosingElement;
     }
     return ResolvedType(
       name: functionName,

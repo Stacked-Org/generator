@@ -36,8 +36,8 @@ class SimpleLogPrinter extends LogPrinter {
   );
   @override
   List<String> log(LogEvent event) {
-    var color = printer.levelColors?[event.level];
-    var emoji = printer.levelEmojis?[event.level];
+    var color = PrettyPrinter.defaultLevelColors[event.level];
+    var emoji = PrettyPrinter.defaultLevelEmojis[event.level];
     var methodName = _getMethodName();
 
     var methodNameSection =

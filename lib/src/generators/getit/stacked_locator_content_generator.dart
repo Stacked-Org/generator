@@ -17,10 +17,12 @@ class StackedLocatorContentGenerator
   });
   @override
   String generate() {
-    final hasRouterService = dependencies
-        .any((depdenency) => depdenency.className == 'RouterService');
+    final hasRouterService = dependencies.any(
+      (depdenency) => depdenency.className == 'RouterService',
+    );
     writeLine(
-        "// ignore_for_file: public_member_api_docs, implementation_imports, depend_on_referenced_packages");
+      "// ignore_for_file: public_member_api_docs, implementation_imports, depend_on_referenced_packages",
+    );
 
     _generateImports(dependencies);
     if (hasRouterService) {
@@ -31,23 +33,28 @@ class StackedLocatorContentGenerator
     writeLine('final $locatorName = StackedLocator.instance;');
     newLine();
 
-    writeLine(
-      'Future<void> $locatorSetupName ({String? environment , EnvironmentFilter? environmentFilter,${hasRouterService ? ' StackedRouterWeb? stackedRouter,' : ''}}) async {',
-    );
+    final setupParameters = <String>[
+      'String? environment',
+      'EnvironmentFilter? environmentFilter',
+      if (hasRouterService) 'StackedRouterWeb? stackedRouter',
+    ].join(' , ');
+    writeLine('Future<void> $locatorSetupName ({$setupParameters}) async {');
 
     newLine();
     writeLine('// Register environments');
 
     writeLine(
-        '$locatorName.registerEnvironment(environment: environment, environmentFilter: environmentFilter);');
+      '$locatorName.registerEnvironment(environment: environment, environmentFilter: environmentFilter);',
+    );
 
     newLine();
     writeLine('// Register dependencies');
 
     // Loop through all service definitions and generate the code for it
     for (final dependency in dependencies) {
-      final registerDependenciesCode =
-          dependency.registerDependencies(locatorName);
+      final registerDependenciesCode = dependency.registerDependencies(
+        locatorName,
+      );
       writeLine(registerDependenciesCode);
     }
 
