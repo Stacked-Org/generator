@@ -1,6 +1,7 @@
 import 'package:stacked_generator/src/generators/base_generator.dart';
 import 'package:stacked_generator/src/generators/dialogs/dialog_config.dart';
 import 'package:stacked_generator/src/generators/dialogs/generate/dialog_class_generator_helper.dart';
+import 'package:stacked_generator/utils.dart';
 
 import 'dialog_class_content.dart';
 
@@ -12,8 +13,10 @@ class DialogClassGenerator extends DialogClassGeneratorHelper
   DialogClassGenerator(this.dialogConfigs, {this.locatorName});
 
   @override
-  String generate() {
-    writeStackedservicesAndGeneratedLocaterImports();
+  Future<String> generate() async {
+    writeStackedservicesAndGeneratedLocaterImports(
+      await getStackedAppFileName(),
+    );
 
     writeDialogsImports(dialogConfigs);
 

@@ -1,6 +1,8 @@
+import 'dart:async';
+
 /// Provides functionality common to all Generators
 abstract class BaseGenerator {
-  String generate();
+  FutureOr<String> generate();
 }
 
 mixin StringBufferUtils {

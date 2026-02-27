@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_this
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 
 /// Described a single field to be generated.
 ///
@@ -17,21 +17,20 @@ class TextFieldConfig extends FieldConfig {
   final ExecutableElementData? validatorFunction;
   final ExecutableElementData? customTextEditingController;
   const TextFieldConfig({
-    required String name,
+    required super.name,
     this.initialValue,
     this.validatorFunction,
     this.customTextEditingController,
-  }) : super(name: name);
+  });
 }
 
 class DateFieldConfig extends FieldConfig {
-  const DateFieldConfig({required String name}) : super(name: name);
+  const DateFieldConfig({required super.name});
 }
 
 class DropdownFieldConfig extends FieldConfig {
   final List<DropdownFieldItem> items;
-  const DropdownFieldConfig({required String name, required this.items})
-      : super(name: name);
+  const DropdownFieldConfig({required super.name, required this.items});
 }
 
 class DropdownFieldItem {

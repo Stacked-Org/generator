@@ -2,35 +2,53 @@ import 'package:stacked_generator/src/generators/dialogs/dialog_config.dart';
 import 'package:stacked_generator/src/generators/dialogs/generate/dialog_class_generator.dart';
 import 'package:test/test.dart';
 
-import '../helpers/test_constants/dialog_constant.dart';
+import '../helpers/ast/dialog_ast_validators.dart';
 
 void main() {
   group('DialogClassGeneratorTest -', () {
     group('generate -', () {
-      test('When empty', () {
+      test('When empty', () async {
         final generator = DialogClassGenerator([]);
-        expect(generator.generate(), kDialogsEmpty);
+        final result = await generator.generate();
+        
+        DialogClassGeneratorAstValidator.validateEmptyDialogSetup(result);
       });
-      test('When change locator name', () {
+      test('When change locator name', () async {
         final generator =
             DialogClassGenerator([], locatorName: 'customLocator');
-        expect(generator.generate(), kDialogsWithCustomNamedLocator);
+        final result = await generator.generate();
+        
+        DialogClassGeneratorAstValidator.validateEmptyDialogSetup(
+          result,
+          expectedLocatorCall: 'customLocator',
+        );
       });
-      test('One dialog', () {
-        final generator = DialogClassGenerator([
+      test('One dialog', () async {
+        final dialogs = [
           const DialogConfig(import: 'one.dart', dialogClassName: 'BasicDialog')
-        ]);
-        expect(generator.generate(), kOneDialog);
+        ];
+        final generator = DialogClassGenerator(dialogs);
+        final result = await generator.generate();
+        
+        DialogClassGeneratorAstValidator.validateDialogSetup(
+          result,
+          expectedDialogs: dialogs,
+        );
       });
-      test('Two dialogs', () {
-        final generator = DialogClassGenerator([
+      test('Two dialogs', () async {
+        final dialogs = [
           const DialogConfig(
               import: 'one.dart', dialogClassName: 'BasicDialog'),
           const DialogConfig(
               import: 'two.dart', dialogClassName: 'ComplexDialog')
-        ]);
+        ];
+        final generator = DialogClassGenerator(dialogs);
+        final result = await generator.generate();
 
-        expect(generator.generate(), kTwoDialogs);
+        DialogClassGeneratorAstValidator.validateDialogSetup(
+          result,
+          expectedDialogs: dialogs,
+        );
       });
     });
   });

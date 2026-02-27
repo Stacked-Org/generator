@@ -98,12 +98,11 @@ class FunctionParamConfig extends ParamConfig {
     required super.isOptional,
     required super.isNamed,
     required super.element,
-    required bool isRequired,
+    required super.isRequired,
     super.defaultValueCode,
   }) : super(
           isPathParam: false,
           isQueryParam: false,
-          isRequired: isRequired,
           isInheritedPathParam: false,
         );
 

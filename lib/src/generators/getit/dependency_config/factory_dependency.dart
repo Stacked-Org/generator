@@ -4,19 +4,13 @@ import 'package:stacked_generator/src/generators/extensions/string_utils_extensi
 
 class FactoryDependency extends DependencyConfig {
   const FactoryDependency({
-    required String import,
-    required String className,
-    String? abstractedImport,
-    String? abstractedTypeClassName,
-    Set<String>? environments,
-    String? instanceName,
-  }) : super(
-            instanceName: instanceName,
-            import: import,
-            className: className,
-            abstractedImport: abstractedImport,
-            abstractedTypeClassName: abstractedTypeClassName,
-            environments: environments);
+    required super.import,
+    required super.className,
+    super.abstractedImport,
+    super.abstractedTypeClassName,
+    super.environments,
+    super.instanceName,
+  });
 
   @override
   String registerDependencies(String locatorName) {

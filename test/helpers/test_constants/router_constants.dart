@@ -720,10 +720,7 @@ class RoutesClassName {
 
   static const _homeView = '/family/:fid';
 
-  static const all = <String>{
-    loginView,
-    _homeView,
-  };
+  static const all = <String>{loginView, _homeView};
 
   static String homeView({required dynamic fid}) => '/family/\$fid';
 }
@@ -776,14 +773,8 @@ import 'ui/login_class.dart' as _i2;
 import 'ui/home_class.dart' as _i3;
 
 final _routes = <_i1.RouteDef>[
-  _i1.RouteDef(
-    RoutesClassName.loginView,
-    page: _i2.LoginClass,
-  ),
-  _i1.RouteDef(
-    RoutesClassName.homeView,
-    page: _i3.HomeClass,
-  ),
+  _i1.RouteDef(RoutesClassName.loginView, page: _i2.LoginClass),
+  _i1.RouteDef(RoutesClassName.homeView, page: _i3.HomeClass),
 ];
 ''';
 const kRoutesGetter = '''
@@ -844,14 +835,16 @@ extension NavigatorStateExtension on _i1.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
+    transition,
   }) async {
-    return navigateTo<dynamic>(Routes.loginView,
-        arguments: LoginClassArguments(position: position, age: age),
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
+    return navigateTo<dynamic>(
+      Routes.loginView,
+      arguments: LoginClassArguments(position: position, age: age),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
   }
 
   Future<dynamic> navigateToHomeView({
@@ -862,14 +855,16 @@ extension NavigatorStateExtension on _i1.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
+    transition,
   }) async {
-    return navigateTo<dynamic>(Routes.homeView,
-        arguments: HomeClassArguments(car: car, age: age, markers: markers),
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
+    return navigateTo<dynamic>(
+      Routes.homeView,
+      arguments: HomeClassArguments(car: car, age: age, markers: markers),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
   }
 
   Future<dynamic> replaceWithLoginView({
@@ -879,14 +874,16 @@ extension NavigatorStateExtension on _i1.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
+    transition,
   }) async {
-    return replaceWith<dynamic>(Routes.loginView,
-        arguments: LoginClassArguments(position: position, age: age),
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
+    return replaceWith<dynamic>(
+      Routes.loginView,
+      arguments: LoginClassArguments(position: position, age: age),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
   }
 
   Future<dynamic> replaceWithHomeView({
@@ -897,14 +894,73 @@ extension NavigatorStateExtension on _i1.NavigationService {
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
-        transition,
+    transition,
   }) async {
-    return replaceWith<dynamic>(Routes.homeView,
-        arguments: HomeClassArguments(car: car, age: age, markers: markers),
-        id: routerId,
-        preventDuplicates: preventDuplicates,
-        parameters: parameters,
-        transition: transition);
+    return replaceWith<dynamic>(
+      Routes.homeView,
+      arguments: HomeClassArguments(car: car, age: age, markers: markers),
+      id: routerId,
+      preventDuplicates: preventDuplicates,
+      parameters: parameters,
+      transition: transition,
+    );
+  }
+}
+''';
+
+const kRouteNavigation2Extension = '''
+// ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:stacked_services/stacked_services.dart' as _i1;
+import 'marker.dart' as _i2;
+import 'package:stacked/stacked.dart' as _i3;
+import 'car.dart' as _i4;
+import 'map.dart' as _i5;
+
+extension RouterStateExtension on _i1.RouterService {
+  Future<dynamic> navigateToLoginView({
+    required _i2.Marker position,
+    int age,
+    void Function(_i3.NavigationFailure) onFailure,
+  }) async {
+    return navigateTo(
+      LoginClassRoute(position: position, age: age),
+      onFailure: onFailure,
+    );
+  }
+
+  Future<dynamic> navigateToHomeView({
+    required _i4.Car car,
+    int age,
+    List<_i5.Marker> markers,
+    void Function(_i3.NavigationFailure) onFailure,
+  }) async {
+    return navigateTo(
+      HomeClassRoute(car: car, age: age, markers: markers),
+      onFailure: onFailure,
+    );
+  }
+
+  Future<dynamic> replaceWithLoginView({
+    required _i2.Marker position,
+    int age,
+    void Function(_i3.NavigationFailure) onFailure,
+  }) async {
+    return replaceWith(
+      LoginClassRoute(position: position, age: age),
+      onFailure: onFailure,
+    );
+  }
+
+  Future<dynamic> replaceWithHomeView({
+    required _i4.Car car,
+    int age,
+    List<_i5.Marker> markers,
+    void Function(_i3.NavigationFailure) onFailure,
+  }) async {
+    return replaceWith(
+      HomeClassRoute(car: car, age: age, markers: markers),
+      onFailure: onFailure,
+    );
   }
 }
 ''';
@@ -914,10 +970,7 @@ import 'marker.dart' as _i1;
 import 'car.dart' as _i2;
 
 class LoginClassArguments {
-  const LoginClassArguments({
-    required this.position,
-    this.age,
-  });
+  const LoginClassArguments({required this.position, this.age});
 
   final _i1.Marker position;
 
@@ -941,11 +994,7 @@ class LoginClassArguments {
 }
 
 class HomeClassArguments {
-  const HomeClassArguments({
-    required this.car,
-    this.age,
-    this.color,
-  });
+  const HomeClassArguments({required this.car, this.age, this.color});
 
   final _i2.Car car;
 

@@ -6,8 +6,8 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:test/test.dart';
 
+import '../../helpers/ast/router_ast_validators.dart';
 import '../../helpers/class_extension.dart';
-import '../../helpers/test_constants/router_constants.dart';
 
 final List<RouteConfig> _routes = [
   MaterialRouteConfig(
@@ -65,16 +65,19 @@ final List<RouteConfig> _routes = [
 
 void main() {
   group('NavigateExtensionClassBuilderTest -', () {
-    Extension getBuilderInstance() => NavigateExtensionClassBuilder(
+    String getBuilderInstance() => NavigateExtensionClassBuilder(
           routes: _routes,
-        ).build(DartEmitter());
+        ).build(DartEmitter()).buildLibraryForClass;
 
     group('build -', () {
       test('Generate extension for strong type navigation', () {
         final builder = getBuilderInstance();
-        expect(
-          builder.buildLibraryForClass,
-          kRouteNavigationExtension,
+        
+        // AST-based validation instead of string comparison
+        NavigationExtensionAstValidator.validateNavigationExtension(
+          builder,
+          expectedRoutes: _routes,
+          extensionName: 'NavigatorStateExtension',
         );
       });
     });

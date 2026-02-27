@@ -4,7 +4,7 @@ import 'package:stacked_generator/src/generators/router_common/models/route_conf
 import 'package:test/test.dart';
 
 import '../../helpers/class_extension.dart';
-import '../../helpers/test_constants/router_constants.dart';
+import '../../helpers/ast/router_ast_validators.dart';
 
 final List<RouteConfig> _routes = [
   const MaterialRouteConfig(
@@ -22,22 +22,75 @@ final List<RouteConfig> _routes = [
 ];
 
 void main() {
-  group('RoutsClassBuilderTest -', () {
-    group('addRoutesClassName -', () {
-      test('Should generate route class names', () {
+  group('RouterClassBuilderTest -', () {
+    group('Router Class Generation -', () {
+      test('Should generate valid router class structure', () {
         final builder = RouterClassBuilder(
           routes: _routes,
           routesClassName: 'RoutesClassName',
           routerClassName: 'RouterClassName',
         ).buildRouterClass();
 
-        expect(
-          builder.buildLibraryForClass,
-          kRouterClass,
+        final generatedCode = builder.buildLibraryForClass;
+
+        // AST-based validation instead of string comparison
+        RouterAstValidator.validateRouterClassStructure(
+          generatedCode,
+          expectedClassName: 'RouterClassName',
+          expectedSuperclass: 'RouterBase',
         );
       });
-    },
-        skip:
-            'Skip until we refactor for better expectation comparisons. String tests are too fickle');
+
+      test('Should include required imports', () {
+        final builder = RouterClassBuilder(
+          routes: _routes,
+          routesClassName: 'RoutesClassName',
+          routerClassName: 'RouterClassName',
+        ).buildRouterClass();
+
+        final generatedCode = builder.buildLibraryForClass;
+
+        RouterAstValidator.validateRequiredImports(
+          generatedCode,
+          requiredImports: [
+            'package:stacked/stacked.dart',
+            'ui/login_class.dart',
+            'ui/home_class.dart',
+          ],
+        );
+      });
+
+      test('Should generate correct field structures', () {
+        final builder = RouterClassBuilder(
+          routes: _routes,
+          routesClassName: 'RoutesClassName',
+          routerClassName: 'RouterClassName',
+        ).buildRouterClass();
+
+        final generatedCode = builder.buildLibraryForClass;
+
+        RouterAstValidator.validateRoutesField(
+          generatedCode,
+          expectedRouteCount: _routes.length,
+        );
+
+        RouterAstValidator.validatePagesMapField(
+          generatedCode,
+          expectedPageCount: _routes.length,
+        );
+      });
+
+      test('Should generate correct getter methods', () {
+        final builder = RouterClassBuilder(
+          routes: _routes,
+          routesClassName: 'RoutesClassName',
+          routerClassName: 'RouterClassName',
+        ).buildRouterClass();
+
+        final generatedCode = builder.buildLibraryForClass;
+
+        RouterAstValidator.validateGetterMethods(generatedCode);
+      });
+    });
   });
 }

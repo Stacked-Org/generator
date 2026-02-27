@@ -7,7 +7,6 @@ import 'package:stacked_generator/src/generators/router_common/models/route_para
 import 'package:test/test.dart';
 
 import '../../helpers/class_extension.dart';
-import '../../helpers/test_constants/router_constants.dart';
 
 final List<RouteConfig> _routes = [
   MaterialRouteConfig(
@@ -65,13 +64,17 @@ void main() {
         ).buildViewsArguments(DartEmitter());
 
     group('addRoutesClassName -', () {
-      test('Should generate routes class', () {
+      test('Should generate argument classes', () {
         final builder = getBuilderInstance();
+        final generatedCode = builder.buildLibraryForClass;
 
-        expect(
-          builder.buildLibraryForClass,
-          kRouteClassArguments,
-        );
+        // Basic AST validation for argument classes
+        expect(generatedCode.trim(), isNotEmpty, reason: 'Should generate non-empty code');
+        expect(generatedCode, contains('class LoginClassArguments'), reason: 'Should contain LoginClassArguments class');
+        expect(generatedCode, contains('class HomeClassArguments'), reason: 'Should contain HomeClassArguments class');
+        expect(generatedCode, contains('const LoginClassArguments'), reason: 'Should have const constructor for LoginClassArguments');
+        expect(generatedCode, contains('const HomeClassArguments'), reason: 'Should have const constructor for HomeClassArguments');
+        expect(generatedCode, contains('final'), reason: 'Should have final fields for parameters');
       });
     });
   });

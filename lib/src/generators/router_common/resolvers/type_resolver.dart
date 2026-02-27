@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart'
     show NullabilitySuffix;
 import 'package:analyzer/dart/element/type.dart'
@@ -7,12 +7,12 @@ import 'package:path/path.dart' as p;
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
 
 class TypeResolver {
-  final List<LibraryElement> libs;
+  final List<LibraryElement2> libs;
   final Uri? targetFile;
 
   TypeResolver(this.libs, [this.targetFile]);
 
-  String? resolveImport(Element? element) {
+  String? resolveImport(Element2? element) {
     // return early if source is null or element is a core type
     if (libs.isEmpty || element == null || _isCoreDartType(element)) {
       return null;
@@ -32,17 +32,17 @@ class TypeResolver {
     return null;
   }
 
-  String _relative(Uri fileUri, Uri to) {
+  String _relative(Uri? fileUri, Uri to) {
     var libName = to.pathSegments.first;
     if ((to.scheme == 'package' &&
-            fileUri.scheme == 'package' &&
-            fileUri.pathSegments.first == libName) ||
-        (to.scheme == 'asset' && fileUri.scheme != 'package')) {
-      if (fileUri.path == to.path) {
-        return fileUri.pathSegments.last;
+            fileUri?.scheme == 'package' &&
+            fileUri?.pathSegments.first == libName) ||
+        (to.scheme == 'asset' && fileUri?.scheme != 'package')) {
+      if (fileUri?.path == to.path) {
+        return fileUri?.pathSegments.last ?? '';
       } else {
         return p.posix
-            .relative(fileUri.path, from: to.path)
+            .relative(fileUri?.path ?? '', from: to.path)
             .replaceFirst('../', '');
       }
     } else {
@@ -60,12 +60,12 @@ class TypeResolver {
     final types = <ResolvedType>[];
     if (typeToCheck is ParameterizedType) {
       for (DartType type in typeToCheck.typeArguments) {
-        if (type.element is TypeParameterElement) {
+        if (type.element3 is TypeParameterElement2) {
           types.add(ResolvedType(name: 'dynamic'));
         } else {
           types.add(ResolvedType(
-            name: type.element?.name ?? 'void',
-            import: resolveImport(type.element),
+            name: type.element3?.name3 ?? 'void',
+            import: resolveImport(type.element3),
             isNullable: type.nullabilitySuffix == NullabilitySuffix.question,
             typeArguments: _resolveTypeArguments(type),
           ));
@@ -75,7 +75,7 @@ class TypeResolver {
     return types;
   }
 
-  ResolvedType resolveFunctionType(ExecutableElement function) {
+  ResolvedType resolveFunctionType(ExecutableElement2 function) {
     final displayName = function.displayName.replaceFirst(RegExp('^_'), '');
     var functionName = displayName;
     Element elementToImport = function;
@@ -93,9 +93,9 @@ class TypeResolver {
 
   ResolvedType resolveType(DartType type) {
     return ResolvedType(
-      name: type.element?.name ?? type.getDisplayString(withNullability: false),
+      name: type.element3?.name3 ?? type.getDisplayString(),
       isNullable: type.nullabilitySuffix == NullabilitySuffix.question,
-      import: resolveImport(type.element),
+      import: resolveImport(type.element3),
       typeArguments: _resolveTypeArguments(type),
     );
   }

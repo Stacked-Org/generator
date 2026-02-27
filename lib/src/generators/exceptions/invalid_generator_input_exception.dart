@@ -1,9 +1,9 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 
 class InvalidGeneratorInputException implements Exception {
   final String message;
   final String? todo;
-  final Element? element;
+  final Element2? element;
   const InvalidGeneratorInputException(this.message, {this.todo, this.element});
 
   @override

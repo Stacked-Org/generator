@@ -5,6 +5,7 @@ import '../../../../helpers/dumb_service.dart';
 @StackedApp(
   routes: [],
   dependencies: [
+    // ignore: deprecated_member_use
     Presolve(classType: DumpService, presolveUsing: DumpService.presolve),
   ],
   locatorName: 'PresolvedsingletonLocator',

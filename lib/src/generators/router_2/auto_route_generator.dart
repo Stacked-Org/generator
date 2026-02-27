@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 // ignore: implementation_imports
@@ -27,18 +27,18 @@ class StackedRouterGenerator extends Generator {
   }
 
   dynamic generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
     // throw if annotation is used for a none class element
     throwIf(
-      element is! ClassElement,
-      '${element.name} is not a class element',
+      element is! ClassElement2,
+      '${element.name3} is not a class element',
       element: element,
     );
 
-    final clazz = element as ClassElement;
+    final clazz = element as ClassElement2;
     final usesPartBuilder = _hasPartDirective(clazz);
 
     final TypeResolver typeResolver;

@@ -1,17 +1,18 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/factory_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/presolve_singleton_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/dependency_config/singleton_dependency.dart';
 import 'package:stacked_generator/src/generators/getit/stacked_locator_parameter_resolver.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 import '../../../utils.dart';
 import 'dependency_config/dependency_config.dart';
 import 'dependency_config/factory_param_dependency.dart';
+import 'dependency_config/initializable_singleton_dependency.dart';
 import 'dependency_config/lazy_singleton.dart';
 
 class DependencyConfigFactory {
@@ -31,7 +32,7 @@ class DependencyConfigFactory {
     final DartType? dependencyAbstractedClassType =
         dependencyReader.peek('asType')?.typeValue;
 
-    final classElement = dependencyClassType.element as ClassElement?;
+    final classElement = dependencyClassType.element3 as ClassElement2?;
 
     throwIf(
       classElement == null,
@@ -50,7 +51,7 @@ class DependencyConfigFactory {
     final import = importResolver.resolve(classElement!);
 
     final abstractedClassElement =
-        dependencyAbstractedClassType?.element as ClassElement?;
+        dependencyAbstractedClassType?.element3 as ClassElement2?;
 
     final abstractedImport = importResolver.resolve(abstractedClassElement);
 
@@ -61,7 +62,7 @@ class DependencyConfigFactory {
         : null;
 
     // NOTE: This can be used for actual dependency inject. We do service location instead.
-    final constructor = classElement.unnamedConstructor;
+    final constructor = classElement.unnamedConstructor2;
 
     if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
       Factory,
@@ -81,7 +82,7 @@ class DependencyConfigFactory {
     ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
 
       return SingletonDependency(
           instanceName: instanceName,
@@ -97,7 +98,7 @@ class DependencyConfigFactory {
     ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
 
       return LazySingletonDependency(
           instanceName: instanceName,
@@ -113,7 +114,7 @@ class DependencyConfigFactory {
     ))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
-      final presolveObject = presolveUsing?.objectValue.toFunctionValue();
+      final presolveObject = presolveUsing?.objectValue.toFunctionValue2();
       return PresolveSingletonDependency(
           instanceName: instanceName,
           import: import!,
@@ -122,7 +123,18 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           presolveFunction: presolveObject?.displayName);
-    } else {
+    } else if (dependencyReader
+        .instanceOf(const TypeChecker.fromRuntime(InitializableSingleton))) {
+      return InitializableSingletonDependency(
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+      );
+    } else if (dependencyReader
+        .instanceOf(const TypeChecker.fromRuntime(FactoryWithParam))) {
       final Set<FactoryParameter> clazzParams = {};
       var params = constructor?.formalParameters;
       if (params?.isNotEmpty == true && constructor != null) {
@@ -139,6 +151,10 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           params: clazzParams);
+    } else {
+      throw UnimplementedError(
+        'This Dependency ${dependencyReader.typeValue} is not implemented yet upgrading stacked_generator package to the latest version may fix the issue',
+      );
     }
   }
 }

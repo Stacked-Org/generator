@@ -1,13 +1,13 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
 import 'package:stacked_generator/src/generators/getit/stacked_locator_content_generator.dart';
 import 'package:stacked_generator/utils.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 import 'dependency_config/dependency_config.dart';
 import 'dependency_config_factory.dart';
@@ -15,7 +15,7 @@ import 'dependency_config_factory.dart';
 class StackedLocatorGenerator extends GeneratorForAnnotation<StackedApp> {
   @override
   FutureOr<String> generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     // ignore: avoid_renaming_method_parameters
     ConstantReader stackedApplication,
     BuildStep buildStep,

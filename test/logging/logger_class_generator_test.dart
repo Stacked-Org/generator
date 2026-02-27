@@ -2,7 +2,7 @@ import 'package:stacked_generator/src/generators/logging/logger_class_generator.
 import 'package:stacked_generator/src/generators/logging/logger_config.dart';
 import 'package:test/test.dart';
 
-import '../helpers/test_constants/logger_constants.dart';
+import '../helpers/ast/logger_ast_validators.dart';
 
 void main() {
   group('LoggerClassGeneratorTest -', () {
@@ -13,7 +13,12 @@ void main() {
             logHelperName: 'ebraLogger',
             loggerOutputs: ['outputOne', 'outputTwo']);
         final generatedCode = LoggerClassGenerator(loggerConfig).generate();
-        expect(generatedCode, kloggerClassContent);
+        
+        // AST-based validation instead of string comparison
+        LoggerClassGeneratorAstValidator.validateLoggerGeneration(
+          generatedCode,
+          expectedConfig: loggerConfig,
+        );
       });
       test(
           'Given a LoggerConfig with disableReleaseConsoleOutput=false, Should predict the output',
@@ -24,8 +29,12 @@ void main() {
             logHelperName: 'ebraLogger',
             loggerOutputs: ['outputOne', 'outputTwo']);
         final generatedCode = LoggerClassGenerator(loggerConfig).generate();
-        expect(
-            generatedCode, kloggerClassContentWithDisableReleaseConsoleOutput);
+        
+        // AST-based validation instead of string comparison
+        LoggerClassGeneratorAstValidator.validateLoggerGeneration(
+          generatedCode,
+          expectedConfig: loggerConfig,
+        );
       });
     });
   });

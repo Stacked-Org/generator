@@ -36,7 +36,7 @@ mixin class RouterClassBuilderHelper {
   /// Example
   ///
   /// @override
-  /// Map<Type, _i1.StackedRouteFactory> get pagesMap => _pagesMap;
+  /// Map`<Type, _i1.StackedRouteFactory>` get pagesMap => _pagesMap;
   Method get pagesMapGetter => Method((b) => b
     ..name = 'pagesMap'
     ..annotations.add(const Reference('override'))
@@ -74,20 +74,19 @@ mixin class RouterClassBuilderHelper {
 
   /// Example
   ///
-  ///  final _pagesMap = <Type, _i1.StackedRouteFactory>{};
+  ///  final _pagesMap = `<Type, _i1.StackedRouteFactory>`{};
   Field mapOfPages(List<RouteConfig> routes) => Field(
         (b) => b
           ..name = '_pagesMap'
           ..modifier = FieldModifier.final$
           ..assignment = literalMap(
-              _pages(routes),
-              const Reference(
-                'Type',
-              ),
-              const Reference(
-                'StackedRouteFactory',
-                'package:stacked/stacked.dart',
-              )).code,
+            _pages(routes),
+            const Reference('Type'),
+            const Reference(
+              'StackedRouteFactory',
+              'package:stacked/stacked.dart',
+            ),
+          ).code,
       );
 
   Map<Reference, Method> _pages(List<RouteConfig> routes) {
@@ -110,9 +109,7 @@ mixin class RouterClassBuilderHelper {
 
     return Method(
       (b) => b
-        ..requiredParameters.add(Parameter(
-          (b) => b..name = 'data',
-        ))
+        ..requiredParameters.add(Parameter((b) => b..name = 'data'))
         ..body = Block.of([
           if (notQueryNorPathParameters.isNotEmpty) ...[
             _prepareArgs(argsType),
@@ -145,7 +142,7 @@ mixin class RouterClassBuilderHelper {
 
   /// Example
   ///
-  /// return MaterialPageRoute<dynamic>(
+  /// return MaterialPageRoute`<dynamic>`(
   ///   builder: (context) => HomeView(
   ///     key: args.key,
   ///     title: args.title,

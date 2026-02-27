@@ -1,9 +1,9 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:stacked_shared/stacked_shared.dart';
 import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
 import 'package:stacked_generator/utils.dart';
+import 'package:stacked_shared/stacked_shared.dart';
 
 import '../../router_common/models/importable_type.dart';
 import '../../router_common/models/route_config.dart';
@@ -72,17 +72,17 @@ class RouteConfigResolver {
     }
 
     throwIf(
-      page.element is! ClassElement,
-      '${page.getDisplayString(withNullability: false)} is not a class element',
-      element: page.element,
+      page.element3 is! ClassElement2,
+      '${page.getDisplayString()} is not a class element',
+      element: page.element3,
     );
 
-    final classElement = page.element as ClassElement;
+    final classElement = page.element3 as ClassElement2;
     final import = _typeResolver.resolveImport(classElement);
-    final hasWrappedRoute = classElement.allSupertypes.any((e) =>
-        e.getDisplayString(withNullability: false) == 'AutoRouteWrapper');
+    final hasWrappedRoute = classElement.allSupertypes
+        .any((e) => e.getDisplayString() == 'AutoRouteWrapper');
     var pageType = _typeResolver.resolveType(page);
-    var className = page.getDisplayString(withNullability: false);
+    var className = page.getDisplayString();
 
     if (path == null) {
       var prefix = _routerConfig.parent != null ? '' : '/';
@@ -164,14 +164,14 @@ class RouteConfigResolver {
       final function = stackedRoute
           .peek('transitionsBuilder')
           ?.objectValue
-          .toFunctionValue();
+          .toFunctionValue2();
       if (function != null) {
         transitionBuilder = _typeResolver.resolveFunctionType(function);
       }
       final builderFunction = stackedRoute
           .peek('customRouteBuilder')
           ?.objectValue
-          .toFunctionValue();
+          .toFunctionValue2();
       if (builderFunction != null) {
         customRouteBuilder = _typeResolver.resolveFunctionType(builderFunction);
       }
@@ -197,8 +197,7 @@ class RouteConfigResolver {
         .mapValue
         .entries
         .where((e) => e.value?.type != null)) {
-      final valueType =
-          entry.value!.type!.getDisplayString(withNullability: false);
+      final valueType = entry.value!.type!.getDisplayString();
       throwIf(!validMetaValues.contains(valueType),
           'Meta value type $valueType is not supported!\nSupported types are $validMetaValues');
       switch (valueType) {
@@ -247,7 +246,7 @@ class RouteConfigResolver {
 
     var replacementInRouteName = _routerConfig.replaceInRouteName;
 
-    final constructor = classElement.unnamedConstructor;
+    final constructor = classElement.unnamedConstructor2;
     throwIf(
       constructor == null,
       'Route widgets must have an unnamed constructor',
@@ -258,7 +257,7 @@ class RouteConfigResolver {
     if (params.isNotEmpty == true) {
       if (constructor.isConst &&
           params.length == 1 &&
-          params.first.type.getDisplayString(withNullability: false) == 'Key') {
+          params.first.type.getDisplayString() == 'Key') {
         hasConstConstructor = true;
       } else {
         final paramResolver = RouteParameterResolver(_typeResolver);
