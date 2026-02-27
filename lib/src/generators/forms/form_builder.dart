@@ -188,6 +188,14 @@ class FormBuilder with StringBufferUtils {
     return this;
   }
 
+  @Deprecated(
+    'Use addGetTextEditingController instead. '
+    'This alias exists for backwards compatibility.',
+  )
+  FormBuilder addGetTextEditinController() {
+    return addGetTextEditingController();
+  }
+
   FormBuilder addGetCustomTextEditingController() {
     final textFieldsConfigs = fields.onlyTextFieldConfigs
         .where((element) => element.customTextEditingController != null);
@@ -236,6 +244,14 @@ class FormBuilder with StringBufferUtils {
     ''');
     newLine();
     return this;
+  }
+
+  @Deprecated(
+    'Use addGetFocusNode instead. '
+    'This alias exists for backwards compatibility.',
+  )
+  FormBuilder addGetFocuNode() {
+    return addGetFocusNode();
   }
 
   FormBuilder addListenerRegistrationsForTextFields() {

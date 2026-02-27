@@ -15,6 +15,15 @@ import 'dependency_config/factory_param_dependency.dart';
 import 'dependency_config/initializable_singleton_dependency.dart';
 import 'dependency_config/lazy_singleton.dart';
 
+const _initializableSingletonChecker = TypeChecker.typeNamed(
+  InitializableSingleton,
+  inPackage: 'stacked_shared',
+);
+const _factoryWithParamChecker = TypeChecker.typeNamed(
+  FactoryWithParam,
+  inPackage: 'stacked_shared',
+);
+
 class DependencyConfigFactory {
   static DependencyConfig fromResolver({
     required DartObject dependencyConfig,
@@ -123,8 +132,7 @@ class DependencyConfigFactory {
           abstractedImport: abstractedImport,
           environments: environments,
           presolveFunction: presolveObject?.displayName);
-    } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(InitializableSingleton))) {
+    } else if (dependencyReader.instanceOf(_initializableSingletonChecker)) {
       return InitializableSingletonDependency(
         instanceName: instanceName,
         import: import!,
@@ -133,8 +141,7 @@ class DependencyConfigFactory {
         abstractedImport: abstractedImport,
         environments: environments,
       );
-    } else if (dependencyReader
-        .instanceOf(const TypeChecker.fromRuntime(FactoryWithParam))) {
+    } else if (dependencyReader.instanceOf(_factoryWithParamChecker)) {
       final Set<FactoryParameter> clazzParams = {};
       var params = constructor?.formalParameters;
       if (params?.isNotEmpty == true && constructor != null) {

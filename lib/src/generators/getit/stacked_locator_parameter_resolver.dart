@@ -23,7 +23,7 @@ class DependencyParameterResolver {
         _factoryParamChecker.hasAnnotationOfExact(parameterElement);
     return FactoryParameter(
       isFactoryParam: isFactoryParam,
-      type: toDisplayString(paramType, withNullability: true),
+      type: toDisplayString(paramType),
       name: (parameterElement.name ?? '').replaceFirst("_", ''),
       isPositional: parameterElement.isPositional,
       isRequired: !parameterElement.isOptional,
