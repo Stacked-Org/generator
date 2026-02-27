@@ -810,19 +810,20 @@ const kMapOfPages = '''
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:stacked/stacked.dart' as _i1;
 import 'ui/login_class.dart' as _i2;
-import 'ui/home_class.dart' as _i3;
+import 'package:flutter/material.dart' as _i3;
+import 'ui/home_class.dart' as _i4;
 
 final _pagesMap = <Type, _i1.StackedRouteFactory>{
   _i2.LoginClass: (data) {
-    return MaterialPageRoute<dynamic>(
+    return _i3.MaterialPageRoute<dynamic>(
       builder: (context) => _i2.LoginClass(),
       settings: data,
     );
   },
-  _i3.HomeClass: (data) {
+  _i4.HomeClass: (data) {
     final args = data.getArgs<HomeClassArguments>(nullOk: false);
-    return MaterialPageRoute<dynamic>(
-      builder: (context) => _i3.HomeClass(name: args.name),
+    return _i3.MaterialPageRoute<dynamic>(
+      builder: (context) => _i4.HomeClass(name: args.name),
       settings: data,
     );
   },

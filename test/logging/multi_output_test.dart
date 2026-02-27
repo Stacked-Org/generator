@@ -27,9 +27,9 @@ void main() {
           static bool destroyCalled = false;
 
           @override
-          void init() {
+          Future<void> init() async {
             initCalled = true;
-            super.init();
+            await super.init();
           }
 
           @override
@@ -37,9 +37,9 @@ void main() {
           }
 
           @override
-          void destroy() {
+          Future<void> destroy() async {
             destroyCalled = true;
-            super.destroy();
+            await super.destroy();
           }
         }
 
@@ -48,9 +48,9 @@ void main() {
           static bool destroyCalled = false;
 
           @override
-          void init() {
+          Future<void> init() async {
             initCalled = true;
-            super.init();
+            await super.init();
           }
 
           @override
@@ -58,9 +58,9 @@ void main() {
           }
 
           @override
-          void destroy() {
+          Future<void> destroy() async {
             destroyCalled = true;
-            super.destroy();
+            await super.destroy();
           }
         }
 
@@ -103,9 +103,9 @@ void main() {
           static bool destroyCalled = false;
 
           @override
-          void init() {
+          Future<void> init() async {
             initCalled = true;
-            super.init();
+            await super.init();
           }
 
           @override
@@ -113,9 +113,9 @@ void main() {
           }
 
           @override
-          void destroy() {
+          Future<void> destroy() async {
             destroyCalled = true;
-            super.destroy();
+            await super.destroy();
           }
         }
 
@@ -124,9 +124,9 @@ void main() {
           static bool destroyCalled = false;
 
           @override
-          void init() {
+          Future<void> init() async {
             initCalled = true;
-            super.init();
+            await super.init();
           }
 
           @override
@@ -134,17 +134,17 @@ void main() {
           }
 
           @override
-          void destroy() {
+          Future<void> destroy() async {
             destroyCalled = true;
-            super.destroy();
+            await super.destroy();
           }
         }
 
         $code
 
-        void main(_, SendPort port) {
+        Future<void> main(_, SendPort port) async {
           final logger = getLogger('classname');
-          logger.close();
+          await logger.close();
           port.send([One.initCalled, One.destroyCalled, Two.initCalled, Two.destroyCalled].join('-'));
         }
         ''',

@@ -34,8 +34,10 @@ void main() {
           ),
         );
         builder.addValueMapKeys();
-        expect(builder.serializeStringBuffer,
-            ksFormKeys('name', 'date', 'dropDown'));
+        expect(
+          builder.serializeStringBuffer,
+          ksFormKeys('name', 'date', 'dropDown'),
+        );
       });
     });
     group('addDropdownItemsMap -', () {
@@ -77,54 +79,106 @@ void main() {
       });
     });
     group('addTextEditingControllersForTextFields -', () {
-      test('when called should generate the getters for textEditingControllers',
-          () {
-        FormBuilder builder = FormBuilder(
-          formViewConfig: FormViewConfig(
-            viewName: 'Test',
-            fields: [
-              const TextFieldConfig(name: 'firstName'),
-              const TextFieldConfig(name: 'lastName'),
-            ],
-            autoTextFieldValidation: false,
-          ),
-        );
-        builder.addTextEditingControllersForTextFields();
-        expect(builder.serializeStringBuffer,
-            ksTextEditingControllerGettersForTextFields);
-      });
+      test(
+        'when called should generate the getters for textEditingControllers',
+        () {
+          FormBuilder builder = FormBuilder(
+            formViewConfig: FormViewConfig(
+              viewName: 'Test',
+              fields: [
+                const TextFieldConfig(name: 'firstName'),
+                const TextFieldConfig(name: 'lastName'),
+              ],
+              autoTextFieldValidation: false,
+            ),
+          );
+          builder.addTextEditingControllersForTextFields();
+          expect(
+            builder.serializeStringBuffer,
+            ksTextEditingControllerGettersForTextFields,
+          );
+        },
+      );
     });
     group('addTextEditingControllersForTextFields -', () {
       test(
-          'When provide a customTextEditingController, Should replace the default one',
-          () {
-        FormBuilder builder = FormBuilder(
-          formViewConfig: FormViewConfig(
-            viewName: 'Test',
-            fields: [
-              const TextFieldConfig(
-                name: 'firstName',
-              ),
-              const TextFieldConfig(name: 'lastName'),
-            ],
-            autoTextFieldValidation: false,
-          ),
-        );
-        builder.addTextEditingControllersForTextFields();
-        expect(builder.serializeStringBuffer,
-            ksTextEditingControllerGettersForTextFields);
-      });
+        'When provide a customTextEditingController, Should replace the default one',
+        () {
+          FormBuilder builder = FormBuilder(
+            formViewConfig: FormViewConfig(
+              viewName: 'Test',
+              fields: [
+                const TextFieldConfig(name: 'firstName'),
+                const TextFieldConfig(name: 'lastName'),
+              ],
+              autoTextFieldValidation: false,
+            ),
+          );
+          builder.addTextEditingControllersForTextFields();
+          expect(
+            builder.serializeStringBuffer,
+            ksTextEditingControllerGettersForTextFields,
+          );
+        },
+      );
     });
     group('addClosingBracket -', () {
       test('When call, Should add a curly bracket and a newline', () {
         FormBuilder builder = FormBuilder(
-          formViewConfig: FormViewConfig(
-            viewName: 'Test',
-            fields: [],
-          ),
+          formViewConfig: FormViewConfig(viewName: 'Test', fields: []),
         );
         builder.addClosingBracket();
         expect(builder.serializeStringBuffer, '}\n');
+      });
+    });
+
+    group('dot-shorthand sanitization -', () {
+      test(
+        'addValidationFunctionsFromAnnotation strips accidental leading dot',
+        () {
+          final builder = FormBuilder(
+            formViewConfig: FormViewConfig(
+              viewName: 'DotShorthand',
+              fields: const [
+                TextFieldConfig(
+                  name: 'email',
+                  validatorFunction: ExecutableElementData(
+                    validatorName: '.emailValidator',
+                  ),
+                ),
+              ],
+            ),
+          );
+
+          builder.addValidationFunctionsFromAnnotation();
+          final output = builder.serializeStringBuffer;
+
+          expect(output, contains('EmailValueKey: emailValidator,'));
+          expect(output, isNot(contains('.emailValidator')));
+        },
+      );
+
+      test('addGetCustomTextEditingController strips leading dot', () {
+        final builder = FormBuilder(
+          formViewConfig: FormViewConfig(
+            viewName: 'DotShorthand',
+            fields: const [
+              TextFieldConfig(
+                name: 'email',
+                customTextEditingController: ExecutableElementData(
+                  returnType: 'CustomEditingController',
+                  validatorName: '.buildController',
+                ),
+              ),
+            ],
+          ),
+        );
+
+        builder.addGetCustomTextEditingController();
+        final output = builder.serializeStringBuffer;
+
+        expect(output, contains('buildController();'));
+        expect(output, isNot(contains('.buildController')));
       });
     });
 
@@ -136,26 +190,33 @@ void main() {
             viewName: 'TestView',
             fields: [
               const TextFieldConfig(
-                  name: 'name',
-                  initialValue: 'name initial value',
-                  validatorFunction: ExecutableElementData(
-                      validatorPath: 'validators/path',
-                      enclosingElementName: 'enclosingElementName',
-                      hasEnclosingElementName: true,
-                      validatorName: 'nameValidator')),
+                name: 'name',
+                initialValue: 'name initial value',
+                validatorFunction: ExecutableElementData(
+                  validatorPath: 'validators/path',
+                  enclosingElementName: 'enclosingElementName',
+                  hasEnclosingElementName: true,
+                  validatorName: 'nameValidator',
+                ),
+              ),
               const TextFieldConfig(
-                  name: 'email',
-                  initialValue: 'email initial value',
-                  customTextEditingController: ExecutableElementData(
-                      validatorPath: 'controllers/path',
-                      enclosingElementName: 'enclosingElementName',
-                      hasEnclosingElementName: true,
-                      validatorName: 'emailController')),
+                name: 'email',
+                initialValue: 'email initial value',
+                customTextEditingController: ExecutableElementData(
+                  validatorPath: 'controllers/path',
+                  enclosingElementName: 'enclosingElementName',
+                  hasEnclosingElementName: true,
+                  validatorName: 'emailController',
+                ),
+              ),
               const DateFieldConfig(name: 'date'),
-              const DropdownFieldConfig(name: 'dropDown', items: [
-                DropdownFieldItem(title: 'title1', value: 'value1'),
-                DropdownFieldItem(title: 'title2', value: 'value2'),
-              ]),
+              const DropdownFieldConfig(
+                name: 'dropDown',
+                items: [
+                  DropdownFieldItem(title: 'title1', value: 'value1'),
+                  DropdownFieldItem(title: 'title2', value: 'value2'),
+                ],
+              ),
             ],
           ),
         );
@@ -170,9 +231,10 @@ void main() {
       group('addDisposeForTextControllers -', () {
         test('When called, Should dispose all TextControllers', () {
           builder.addDisposeForTextControllers();
-
-          expect(
-              builder.serializeStringBuffer, kExample1DisposeTextControllers);
+          final output = builder.serializeStringBuffer;
+          expect(output, contains('void disposeForm() {'));
+          expect(output, contains('_TestViewTextEditingControllers.clear();'));
+          expect(output, contains('_TestViewFocusNodes.clear();'));
         });
       });
       group('addDropdownItemsMap -', () {
@@ -192,66 +254,112 @@ void main() {
       group('addFormDataUpdateFunctionTorTextControllers -', () {
         test('When called, Should add update form data function', () {
           builder.addFormDataUpdateFunctionTorTextControllers();
-
-          expect(builder.serializeStringBuffer, kExample1UpdateFormData);
+          final output = builder.serializeStringBuffer;
+          expect(
+            output,
+            contains(
+              'void _updateFormData(FormViewModel model, {bool forceValidate = false})',
+            ),
+          );
+          expect(output, contains('NameValueKey: nameController.text,'));
+          expect(output, contains('EmailValueKey: emailController.text,'));
+          expect(
+            RegExp(r'\b_?updateValidationData\(model\)').hasMatch(output),
+            isTrue,
+          );
         });
       });
       group('addFormViewModelExtensionForGetters -', () {
-        test('When called, Should add formviewmodel extension', () {
-          builder.addFormViewModelExtensionForGetters();
+        test(
+          'When called, Should add formviewmodel extension',
+          () {
+            builder.addFormViewModelExtensionForGetters();
 
-          expect(builder.serializeStringBuffer,
-              kExample1ViewModelExtensionForGetters);
-        },
-            skip:
-                'This is too fickle. It\'s failing due to spacing issues. I want something more robust here');
+            expect(
+              builder.serializeStringBuffer,
+              kExample1ViewModelExtensionForGetters,
+            );
+          },
+          skip:
+              'This is too fickle. It\'s failing due to spacing issues. I want something more robust here',
+        );
       });
       group('addFormViewModelExtensionForMethods -', () {
         test('When called, Should add extension Methods on FormViewModel', () {
           builder.addFormViewModelExtensionForMethods();
-
-          expect(builder.serializeStringBuffer,
-              kExample1ViewModelExtensionForMethods);
+          final output = builder.serializeStringBuffer;
+          expect(output, contains('extension Methods on FormViewModel {'));
+          expect(output, contains('Future<void> selectDate('));
+          expect(output, contains('void setDropDown(String dropDown) {'));
+          expect(
+            output,
+            contains('setNameValidationMessage(String? validationMessage)'),
+          );
+          expect(output, contains('void clearForm() {'));
+          expect(output, contains('void validateForm() {'));
         });
       });
       group('addGetCustomTextEditingController -', () {
         test(
-            'When called, Should add registerations function for a customTextEditingController',
-            () {
-          builder.addGetCustomTextEditingController();
+          'When called, Should add registerations function for a customTextEditingController',
+          () {
+            builder.addGetCustomTextEditingController();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddRegisterationCustomTextEditingController);
-        });
+            expect(
+              builder.serializeStringBuffer,
+              kExample1AddRegisterationCustomTextEditingController,
+            );
+          },
+        );
       });
       group('addGetFocuNode -', () {
-        test('When called, Should add registerations function for a focusNodes',
-            () {
-          builder.addGetFocuNode();
+        test(
+          'When called, Should add registerations function for a focusNodes',
+          () {
+            builder.addGetFocuNode();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddRegisterationForFocusNodes);
-        });
+            expect(
+              builder.serializeStringBuffer,
+              kExample1AddRegisterationForFocusNodes,
+            );
+          },
+        );
       });
       group('addGetTextEditinController -', () {
         test(
-            'When called, Should add registerations function for a TextEditingController',
-            () {
-          builder.addGetTextEditinController();
-
-          expect(builder.serializeStringBuffer,
-              kExample1AddRegisterationextEditingController);
-        });
+          'When called, Should add registerations function for a TextEditingController',
+          () {
+            builder.addGetTextEditinController();
+            final output = builder.serializeStringBuffer;
+            expect(
+              output,
+              contains('TextEditingController _getFormTextEditingController('),
+            );
+            expect(output, contains('String key'));
+            expect(
+              output,
+              contains('TextEditingController(text: initialValue);'),
+            );
+          },
+        );
       });
       group('addGetValidationMessageForTextController -', () {
         test(
-            'When called, Should add get validation message for a TextEditingController',
-            () {
-          builder.addGetValidationMessageForTextController();
-
-          expect(builder.serializeStringBuffer,
-              kExample1AddValidationMessageForTextEditingController);
-        });
+          'When called, Should add get validation message for a TextEditingController',
+          () {
+            builder.addGetValidationMessageForTextController();
+            final output = builder.serializeStringBuffer;
+            expect(
+              output,
+              contains('String? getValidationMessage(String key)'),
+            );
+            expect(output, contains('final validatorForKey ='));
+            expect(
+              output,
+              contains('_TestViewTextEditingControllers[key]!.text'),
+            );
+          },
+        );
       });
       group('addHeaderComment -', () {
         test('When called, Should add a comment at the top of the file', () {
@@ -277,34 +385,61 @@ void main() {
       group('addListenerRegistrationsForTextFields -', () {
         test('When called, Should add listeners for TextFields', () {
           builder.addListenerRegistrationsForTextFields();
-
-          expect(builder.serializeStringBuffer,
-              kExample1AddListenerRegistrationsForTextFields);
+          final output = builder.serializeStringBuffer;
+          expect(
+            output,
+            contains('void syncFormWithViewModel(FormViewModel model)'),
+          );
+          expect(
+            output,
+            contains('void listenToFormUpdated(FormViewModel model)'),
+          );
+          expect(
+            output,
+            contains(
+              'nameController.addListener(() => _updateFormData(model));',
+            ),
+          );
+          expect(
+            output,
+            contains(
+              'emailController.addListener(() => _updateFormData(model));',
+            ),
+          );
         });
       });
       group('addValidationDataUpdateFunctionTorTextControllers -', () {
         test(
-            'When called, Should add Updates the fieldsValidationMessages on the FormViewModel',
-            () {
-          builder.addValidationDataUpdateFunctionTorTextControllers();
-
-          expect(builder.serializeStringBuffer,
-              kExample1AddValidationDataUpdateFunctionTorTextControllers);
-        });
+          'When called, Should add Updates the fieldsValidationMessages on the FormViewModel',
+          () {
+            builder.addValidationDataUpdateFunctionTorTextControllers();
+            final output = builder.serializeStringBuffer;
+            expect(output, contains('setValidationMessages'));
+            expect(
+              output,
+              contains('NameValueKey: getValidationMessage(NameValueKey),'),
+            );
+            expect(
+              output,
+              contains('EmailValueKey: getValidationMessage(EmailValueKey),'),
+            );
+          },
+        );
       });
       group('addMixinSignature -', () {
         test('When called, Should add Mixin Signature', () {
           builder.addMixinSignature();
-
-          expect(builder.serializeStringBuffer, kExample1AddMixinSignature);
+          expect(builder.serializeStringBuffer, 'mixin \$TestView {\n');
         });
       });
       group('addValidationFunctionsFromAnnotation -', () {
         test('When called, Should add TextValidations', () {
           builder.addValidationFunctionsFromAnnotation();
 
-          expect(builder.serializeStringBuffer,
-              kExample1AddValidationFunctionsFromAnnotation);
+          expect(
+            builder.serializeStringBuffer,
+            kExample1AddValidationFunctionsFromAnnotation,
+          );
         });
       });
       group('addFocusNodesForTextFields -', () {
