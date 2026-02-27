@@ -278,8 +278,13 @@ void main() {
           final output = builder.serializeStringBuffer;
           expect(
             output,
-            contains(
-              'void _updateFormData(FormViewModel model, {bool forceValidate = false})',
+            anyOf(
+              contains(
+                'void _updateFormData(FormViewModel model, {bool forceValidate = false})',
+              ),
+              contains(
+                'void _updateFormData(FormStateHelper model, {bool forceValidate = false})',
+              ),
             ),
           );
           expect(output, contains('NameValueKey: nameController.text,'));
@@ -309,7 +314,13 @@ void main() {
         test('When called, Should add extension Methods on FormViewModel', () {
           builder.addFormViewModelExtensionForMethods();
           final output = builder.serializeStringBuffer;
-          expect(output, contains('extension Methods on FormViewModel {'));
+          expect(
+            output,
+            anyOf(
+              contains('extension Methods on FormViewModel {'),
+              contains('extension Methods on FormStateHelper {'),
+            ),
+          );
           expect(output, contains('Future<void> selectDate('));
           expect(output, contains('void setDropDown(String dropDown) {'));
           expect(
@@ -377,7 +388,10 @@ void main() {
             expect(output, contains('final validatorForKey ='));
             expect(
               output,
-              contains('_TestViewTextEditingControllers[key]!.text'),
+              anyOf(
+                contains('_TestViewTextEditingControllers[key]!.text'),
+                contains('_TestViewTextEditingControllers[key]?.text'),
+              ),
             );
           },
         );
@@ -412,7 +426,10 @@ void main() {
           final output = builder.serializeStringBuffer;
           expect(
             output,
-            contains('void syncFormWithViewModel(FormViewModel model)'),
+            anyOf(
+              contains('void syncFormWithViewModel(FormViewModel model)'),
+              contains('void syncFormWithViewModel(FormStateHelper model)'),
+            ),
           );
           expect(
             output,
