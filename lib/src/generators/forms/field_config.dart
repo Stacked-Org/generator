@@ -57,12 +57,15 @@ class ExecutableElementData {
 
   factory ExecutableElementData.fromExecutableElement(
       ExecutableElement executableElement) {
+    final enclosingElementName = executableElement.enclosingElement?.name;
     return ExecutableElementData(
-        returnType: executableElement.declaration.returnType.toString(),
-        enclosingElementName: executableElement.enclosingElementName,
-        hasEnclosingElementName: executableElement.hasEnclosingElementName,
-        validatorName: executableElement.validatorName,
-        validatorPath: executableElement.validatorPath);
+      returnType: executableElement.returnType.toString(),
+      enclosingElementName: enclosingElementName,
+      hasEnclosingElementName:
+          enclosingElementName != null && enclosingElementName.isNotEmpty,
+      validatorName: executableElement.validatorName,
+      validatorPath: executableElement.validatorPath,
+    );
   }
 }
 
@@ -78,10 +81,17 @@ extension ListOfFieldConfigs on List<FieldConfig> {
 }
 
 extension ExecutableElementDataExtension on ExecutableElement? {
-  String? get validatorPath => this?.source.uri.toString();
-  String? get validatorName => hasEnclosingElementName
-      ? '$enclosingElementName.${this?.name}'
-      : this?.name;
-  bool get hasEnclosingElementName => enclosingElementName != null;
-  String? get enclosingElementName => this?.enclosingElement.name;
+  String? get validatorPath =>
+      this?.firstFragment.libraryFragment.source.uri.toString();
+  String? get validatorName {
+    final enclosingName = enclosingElementName;
+    if (enclosingName != null && enclosingName.isNotEmpty) {
+      return '$enclosingName.${this?.name}';
+    }
+    return this?.name;
+  }
+
+  bool get hasEnclosingElementName =>
+      enclosingElementName != null && enclosingElementName!.isNotEmpty;
+  String? get enclosingElementName => this?.enclosingElement?.name;
 }

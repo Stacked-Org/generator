@@ -106,8 +106,10 @@ class FormBuilder with StringBufferUtils {
         "final Map<String, String? Function(String?)?> _${viewName}TextValidations = {");
     for (var field in fields.onlyTextFieldConfigs) {
       final caseName = ReCase(field.name);
+      final validatorName =
+          _sanitizeExecutableReference(field.validatorFunction?.validatorName);
       writeLine(
-          "${_getFormKeyName(caseName)}: ${field.validatorFunction?.validatorName},");
+          "${_getFormKeyName(caseName)}: ${validatorName ?? 'null'},");
     }
     writeLine("};");
     newLine();
@@ -173,7 +175,11 @@ class FormBuilder with StringBufferUtils {
     if (textFieldsConfigs.isEmpty) return this;
     for (var tf in textFieldsConfigs) {
       final customTextEditingClassNameAndCallingFunction =
-          tf.customTextEditingController!.validatorName;
+          _sanitizeExecutableReference(
+                tf.customTextEditingController!.validatorName,
+              ) ??
+              tf.customTextEditingController!.validatorName ??
+              '';
       final customTextEditingClassName =
           tf.customTextEditingController!.returnType;
       newLine();
@@ -525,4 +531,15 @@ class FormBuilder with StringBufferUtils {
   String _getFocusNodeName(FieldConfig field) => '${field.name}FocusNode';
   String _getControllerName(FieldConfig field) => '${field.name}Controller';
   String _getFormKeyName(ReCase caseName) => '${caseName.pascalCase}ValueKey';
+
+  String? _sanitizeExecutableReference(String? reference) {
+    if (reference == null) return null;
+
+    var sanitized = reference.trim();
+    while (sanitized.startsWith('.')) {
+      sanitized = sanitized.substring(1);
+    }
+
+    return sanitized.isEmpty ? null : sanitized;
+  }
 }
