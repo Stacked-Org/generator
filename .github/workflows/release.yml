@@ -22,9 +22,9 @@ jobs:
         uses: cycjimmy/semantic-release-action@v3
         with:
           extra_plugins: |
-            @semantic-release/exec
-            @semantic-release/git
-            @semantic-release/changelog
+            @semantic-release/exec@6
+            @semantic-release/git@10
+            @semantic-release/changelog@6
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_DEPLOYMENT_TOKEN }}
           CREDENTIALS: ${{ secrets.PUB_DEV_DEPLOYMENT_CREDENTIALS }}
