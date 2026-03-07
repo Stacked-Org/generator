@@ -1,3 +1,11 @@
+## 2.0.1 (2026-03-08)
+
+### Fixes
+
+* bump version to 2.0.1 to continue from the manually published 2.0.0 release
+* include the release workflow semantic-release plugin compatibility fix
+* include restored dependency constraints from the Dart 3.10 compatibility work
+
 ## [1.6.2](https://github.com/Stacked-Org/generator/compare/v1.6.1...v1.6.2) (2026-03-02)
 
 
