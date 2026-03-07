@@ -1,3 +1,11 @@
+## 2.0.1 (2026-03-08)
+
+### Bug Fixes
+
+* **deps:** update dependency analyzer to v8 ([#45](https://github.com/Stacked-Org/generator/issues/45)) ([c30b0bd](https://github.com/Stacked-Org/generator/commit/c30b0bd316347598383db1ef03ef74484ea4d40c))
+* **deps:** update dependency source_gen to v2 ([#33](https://github.com/Stacked-Org/generator/issues/33)) ([178dc17](https://github.com/Stacked-Org/generator/commit/178dc177f4a9027736af8d7164a7dc84d1643db4))
+* null value check on getValidationMessage ([#58](https://github.com/Stacked-Org/generator/issues/58)) ([82204fe](https://github.com/Stacked-Org/generator/commit/82204fe16d9a5e71325b5440813ba05b47cd5f68))
+
 ## [1.6.2](https://github.com/Stacked-Org/generator/compare/v1.6.1...v1.6.2) (2026-03-02)
 
 
