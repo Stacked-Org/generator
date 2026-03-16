@@ -1,6 +1,8 @@
 import 'package:code_builder/code_builder.dart';
+import 'package:dart_style/dart_style.dart';
 
 import '../../../../utils.dart';
+import '../../router_2/code_builder/root_router_builder.dart';
 import 'importable_type.dart';
 import 'route_parameter_config.dart';
 import 'router_config.dart';
@@ -206,12 +208,11 @@ class RouteConfig {
   Iterable<String> _extractViewConstructerParametersNames() {
     return parameters.map<String>((param) {
       String getterName;
+      final emitter = DartEmitter();
       if (param.isPathParam) {
-        getterName =
-            "data.pathParams['${param.paramName}'].${param.getterName}(${param.defaultValueCode != null ? '${param.defaultValueCode}' : ''})";
+        getterName = getConstructorParamAssignment(param).code.accept(emitter).toString();
       } else if (param.isQueryParam) {
-        getterName =
-            "data.queryParams['${param.paramName}'].${param.getterName}(${param.defaultValueCode != null ? '${param.defaultValueCode}' : ''})";
+        getterName = getConstructorParamAssignment(param).code.accept(emitter).toString();
       } else {
         getterName = "args.${param.name}";
       }
