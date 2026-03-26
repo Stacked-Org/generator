@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
@@ -21,12 +21,7 @@ const TypeChecker stackedRouteChecker = TypeChecker.typeNamed(
   inPackage: 'stacked_shared',
 );
 
-const validMetaValues = [
-  'String',
-  'bool',
-  'int',
-  'double',
-];
+const validMetaValues = ['String', 'bool', 'int', 'double'];
 
 // extracts route configs from class fields and their meta data
 class RouteConfigResolver {
@@ -49,7 +44,8 @@ class RouteConfigResolver {
   }) {
     final page = stackedRoute.peek('page')?.typeValue;
     var path = stackedRoute.peek('path')?.stringValue;
-    var isDeferred = stackedRoute.peek('deferredLoading')?.boolValue ??
+    var isDeferred =
+        stackedRoute.peek('deferredLoading')?.boolValue ??
         _routerConfig.deferredLoading;
 
     if (page == null) {
@@ -72,15 +68,16 @@ class RouteConfigResolver {
     }
 
     throwIf(
-      page.element3 is! ClassElement2,
+      page.element is! ClassElement,
       '${page.getDisplayString()} is not a class element',
-      element: page.element3,
+      element: page.element,
     );
 
-    final classElement = page.element3 as ClassElement2;
+    final classElement = page.element as ClassElement;
     final import = _typeResolver.resolveImport(classElement);
-    final hasWrappedRoute = classElement.allSupertypes
-        .any((e) => e.getDisplayString() == 'AutoRouteWrapper');
+    final hasWrappedRoute = classElement.allSupertypes.any(
+      (e) => e.getDisplayString() == 'AutoRouteWrapper',
+    );
     var pageType = _typeResolver.resolveType(page);
     var className = page.getDisplayString();
 
@@ -89,7 +86,7 @@ class RouteConfigResolver {
       if (stackedRoute.peek('initial')?.boolValue == true) {
         path = prefix;
       } else {
-        path = '$prefix${toKababCase(className)}';
+        path = '$prefix${toKebabCase(className)}';
       }
     }
     throwIf(
@@ -108,11 +105,11 @@ class RouteConfigResolver {
         stackedRoute.peek('usesPathAsKey')?.boolValue ?? false;
 
     var guards = <ResolvedType>[];
-    stackedRoute.peek('guards')?.listValue.map((g) => g.toTypeValue()).forEach(
-      (guard) {
-        guards.add(_typeResolver.resolveType(guard!));
-      },
-    );
+    stackedRoute.peek('guards')?.listValue.map((g) => g.toTypeValue()).forEach((
+      guard,
+    ) {
+      guards.add(_typeResolver.resolveType(guard!));
+    });
 
     var dartType = stackedRoute.objectValue.type;
     var returnType = ResolvedType(name: dartType.toString());
@@ -130,28 +127,24 @@ class RouteConfigResolver {
     ResolvedType? customRouteBuilder;
     ResolvedType? transitionBuilder;
     int? customRouteBarrierColor;
-    if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      MaterialRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(MaterialRoute, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.material;
-    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      CupertinoRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(CupertinoRoute, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.cupertino;
       cupertinoNavTitle = stackedRoute.peek('title')?.stringValue;
-    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      AdaptiveRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(AdaptiveRoute, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.adaptive;
       cupertinoNavTitle = stackedRoute.peek('cupertinoPageTitle')?.stringValue;
       customRouteOpaque = stackedRoute.peek('opaque')?.boolValue;
-    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      CustomRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(CustomRoute, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.custom;
       durationInMilliseconds =
           stackedRoute.peek('durationInMilliseconds')?.intValue;
@@ -161,17 +154,19 @@ class RouteConfigResolver {
       customRouteBarrierDismissible =
           stackedRoute.peek('barrierDismissible')?.boolValue;
       customRouteBarrierLabel = stackedRoute.peek('barrierLabel')?.stringValue;
-      final function = stackedRoute
-          .peek('transitionsBuilder')
-          ?.objectValue
-          .toFunctionValue2();
+      final function =
+          stackedRoute
+              .peek('transitionsBuilder')
+              ?.objectValue
+              .toFunctionValue();
       if (function != null) {
         transitionBuilder = _typeResolver.resolveFunctionType(function);
       }
-      final builderFunction = stackedRoute
-          .peek('customRouteBuilder')
-          ?.objectValue
-          .toFunctionValue2();
+      final builderFunction =
+          stackedRoute
+              .peek('customRouteBuilder')
+              ?.objectValue
+              .toFunctionValue();
       if (builderFunction != null) {
         customRouteBuilder = _typeResolver.resolveFunctionType(builderFunction);
       }
@@ -198,44 +193,54 @@ class RouteConfigResolver {
         .entries
         .where((e) => e.value?.type != null)) {
       final valueType = entry.value!.type!.getDisplayString();
-      throwIf(!validMetaValues.contains(valueType),
-          'Meta value type $valueType is not supported!\nSupported types are $validMetaValues');
+      throwIf(
+        !validMetaValues.contains(valueType),
+        'Meta value type $valueType is not supported!\nSupported types are $validMetaValues',
+      );
       switch (valueType) {
         case 'bool':
           {
-            meta.add(MetaEntry<bool>(
-              key: entry.key!.toStringValue()!,
-              type: valueType,
-              value: entry.value!.toBoolValue()!,
-            ));
+            meta.add(
+              MetaEntry<bool>(
+                key: entry.key!.toStringValue()!,
+                type: valueType,
+                value: entry.value!.toBoolValue()!,
+              ),
+            );
             break;
           }
         case 'String':
           {
-            meta.add(MetaEntry<String>(
-              key: entry.key!.toStringValue()!,
-              type: valueType,
-              value: entry.value!.toStringValue()!,
-            ));
+            meta.add(
+              MetaEntry<String>(
+                key: entry.key!.toStringValue()!,
+                type: valueType,
+                value: entry.value!.toStringValue()!,
+              ),
+            );
 
             break;
           }
         case 'int':
           {
-            meta.add(MetaEntry<int>(
-              key: entry.key!.toStringValue()!,
-              type: valueType,
-              value: entry.value!.toIntValue()!,
-            ));
+            meta.add(
+              MetaEntry<int>(
+                key: entry.key!.toStringValue()!,
+                type: valueType,
+                value: entry.value!.toIntValue()!,
+              ),
+            );
             break;
           }
         case 'double':
           {
-            meta.add(MetaEntry<double>(
-              key: entry.key!.toStringValue()!,
-              type: valueType,
-              value: entry.value!.toDoubleValue()!,
-            ));
+            meta.add(
+              MetaEntry<double>(
+                key: entry.key!.toStringValue()!,
+                type: valueType,
+                value: entry.value!.toDoubleValue()!,
+              ),
+            );
             break;
           }
       }
@@ -246,7 +251,7 @@ class RouteConfigResolver {
 
     var replacementInRouteName = _routerConfig.replaceInRouteName;
 
-    final constructor = classElement.unnamedConstructor2;
+    final constructor = classElement.unnamedConstructor;
     throwIf(
       constructor == null,
       'Route widgets must have an unnamed constructor',
@@ -262,11 +267,13 @@ class RouteConfigResolver {
       } else {
         final paramResolver = RouteParameterResolver(_typeResolver);
         for (FormalParameterElement p in constructor.formalParameters) {
-          parameters.add(paramResolver.resolve(
-            p,
-            pathParams: pathParams,
-            inheritedPathParams: inheritedPathParams,
-          ));
+          parameters.add(
+            paramResolver.resolve(
+              p,
+              pathParams: pathParams,
+              inheritedPathParams: inheritedPathParams,
+            ),
+          );
         }
       }
     }
@@ -274,23 +281,28 @@ class RouteConfigResolver {
     var pathParameters = parameters.where((element) => element.isPathParam);
 
     if (parameters.any((p) => p.isPathParam || p.isQueryParam)) {
-      var unParsableRequiredArgs = parameters.where((p) =>
-          (p.isRequired || p.isPositional) &&
-          !p.isPathParam &&
-          !p.isQueryParam);
+      var unParsableRequiredArgs = parameters.where(
+        (p) =>
+            (p.isRequired || p.isPositional) &&
+            !p.isPathParam &&
+            !p.isQueryParam,
+      );
       if (unParsableRequiredArgs.isNotEmpty) {
         // ignore: avoid_print
         print(
-            '\nWARNING => Because [$className] has required parameters ${unParsableRequiredArgs.map((e) => e.paramName)} '
-            'that can not be parsed from path,\n@PathParam() and @QueryParam() annotations will be ignored.\n');
+          '\nWARNING => Because [$className] has required parameters ${unParsableRequiredArgs.map((e) => e.paramName)} '
+          'that can not be parsed from path,\n@PathParam() and @QueryParam() annotations will be ignored.\n',
+        );
       }
     }
 
     if (pathParameters.isNotEmpty) {
       for (var pParam in pathParameters) {
-        throwIf(!validPathParamTypes.contains(pParam.type.name),
-            "Parameter [${pParam.name}] must be of a type that can be parsed from a [String] because it will also obtain it's value from a path\nvalid types: $validPathParamTypes",
-            element: pParam.element);
+        throwIf(
+          !validPathParamTypes.contains(pParam.type.name),
+          "Parameter [${pParam.name}] must be of a type that can be parsed from a [String] because it will also obtain it's value from a path\nvalid types: $validPathParamTypes",
+          element: pParam.element,
+        );
       }
     }
 

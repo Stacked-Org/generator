@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 // ignore: implementation_imports
@@ -16,7 +16,10 @@ class StackedRouterGenerator extends Generator {
     final values = <String>{};
     for (var annotatedElement in library.annotatedWith(autoRouteChecker)) {
       final generatedValue = generateForAnnotatedElement(
-          annotatedElement.element, annotatedElement.annotation, buildStep);
+        annotatedElement.element,
+        annotatedElement.annotation,
+        buildStep,
+      );
       await for (var value in normalizeGeneratorOutput(generatedValue)) {
         assert(value.length == value.trim().length);
         values.add(value);
@@ -27,18 +30,18 @@ class StackedRouterGenerator extends Generator {
   }
 
   dynamic generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
     // throw if annotation is used for a none class element
     throwIf(
-      element is! ClassElement2,
-      '${element.name3} is not a class element',
+      element is! ClassElement,
+      '${element.name} is not a class element',
       element: element,
     );
 
-    final clazz = element as ClassElement2;
+    final clazz = element as ClassElement;
     final usesPartBuilder = _hasPartDirective(clazz);
 
     final TypeResolver typeResolver;
@@ -72,10 +75,7 @@ class StackedRouterGenerator extends Generator {
   bool _hasPartDirective(ClassElement clazz) {
     final fileName =
         clazz.firstFragment.libraryFragment.source.uri.pathSegments.last;
-    final part = fileName.replaceAll(
-      '.dart',
-      '.gr.dart',
-    );
+    final part = fileName.replaceAll('.dart', '.gr.dart');
     return clazz.library.firstFragment.partIncludes.any((include) {
       final includedPath =
           include.includedFragment?.source.uri.pathSegments.last;

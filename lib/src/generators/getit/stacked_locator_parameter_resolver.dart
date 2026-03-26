@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/utils.dart';
@@ -19,8 +19,9 @@ class DependencyParameterResolver {
   FactoryParameter resolve(FormalParameterElement parameterElement) {
     final paramType = parameterElement.type;
 
-    final isFactoryParam =
-        _factoryParamChecker.hasAnnotationOfExact(parameterElement);
+    final isFactoryParam = _factoryParamChecker.hasAnnotationOfExact(
+      parameterElement,
+    );
     return FactoryParameter(
       isFactoryParam: isFactoryParam,
       type: toDisplayString(paramType),

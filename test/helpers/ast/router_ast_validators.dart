@@ -27,20 +27,37 @@ class LibraryBuilderAstValidator {
     }
 
     // Validate router configuration is generated
-    final routerConfig = AstHelper.findTopLevelVariableDeclaration(unit, 'router');
-    expect(routerConfig, isNotNull, reason: 'Should contain router configuration');
+    final routerConfig = AstHelper.findTopLevelVariableDeclaration(
+      unit,
+      'router',
+    );
+    expect(
+      routerConfig,
+      isNotNull,
+      reason: 'Should contain router configuration',
+    );
   }
 
   /// Validate part directive generation
-  static void validatePartDirective(String generatedCode, {required String expectedFileName}) {
-    expect(generatedCode, contains('part of'), reason: 'Should contain part of directive');
+  static void validatePartDirective(
+    String generatedCode, {
+    required String expectedFileName,
+  }) {
+    expect(
+      generatedCode,
+      contains('part of'),
+      reason: 'Should contain part of directive',
+    );
   }
 }
 
 /// Router extension validation for Router 2.0
 class RouterExtensionAstValidator {
   /// Validate router extension generation
-  static void validateRouterExtension(String generatedCode, {required List<RouteConfig> expectedRoutes}) {
+  static void validateRouterExtension(
+    String generatedCode, {
+    required List<RouteConfig> expectedRoutes,
+  }) {
     final unit = AstHelper.parseCode(generatedCode);
     expect(unit, isNotNull, reason: 'Generated code should be valid Dart');
 
@@ -62,13 +79,19 @@ class RouterAstValidator {
 
     // Find the router class
     final routerClass = AstHelper.findClass(unit, expectedClassName);
-    expect(routerClass, isNotNull,
-        reason: 'Should contain class $expectedClassName');
+    expect(
+      routerClass,
+      isNotNull,
+      reason: 'Should contain class $expectedClassName',
+    );
 
     // Validate superclass
     final superclass = AstHelper.getSuperclassName(routerClass!);
-    expect(superclass, contains(expectedSuperclass),
-        reason: 'Class should extend $expectedSuperclass');
+    expect(
+      superclass,
+      contains(expectedSuperclass),
+      reason: 'Class should extend $expectedSuperclass',
+    );
 
     // Validate required fields exist
     final routesField = AstHelper.findField(routerClass, '_routes');
@@ -80,13 +103,19 @@ class RouterAstValidator {
     // Validate override methods exist
     final routesGetter = AstHelper.findMethod(routerClass, 'routes');
     expect(routesGetter, isNotNull, reason: 'Should have routes getter');
-    expect(AstHelper.hasOverrideAnnotation(routesGetter!), isTrue,
-        reason: 'routes getter should have @override annotation');
+    expect(
+      AstHelper.hasOverrideAnnotation(routesGetter!),
+      isTrue,
+      reason: 'routes getter should have @override annotation',
+    );
 
     final pagesMapGetter = AstHelper.findMethod(routerClass, 'pagesMap');
     expect(pagesMapGetter, isNotNull, reason: 'Should have pagesMap getter');
-    expect(AstHelper.hasOverrideAnnotation(pagesMapGetter!), isTrue,
-        reason: 'pagesMap getter should have @override annotation');
+    expect(
+      AstHelper.hasOverrideAnnotation(pagesMapGetter!),
+      isTrue,
+      reason: 'pagesMap getter should have @override annotation',
+    );
   }
 
   /// Ensure generated code contains the required imports by URI.
@@ -97,8 +126,11 @@ class RouterAstValidator {
     final unit = AstHelper.parseCode(generatedCode);
 
     for (final importUri in requiredImports) {
-      expect(AstHelper.hasImport(unit, importUri), isTrue,
-          reason: 'Should import $importUri');
+      expect(
+        AstHelper.hasImport(unit, importUri),
+        isTrue,
+        reason: 'Should import $importUri',
+      );
     }
   }
 
@@ -114,12 +146,18 @@ class RouterAstValidator {
     expect(routesField, isNotNull);
 
     // Validate field is final and has correct type
-    expect(AstHelper.isFieldFinal(routesField!), isTrue,
-        reason: '_routes field should be final');
+    expect(
+      AstHelper.isFieldFinal(routesField!),
+      isTrue,
+      reason: '_routes field should be final',
+    );
 
     final fieldType = AstHelper.getFieldType(routesField);
-    expect(fieldType, contains('RouteDef'),
-        reason: '_routes should be List<RouteDef>');
+    expect(
+      fieldType,
+      contains('RouteDef'),
+      reason: '_routes should be List<RouteDef>',
+    );
   }
 
   /// Ensure _pagesMap field exists, is final, and typed with StackedRouteFactory.
@@ -134,12 +172,18 @@ class RouterAstValidator {
     expect(pagesMapField, isNotNull);
 
     // Validate field is final and has correct type
-    expect(AstHelper.isFieldFinal(pagesMapField!), isTrue,
-        reason: '_pagesMap field should be final');
+    expect(
+      AstHelper.isFieldFinal(pagesMapField!),
+      isTrue,
+      reason: '_pagesMap field should be final',
+    );
 
     final fieldType = AstHelper.getFieldType(pagesMapField);
-    expect(fieldType, contains('StackedRouteFactory'),
-        reason: '_pagesMap should be Map<Type, StackedRouteFactory>');
+    expect(
+      fieldType,
+      contains('StackedRouteFactory'),
+      reason: '_pagesMap should be Map<Type, StackedRouteFactory>',
+    );
   }
 
   /// Ensure routes/pagesMap getters exist and return correct types.
@@ -151,15 +195,21 @@ class RouterAstValidator {
     expect(routesGetter, isNotNull);
 
     final routesReturnType = AstHelper.getMethodReturnType(routesGetter!);
-    expect(routesReturnType, contains('RouteDef'),
-        reason: 'routes getter should return List<RouteDef>');
+    expect(
+      routesReturnType,
+      contains('RouteDef'),
+      reason: 'routes getter should return List<RouteDef>',
+    );
 
     final pagesMapGetter = AstHelper.findMethod(routerClass, 'pagesMap');
     expect(pagesMapGetter, isNotNull);
 
     final pagesMapReturnType = AstHelper.getMethodReturnType(pagesMapGetter!);
-    expect(pagesMapReturnType, contains('StackedRouteFactory'),
-        reason: 'pagesMap getter should return Map<Type, StackedRouteFactory>');
+    expect(
+      pagesMapReturnType,
+      contains('StackedRouteFactory'),
+      reason: 'pagesMap getter should return Map<Type, StackedRouteFactory>',
+    );
   }
 }
 
@@ -180,17 +230,26 @@ class RouterHelperAstValidator {
 
     final routesVar = variables.first;
     final variableName = AstHelper.getVariableNames(routesVar.variables).first;
-    expect(variableName, equals('_routes'),
-        reason: 'Variable should be named _routes');
+    expect(
+      variableName,
+      equals('_routes'),
+      reason: 'Variable should be named _routes',
+    );
 
     // Should be final
-    expect(AstHelper.isVariableFinal(routesVar.variables), isTrue,
-        reason: '_routes should be final');
+    expect(
+      AstHelper.isVariableFinal(routesVar.variables),
+      isTrue,
+      reason: '_routes should be final',
+    );
 
     // Should contain RouteDef in type
     final fieldType = AstHelper.getVariableType(routesVar.variables);
-    expect(fieldType, contains('RouteDef'),
-        reason: 'Should be List of RouteDef');
+    expect(
+      fieldType,
+      contains('RouteDef'),
+      reason: 'Should be List of RouteDef',
+    );
   }
 
   /// Validate a getter method (class or top-level) by name and return type.
@@ -218,19 +277,28 @@ class RouterHelperAstValidator {
       final functions = unit.declarations.whereType<FunctionDeclaration>();
       final function =
           functions.where((f) => f.name.lexeme == methodName).firstOrNull;
-      expect(function, isNotNull,
-          reason: 'Should contain $methodName function');
+      expect(
+        function,
+        isNotNull,
+        reason: 'Should contain $methodName function',
+      );
       returnType = function!.returnType?.toString();
       // Functions don't have override annotations
     }
 
     if (shouldHaveOverride) {
-      expect(hasOverride, isTrue,
-          reason: '$methodName should have @override annotation');
+      expect(
+        hasOverride,
+        isTrue,
+        reason: '$methodName should have @override annotation',
+      );
     }
 
-    expect(returnType, contains(expectedReturnType),
-        reason: '$methodName should return $expectedReturnType');
+    expect(
+      returnType,
+      contains(expectedReturnType),
+      reason: '$methodName should return $expectedReturnType',
+    );
   }
 
   /// Validate a map structure variable: name, final, key/value types.
@@ -250,19 +318,31 @@ class RouterHelperAstValidator {
 
     final mapVar = variables.first;
     final variableName = AstHelper.getVariableNames(mapVar.variables).first;
-    expect(variableName, equals(mapName),
-        reason: 'Variable should be named $mapName');
+    expect(
+      variableName,
+      equals(mapName),
+      reason: 'Variable should be named $mapName',
+    );
 
     // Should be final
-    expect(AstHelper.isVariableFinal(mapVar.variables), isTrue,
-        reason: '$mapName should be final');
+    expect(
+      AstHelper.isVariableFinal(mapVar.variables),
+      isTrue,
+      reason: '$mapName should be final',
+    );
 
     // Check type contains expected key and value types
     final fieldType = AstHelper.getVariableType(mapVar.variables);
-    expect(fieldType, contains(keyType),
-        reason: 'Should contain $keyType in map type');
-    expect(fieldType, contains(valueType),
-        reason: 'Should contain $valueType in map type');
+    expect(
+      fieldType,
+      contains(keyType),
+      reason: 'Should contain $keyType in map type',
+    );
+    expect(
+      fieldType,
+      contains(valueType),
+      reason: 'Should contain $valueType in map type',
+    );
   }
 
   /// Ensure imports exist and are aliased where expected (e.g., `as _i`).
@@ -273,15 +353,21 @@ class RouterHelperAstValidator {
     final unit = AstHelper.parseCode(generatedCode);
 
     for (final importUri in expectedImports) {
-      expect(AstHelper.hasImport(unit, importUri), isTrue,
-          reason: 'Should import $importUri');
+      expect(
+        AstHelper.hasImport(unit, importUri),
+        isTrue,
+        reason: 'Should import $importUri',
+      );
     }
 
     // Validate that imports are aliased (should contain ' as _i')
     final imports = AstHelper.getImports(unit);
     final aliasedImports = imports.where((i) => i.prefix != null);
-    expect(aliasedImports, isNotEmpty,
-        reason: 'Should have aliased imports for avoiding conflicts');
+    expect(
+      aliasedImports,
+      isNotEmpty,
+      reason: 'Should have aliased imports for avoiding conflicts',
+    );
   }
 }
 
@@ -348,7 +434,10 @@ class RouteClassGeneratorAstValidator {
       final nestedRoutesClassName = '${_capitalize(parentName)}Routes';
 
       _validateRoutesClassExists(
-          unit, nestedRoutesClassName, parentRoute.children);
+        unit,
+        nestedRoutesClassName,
+        parentRoute.children,
+      );
       _validateRouterClassExists(unit, nestedRouterClassName);
     }
 
@@ -378,8 +467,11 @@ class RouteClassGeneratorAstValidator {
     if (routeWithParameters.parameters.isNotEmpty) {
       final argumentsClassName = '${routeWithParameters.className}Arguments';
       final argumentsClass = AstHelper.findClass(unit, argumentsClassName);
-      expect(argumentsClass, isNotNull,
-          reason: 'Arguments class should exist for route with parameters');
+      expect(
+        argumentsClass,
+        isNotNull,
+        reason: 'Arguments class should exist for route with parameters',
+      );
     }
   }
 
@@ -406,8 +498,11 @@ class RouteClassGeneratorAstValidator {
     expect(routerClass, isNotNull, reason: 'Router class should exist');
 
     final pagesMapField = AstHelper.findField(routerClass!, '_pagesMap');
-    expect(pagesMapField, isNotNull,
-        reason: 'Router should have _pagesMap field');
+    expect(
+      pagesMapField,
+      isNotNull,
+      reason: 'Router should have _pagesMap field',
+    );
   }
 
   // Private helper methods
@@ -419,22 +514,30 @@ class RouteClassGeneratorAstValidator {
     List<RouteConfig> expectedRoutes,
   ) {
     final routesClass = AstHelper.findClass(unit, routesClassName);
-    expect(routesClass, isNotNull,
-        reason: 'Routes class $routesClassName should exist');
+    expect(
+      routesClass,
+      isNotNull,
+      reason: 'Routes class $routesClassName should exist',
+    );
 
     // Validate route constants
     for (final route in expectedRoutes) {
       final routeName = route.name ?? 'unknown';
       final field = AstHelper.findField(routesClass!, routeName);
-      expect(field, isNotNull,
-          reason:
-              'Route $routeName should have a constant in $routesClassName');
+      expect(
+        field,
+        isNotNull,
+        reason: 'Route $routeName should have a constant in $routesClassName',
+      );
     }
 
     // Validate 'all' field
     final allField = AstHelper.findField(routesClass!, 'all');
-    expect(allField, isNotNull,
-        reason: '$routesClassName should have an "all" field');
+    expect(
+      allField,
+      isNotNull,
+      reason: '$routesClassName should have an "all" field',
+    );
   }
 
   /// Ensure router class exists, extends RouterBase, has fields/getters.
@@ -443,25 +546,42 @@ class RouteClassGeneratorAstValidator {
     String routerClassName,
   ) {
     final routerClass = AstHelper.findClass(unit, routerClassName);
-    expect(routerClass, isNotNull,
-        reason: 'Router class $routerClassName should exist');
+    expect(
+      routerClass,
+      isNotNull,
+      reason: 'Router class $routerClassName should exist',
+    );
 
     // Check inheritance
-    expect(routerClass!.extendsClause?.superclass.name2.lexeme,
-        contains('RouterBase'),
-        reason: '$routerClassName should extend RouterBase');
+    expect(
+      routerClass!.extendsClause?.superclass.name.lexeme,
+      contains('RouterBase'),
+      reason: '$routerClassName should extend RouterBase',
+    );
 
     // Check required fields
-    expect(AstHelper.findField(routerClass, '_routes'), isNotNull,
-        reason: '$routerClassName should have _routes field');
-    expect(AstHelper.findField(routerClass, '_pagesMap'), isNotNull,
-        reason: '$routerClassName should have _pagesMap field');
+    expect(
+      AstHelper.findField(routerClass, '_routes'),
+      isNotNull,
+      reason: '$routerClassName should have _routes field',
+    );
+    expect(
+      AstHelper.findField(routerClass, '_pagesMap'),
+      isNotNull,
+      reason: '$routerClassName should have _pagesMap field',
+    );
 
     // Check required getters
-    expect(AstHelper.findMethod(routerClass, 'routes'), isNotNull,
-        reason: '$routerClassName should have routes getter');
-    expect(AstHelper.findMethod(routerClass, 'pagesMap'), isNotNull,
-        reason: '$routerClassName should have pagesMap getter');
+    expect(
+      AstHelper.findMethod(routerClass, 'routes'),
+      isNotNull,
+      reason: '$routerClassName should have routes getter',
+    );
+    expect(
+      AstHelper.findMethod(routerClass, 'pagesMap'),
+      isNotNull,
+      reason: '$routerClassName should have pagesMap getter',
+    );
   }
 
   /// Ensure navigation extension exists with navigateTo/replaceWith methods.
@@ -482,22 +602,35 @@ class RouteClassGeneratorAstValidator {
           final navigateName = 'navigateTo${_capitalize(routeName)}';
           final replaceName = 'replaceWith${_capitalize(routeName)}';
 
-          final navigateMethod =
-              AstHelper.findMethodInExtension(declaration, navigateName);
-          final replaceMethod =
-              AstHelper.findMethodInExtension(declaration, replaceName);
+          final navigateMethod = AstHelper.findMethodInExtension(
+            declaration,
+            navigateName,
+          );
+          final replaceMethod = AstHelper.findMethodInExtension(
+            declaration,
+            replaceName,
+          );
 
-          expect(navigateMethod, isNotNull,
-              reason: 'Extension should have $navigateName method');
-          expect(replaceMethod, isNotNull,
-              reason: 'Extension should have $replaceName method');
+          expect(
+            navigateMethod,
+            isNotNull,
+            reason: 'Extension should have $navigateName method',
+          );
+          expect(
+            replaceMethod,
+            isNotNull,
+            reason: 'Extension should have $replaceName method',
+          );
         }
         break;
       }
     }
 
-    expect(extensionFound, isTrue,
-        reason: 'NavigatorStateExtension should exist');
+    expect(
+      extensionFound,
+      isTrue,
+      reason: 'NavigatorStateExtension should exist',
+    );
   }
 
   /// Ensure argument classes exist for routes with non-query parameters.
@@ -514,28 +647,44 @@ class RouteClassGeneratorAstValidator {
         final argumentsClassName = '${route.className}Arguments';
         final argumentsClass = AstHelper.findClass(unit, argumentsClassName);
 
-        expect(argumentsClass, isNotNull,
-            reason: 'Arguments class $argumentsClassName should exist');
+        expect(
+          argumentsClass,
+          isNotNull,
+          reason: 'Arguments class $argumentsClassName should exist',
+        );
 
         if (argumentsClass != null) {
           // Validate constructor exists
-          final constructor =
-              AstHelper.findConstructor(argumentsClass, argumentsClassName);
-          expect(constructor, isNotNull,
-              reason: '$argumentsClassName should have a constructor');
+          final constructor = AstHelper.findConstructor(
+            argumentsClass,
+            argumentsClassName,
+          );
+          expect(
+            constructor,
+            isNotNull,
+            reason: '$argumentsClassName should have a constructor',
+          );
 
           // Validate parameter fields exist for non-query params
           for (final param in nonQueryParams) {
             final field = AstHelper.findField(argumentsClass, param.name);
-            expect(field, isNotNull,
-                reason: '$argumentsClassName should have field ${param.name}');
+            expect(
+              field,
+              isNotNull,
+              reason: '$argumentsClassName should have field ${param.name}',
+            );
           }
 
           // Validate toString method exists
-          final toStringMethod =
-              AstHelper.findMethod(argumentsClass, 'toString');
-          expect(toStringMethod, isNotNull,
-              reason: '$argumentsClassName should have toString method');
+          final toStringMethod = AstHelper.findMethod(
+            argumentsClass,
+            'toString',
+          );
+          expect(
+            toStringMethod,
+            isNotNull,
+            reason: '$argumentsClassName should have toString method',
+          );
         }
       }
     }
@@ -578,8 +727,9 @@ class ArgumentsClassAstValidator {
 
     // Validate each route that has parameters
     for (final route in expectedRoutes) {
-      final nonQueryParams = route.parameters.where((p) => !p.isQueryParam).toList();
-      
+      final nonQueryParams =
+          route.parameters.where((p) => !p.isQueryParam).toList();
+
       if (nonQueryParams.isNotEmpty) {
         final argumentsClassName = '${route.className}Arguments';
         _validateSingleArgumentClass(unit, argumentsClassName, nonQueryParams);
@@ -602,7 +752,10 @@ class ArgumentsClassAstValidator {
   // Private helper methods
 
   /// Validates imports for argument classes.
-  static void _validateArgumentClassImports(CompilationUnit unit, List<RouteConfig> routes) {
+  static void _validateArgumentClassImports(
+    CompilationUnit unit,
+    List<RouteConfig> routes,
+  ) {
     // Collect all imports needed for parameters
     final requiredImports = <String>{};
     for (final route in routes) {
@@ -616,29 +769,39 @@ class ArgumentsClassAstValidator {
 
     // Validate each required import exists
     for (final importUri in requiredImports) {
-      expect(AstHelper.hasImport(unit, importUri), isTrue,
-          reason: 'Should import $importUri for parameter types');
+      expect(
+        AstHelper.hasImport(unit, importUri),
+        isTrue,
+        reason: 'Should import $importUri for parameter types',
+      );
     }
   }
 
   /// Validates a single argument class structure.
   static void _validateSingleArgumentClass(
-    CompilationUnit unit, 
-    String className, 
-    List<ParamConfig> expectedParameters
+    CompilationUnit unit,
+    String className,
+    List<ParamConfig> expectedParameters,
   ) {
     // Find the argument class
     final argumentClass = AstHelper.findClass(unit, className);
-    expect(argumentClass, isNotNull,
-        reason: 'Argument class $className should exist');
+    expect(
+      argumentClass,
+      isNotNull,
+      reason: 'Argument class $className should exist',
+    );
 
     if (argumentClass != null) {
       // Validate constructor
-      _validateArgumentClassConstructor(argumentClass, className, expectedParameters);
-      
+      _validateArgumentClassConstructor(
+        argumentClass,
+        className,
+        expectedParameters,
+      );
+
       // Validate fields
       _validateArgumentClassFields(argumentClass, expectedParameters);
-      
+
       // Validate standard methods
       _validateArgumentClassMethods(argumentClass);
     }
@@ -646,51 +809,71 @@ class ArgumentsClassAstValidator {
 
   /// Validates the constructor of an argument class.
   static void _validateArgumentClassConstructor(
-    ClassDeclaration argumentClass, 
-    String className, 
-    List<ParamConfig> expectedParameters
+    ClassDeclaration argumentClass,
+    String className,
+    List<ParamConfig> expectedParameters,
   ) {
     final constructor = AstHelper.findConstructor(argumentClass, className);
-    expect(constructor, isNotNull,
-        reason: '$className should have a constructor');
+    expect(
+      constructor,
+      isNotNull,
+      reason: '$className should have a constructor',
+    );
 
     if (constructor != null) {
       // Should be const constructor
-      expect(constructor.constKeyword, isNotNull,
-          reason: '$className constructor should be const');
+      expect(
+        constructor.constKeyword,
+        isNotNull,
+        reason: '$className constructor should be const',
+      );
 
       // Validate constructor parameters match expected parameters
       final constructorParams = constructor.parameters.parameters;
-      
+
       // Count required and optional parameters
-      final requiredParams = expectedParameters.where((p) => p.isRequired).length;
-      final optionalParams = expectedParameters.where((p) => !p.isRequired).length;
-      
-      expect(constructorParams.length, 
-          equals(requiredParams + optionalParams),
-          reason: '$className constructor should have ${expectedParameters.length} parameters');
+      final requiredParams =
+          expectedParameters.where((p) => p.isRequired).length;
+      final optionalParams =
+          expectedParameters.where((p) => !p.isRequired).length;
+
+      expect(
+        constructorParams.length,
+        equals(requiredParams + optionalParams),
+        reason:
+            '$className constructor should have ${expectedParameters.length} parameters',
+      );
     }
   }
 
   /// Validates fields of an argument class.
   static void _validateArgumentClassFields(
-    ClassDeclaration argumentClass, 
-    List<ParamConfig> expectedParameters
+    ClassDeclaration argumentClass,
+    List<ParamConfig> expectedParameters,
   ) {
     for (final param in expectedParameters) {
       final field = AstHelper.findField(argumentClass, param.name);
-      expect(field, isNotNull,
-          reason: 'Argument class should have field ${param.name}');
+      expect(
+        field,
+        isNotNull,
+        reason: 'Argument class should have field ${param.name}',
+      );
 
       if (field != null) {
         // Should be final
-        expect(AstHelper.isFieldFinal(field), isTrue,
-            reason: 'Field ${param.name} should be final');
+        expect(
+          AstHelper.isFieldFinal(field),
+          isTrue,
+          reason: 'Field ${param.name} should be final',
+        );
 
         // Validate field type contains expected type name
         final fieldType = AstHelper.getFieldType(field);
-        expect(fieldType, contains(param.type.name),
-            reason: 'Field ${param.name} should have type ${param.type.name}');
+        expect(
+          fieldType,
+          contains(param.type.name),
+          reason: 'Field ${param.name} should have type ${param.type.name}',
+        );
       }
     }
   }
@@ -699,32 +882,50 @@ class ArgumentsClassAstValidator {
   static void _validateArgumentClassMethods(ClassDeclaration argumentClass) {
     // Validate toString method
     final toStringMethod = AstHelper.findMethod(argumentClass, 'toString');
-    expect(toStringMethod, isNotNull,
-        reason: 'Argument class should have toString method');
+    expect(
+      toStringMethod,
+      isNotNull,
+      reason: 'Argument class should have toString method',
+    );
 
     if (toStringMethod != null) {
-      expect(AstHelper.hasOverrideAnnotation(toStringMethod), isTrue,
-          reason: 'toString method should have @override annotation');
+      expect(
+        AstHelper.hasOverrideAnnotation(toStringMethod),
+        isTrue,
+        reason: 'toString method should have @override annotation',
+      );
     }
 
     // Validate == operator method
     final equalsMethod = AstHelper.findMethod(argumentClass, '==');
-    expect(equalsMethod, isNotNull,
-        reason: 'Argument class should have == operator');
+    expect(
+      equalsMethod,
+      isNotNull,
+      reason: 'Argument class should have == operator',
+    );
 
     if (equalsMethod != null) {
-      expect(AstHelper.hasOverrideAnnotation(equalsMethod), isTrue,
-          reason: '== operator should have @override annotation');
+      expect(
+        AstHelper.hasOverrideAnnotation(equalsMethod),
+        isTrue,
+        reason: '== operator should have @override annotation',
+      );
     }
 
     // Validate hashCode getter
     final hashCodeGetter = AstHelper.findMethod(argumentClass, 'hashCode');
-    expect(hashCodeGetter, isNotNull,
-        reason: 'Argument class should have hashCode getter');
+    expect(
+      hashCodeGetter,
+      isNotNull,
+      reason: 'Argument class should have hashCode getter',
+    );
 
     if (hashCodeGetter != null) {
-      expect(AstHelper.hasOverrideAnnotation(hashCodeGetter), isTrue,
-          reason: 'hashCode getter should have @override annotation');
+      expect(
+        AstHelper.hasOverrideAnnotation(hashCodeGetter),
+        isTrue,
+        reason: 'hashCode getter should have @override annotation',
+      );
     }
   }
 }
@@ -758,16 +959,19 @@ class RoutesClassAstValidator {
 
     // Find the routes class
     final routesClass = AstHelper.findClass(unit, expectedClassName);
-    expect(routesClass, isNotNull,
-        reason: 'Routes class $expectedClassName should exist');
+    expect(
+      routesClass,
+      isNotNull,
+      reason: 'Routes class $expectedClassName should exist',
+    );
 
     if (routesClass != null) {
       // Validate static const fields for each route
       _validateRouteConstants(routesClass, expectedRoutes);
-      
+
       // Validate 'all' field
       _validateAllField(routesClass, expectedRoutes);
-      
+
       // Validate dynamic path methods for parameterized routes
       _validateDynamicPathMethods(routesClass, expectedRoutes);
     }
@@ -776,90 +980,136 @@ class RoutesClassAstValidator {
   // Private helper methods
 
   /// Validates static const fields for each route.
-  static void _validateRouteConstants(ClassDeclaration routesClass, List<RouteConfig> expectedRoutes) {
+  static void _validateRouteConstants(
+    ClassDeclaration routesClass,
+    List<RouteConfig> expectedRoutes,
+  ) {
     for (final route in expectedRoutes) {
       final routeName = route.name ?? 'unknown';
       final field = AstHelper.findField(routesClass, routeName);
-      
-      expect(field, isNotNull,
-          reason: 'Routes class should have constant for $routeName');
+
+      expect(
+        field,
+        isNotNull,
+        reason: 'Routes class should have constant for $routeName',
+      );
 
       if (field != null) {
         // Should be static
-        expect(field.isStatic, isTrue,
-            reason: 'Route constant $routeName should be static');
-        
+        expect(
+          field.isStatic,
+          isTrue,
+          reason: 'Route constant $routeName should be static',
+        );
+
         // Should be const or final (check for const or final keywords)
-        final isConstOrFinal = AstHelper.isFieldFinal(field) || 
-                             field.fields.variables.first.toString().contains('const') ||
-                             field.fields.keyword?.lexeme == 'const';
-        expect(isConstOrFinal, isTrue,
-            reason: 'Route constant $routeName should be const or final');
+        final isConstOrFinal =
+            AstHelper.isFieldFinal(field) ||
+            field.fields.variables.first.toString().contains('const') ||
+            field.fields.keyword?.lexeme == 'const';
+        expect(
+          isConstOrFinal,
+          isTrue,
+          reason: 'Route constant $routeName should be const or final',
+        );
 
         // Should have String type or be inferred (type checking is optional for constants)
         final fieldType = AstHelper.getFieldType(field);
         if (fieldType != null) {
-          expect(fieldType, anyOf(contains('String'), equals('')),
-              reason: 'Route constant $routeName should be String type when explicitly typed');
+          expect(
+            fieldType,
+            anyOf(contains('String'), equals('')),
+            reason:
+                'Route constant $routeName should be String type when explicitly typed',
+          );
         }
       }
     }
   }
 
   /// Validates the 'all' field that contains all route names.
-  static void _validateAllField(ClassDeclaration routesClass, List<RouteConfig> expectedRoutes) {
+  static void _validateAllField(
+    ClassDeclaration routesClass,
+    List<RouteConfig> expectedRoutes,
+  ) {
     final allField = AstHelper.findField(routesClass, 'all');
-    expect(allField, isNotNull,
-        reason: 'Routes class should have an "all" field');
+    expect(
+      allField,
+      isNotNull,
+      reason: 'Routes class should have an "all" field',
+    );
 
     if (allField != null) {
       // Should be static
-      expect(allField.isStatic, isTrue,
-          reason: '"all" field should be static');
-      
+      expect(allField.isStatic, isTrue, reason: '"all" field should be static');
+
       // Should be const or final (check for const or final keywords)
-      final isConstOrFinal = AstHelper.isFieldFinal(allField) || 
-                           allField.fields.variables.first.toString().contains('const') ||
-                           allField.fields.keyword?.lexeme == 'const';
-      expect(isConstOrFinal, isTrue,
-          reason: '"all" field should be const or final');
+      final isConstOrFinal =
+          AstHelper.isFieldFinal(allField) ||
+          allField.fields.variables.first.toString().contains('const') ||
+          allField.fields.keyword?.lexeme == 'const';
+      expect(
+        isConstOrFinal,
+        isTrue,
+        reason: '"all" field should be const or final',
+      );
 
       // Should have Set<String> type or be inferred
       final fieldType = AstHelper.getFieldType(allField);
       if (fieldType != null) {
-        expect(fieldType, anyOf(contains('Set'), contains('String')),
-            reason: '"all" field should be Set<String> type when explicitly typed');
+        expect(
+          fieldType,
+          anyOf(contains('Set'), contains('String')),
+          reason:
+              '"all" field should be Set<String> type when explicitly typed',
+        );
       }
     }
   }
 
   /// Validates dynamic path methods for routes with path parameters.
-  static void _validateDynamicPathMethods(ClassDeclaration routesClass, List<RouteConfig> expectedRoutes) {
+  static void _validateDynamicPathMethods(
+    ClassDeclaration routesClass,
+    List<RouteConfig> expectedRoutes,
+  ) {
     for (final route in expectedRoutes) {
       // Check if route has path parameters (contains :param in pathName)
       final pathName = route.pathName;
       if (pathName.contains(':')) {
         final routeName = route.name ?? 'unknown';
         final methodName = routeName;
-        
+
         final method = AstHelper.findMethod(routesClass, methodName);
-        expect(method, isNotNull,
-            reason: 'Routes class should have dynamic path method for $routeName');
+        expect(
+          method,
+          isNotNull,
+          reason: 'Routes class should have dynamic path method for $routeName',
+        );
 
         if (method != null) {
           // Should be static
-          expect(method.isStatic, isTrue,
-              reason: 'Dynamic path method $methodName should be static');
-          
+          expect(
+            method.isStatic,
+            isTrue,
+            reason: 'Dynamic path method $methodName should be static',
+          );
+
           // Should return String
           final returnType = AstHelper.getMethodReturnType(method);
-          expect(returnType, contains('String'),
-              reason: 'Dynamic path method $methodName should return String');
-          
+          expect(
+            returnType,
+            contains('String'),
+            reason: 'Dynamic path method $methodName should return String',
+          );
+
           // Should have parameters for path variables
           final parameters = method.parameters?.parameters ?? [];
-          expect(parameters, isNotEmpty,
-              reason: 'Dynamic path method $methodName should have parameters for path variables');
+          expect(
+            parameters,
+            isNotEmpty,
+            reason:
+                'Dynamic path method $methodName should have parameters for path variables',
+          );
         }
       }
     }
@@ -897,8 +1147,11 @@ class NavigationExtensionAstValidator {
 
     // Find the extension
     final extension = _findExtension(unit, extensionName);
-    expect(extension, isNotNull,
-        reason: 'Should contain extension $extensionName');
+    expect(
+      extension,
+      isNotNull,
+      reason: 'Should contain extension $extensionName',
+    );
 
     if (extension != null) {
       // Validate navigation methods for each route
@@ -909,7 +1162,10 @@ class NavigationExtensionAstValidator {
   // Private helper methods
 
   /// Finds an extension declaration by name.
-  static ExtensionDeclaration? _findExtension(CompilationUnit unit, String name) {
+  static ExtensionDeclaration? _findExtension(
+    CompilationUnit unit,
+    String name,
+  ) {
     for (final declaration in unit.declarations) {
       if (declaration is ExtensionDeclaration &&
           declaration.name?.lexeme == name) {
@@ -927,10 +1183,13 @@ class NavigationExtensionAstValidator {
     for (final route in expectedRoutes) {
       final routeName = route.name ?? 'unknown';
       final methodName = 'navigateTo${_capitalize(routeName)}';
-      
+
       final method = _findMethodInExtension(extension, methodName);
-      expect(method, isNotNull,
-          reason: 'Extension should have method $methodName for route $routeName');
+      expect(
+        method,
+        isNotNull,
+        reason: 'Extension should have method $methodName for route $routeName',
+      );
 
       if (method != null) {
         // Validate method parameters match route parameters
@@ -964,12 +1223,16 @@ class NavigationExtensionAstValidator {
     if (routeParameters.isNotEmpty) {
       // Should have some way to handle parameters (either direct params or arguments object)
       final methodSignature = method.toString();
-      final hasParameterHandling = parameters.isNotEmpty ||
+      final hasParameterHandling =
+          parameters.isNotEmpty ||
           methodSignature.contains('arguments') ||
           methodSignature.contains('Arguments');
-      
-      expect(hasParameterHandling, isTrue,
-          reason: 'Method $methodName should handle route parameters somehow');
+
+      expect(
+        hasParameterHandling,
+        isTrue,
+        reason: 'Method $methodName should handle route parameters somehow',
+      );
     }
   }
 

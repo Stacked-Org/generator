@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
@@ -21,7 +21,7 @@ class RouterConfigResolver {
 
   RouterConfig resolve(
     ConstantReader stackedApp,
-    ClassElement2 clazz, {
+    ClassElement clazz, {
     bool usesPartBuilder = false,
   }) {
     int routeType = RouteType.material;
@@ -31,20 +31,17 @@ class RouterConfigResolver {
     bool? customRouteBarrierDismissible;
     ResolvedType? transitionBuilder;
     ResolvedType? customRouteBuilder;
-    if (stackedApp.instanceOf(const TypeChecker.typeNamed(
-      CupertinoRouter,
-      inPackage: 'stacked_shared',
-    ))) {
+    if (stackedApp.instanceOf(
+      const TypeChecker.typeNamed(CupertinoRouter, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.cupertino;
-    } else if (stackedApp.instanceOf(const TypeChecker.typeNamed(
-      AdaptiveRouter,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedApp.instanceOf(
+      const TypeChecker.typeNamed(AdaptiveRouter, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.adaptive;
-    } else if (stackedApp.instanceOf(const TypeChecker.typeNamed(
-      CustomRouter,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedApp.instanceOf(
+      const TypeChecker.typeNamed(CustomRouter, inPackage: 'stacked_shared'),
+    )) {
       routeType = RouteType.custom;
 
       durationInMilliseconds =
@@ -55,15 +52,16 @@ class RouterConfigResolver {
       customRouteBarrierDismissible =
           stackedApp.peek('barrierDismissible')?.boolValue;
       final function =
-          stackedApp.peek('transitionsBuilder')?.objectValue.toFunctionValue2();
+          stackedApp.peek('transitionsBuilder')?.objectValue.toFunctionValue();
       if (function != null) {
         transitionBuilder = _typeResolver.resolveFunctionType(function);
       }
       final customRouteBuilderValue =
-          stackedApp.peek('customRouteBuilder')?.objectValue.toFunctionValue2();
+          stackedApp.peek('customRouteBuilder')?.objectValue.toFunctionValue();
       if (customRouteBuilderValue != null) {
-        customRouteBuilder =
-            _typeResolver.resolveFunctionType(customRouteBuilderValue);
+        customRouteBuilder = _typeResolver.resolveFunctionType(
+          customRouteBuilderValue,
+        );
       }
     }
 
@@ -90,7 +88,7 @@ class RouterConfigResolver {
     final routesDartObjects = stackedApp.read('routes').listValue;
     final generateNavigationExt =
         stackedApp.peek('generateNavigationHelperExtension')?.boolValue ??
-            false;
+        false;
     final routeNamePrefix = stackedApp.peek('routePrefix')?.stringValue ?? '/';
 
     final routesClassName =
@@ -124,8 +122,11 @@ class RouterConfigResolver {
     List<PathParamConfig> inheritedPathParams = const [],
     String? routeNamePrefix,
   }) {
-    var routeResolver =
-        RouteConfigResolver(routeNamePrefix, routerConfig, _typeResolver);
+    var routeResolver = RouteConfigResolver(
+      routeNamePrefix,
+      routerConfig,
+      _typeResolver,
+    );
     final routes = <RouteConfig>[];
     for (var entry in routesList) {
       var routeReader = ConstantReader(entry);
@@ -164,16 +165,17 @@ class RouterConfigResolver {
     var initialRoute = routes.firstOrNull((r) => r.initial);
     if (initialRoute != null && !routes.any((r) => r.pathName == initialPath)) {
       routes.insert(
-          0,
-          RouteConfig(
-            pathName: initialPath,
-            redirectTo: initialRoute.pathName,
-            className: '',
-            classImport: '',
-            fullMatch: true,
-            routeType: RouteType.redirect,
-            deferredLoading: false,
-          ));
+        0,
+        RouteConfig(
+          pathName: initialPath,
+          redirectTo: initialRoute.pathName,
+          className: '',
+          classImport: '',
+          fullMatch: true,
+          routeType: RouteType.redirect,
+          deferredLoading: false,
+        ),
+      );
     }
 
     return routes;

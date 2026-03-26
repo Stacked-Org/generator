@@ -1,6 +1,6 @@
 // ignore_for_file: unnecessary_this
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 
 /// Described a single field to be generated.
 ///
@@ -55,7 +55,8 @@ class ExecutableElementData {
   });
 
   factory ExecutableElementData.fromExecutableElement(
-      ExecutableElement executableElement) {
+    ExecutableElement executableElement,
+  ) {
     final enclosingElementName = executableElement.enclosingElement?.name;
     return ExecutableElementData(
       returnType: executableElement.returnType.toString(),
