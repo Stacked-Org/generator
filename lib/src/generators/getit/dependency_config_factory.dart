@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
@@ -34,49 +34,51 @@ class DependencyConfigFactory {
     final DartType dependencyClassType =
         dependencyReader.read('classType').typeValue;
 
-    final String? instanceName = dependencyReader.read('instanceName').isNull
-        ? null
-        : dependencyReader.read('instanceName').stringValue;
+    final String? instanceName =
+        dependencyReader.read('instanceName').isNull
+            ? null
+            : dependencyReader.read('instanceName').stringValue;
 
     final DartType? dependencyAbstractedClassType =
         dependencyReader.peek('asType')?.typeValue;
 
-    final classElement = dependencyClassType.element3 as ClassElement2?;
+    final classElement = dependencyClassType.element as ClassElement?;
 
     throwIf(
       classElement == null,
       '🛑 ${toDisplayString(dependencyClassType)} is not a class element. All services should be classes. We don\'t register individual values for global access through the locator. Make sure the value provided as your service type is a class.',
     );
 
-    final Set<String>? environments = dependencyReader
-        .peek('environments')
-        ?.setValue
-        .map((e) => e.toStringValue())
-        .where((element) => element != null)
-        .toSet()
-        .cast<String>();
+    final Set<String>? environments =
+        dependencyReader
+            .peek('environments')
+            ?.setValue
+            .map((e) => e.toStringValue())
+            .where((element) => element != null)
+            .toSet()
+            .cast<String>();
 
     // Get the import of the class type that's defined for the service
     final import = importResolver.resolve(classElement!);
 
     final abstractedClassElement =
-        dependencyAbstractedClassType?.element3 as ClassElement2?;
+        dependencyAbstractedClassType?.element as ClassElement?;
 
     final abstractedImport = importResolver.resolve(abstractedClassElement);
 
     final className = toDisplayString(dependencyClassType);
 
-    final abstractedTypeClassName = dependencyAbstractedClassType != null
-        ? toDisplayString(dependencyAbstractedClassType)
-        : null;
+    final abstractedTypeClassName =
+        dependencyAbstractedClassType != null
+            ? toDisplayString(dependencyAbstractedClassType)
+            : null;
 
     // NOTE: This can be used for actual dependency inject. We do service location instead.
-    final constructor = classElement.unnamedConstructor2;
+    final constructor = classElement.unnamedConstructor;
 
-    if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
-      Factory,
-      inPackage: 'stacked_shared',
-    ))) {
+    if (dependencyReader.instanceOf(
+      const TypeChecker.typeNamed(Factory, inPackage: 'stacked_shared'),
+    )) {
       return FactoryDependency(
         instanceName: instanceName,
         import: import!,
@@ -85,53 +87,56 @@ class DependencyConfigFactory {
         abstractedImport: abstractedImport,
         environments: environments,
       );
-    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
-      Singleton,
-      inPackage: 'stacked_shared',
-    ))) {
-      final ConstantReader? resolveUsing =
-          dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
+    } else if (dependencyReader.instanceOf(
+      const TypeChecker.typeNamed(Singleton, inPackage: 'stacked_shared'),
+    )) {
+      final ConstantReader? resolveUsing = dependencyReader.peek(
+        'resolveUsing',
+      );
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
 
       return SingletonDependency(
-          instanceName: instanceName,
-          import: import!,
-          className: className,
-          abstractedTypeClassName: abstractedTypeClassName,
-          abstractedImport: abstractedImport,
-          environments: environments,
-          resolveFunction: resolveObject?.displayName);
-    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
-      LazySingleton,
-      inPackage: 'stacked_shared',
-    ))) {
-      final ConstantReader? resolveUsing =
-          dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+        resolveFunction: resolveObject?.displayName,
+      );
+    } else if (dependencyReader.instanceOf(
+      const TypeChecker.typeNamed(LazySingleton, inPackage: 'stacked_shared'),
+    )) {
+      final ConstantReader? resolveUsing = dependencyReader.peek(
+        'resolveUsing',
+      );
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
 
       return LazySingletonDependency(
-          instanceName: instanceName,
-          import: import!,
-          className: className,
-          abstractedTypeClassName: abstractedTypeClassName,
-          abstractedImport: abstractedImport,
-          environments: environments,
-          resolveFunction: resolveObject?.displayName);
-    } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
-      Presolve,
-      inPackage: 'stacked_shared',
-    ))) {
-      final ConstantReader? presolveUsing =
-          dependencyReader.peek('presolveUsing');
-      final presolveObject = presolveUsing?.objectValue.toFunctionValue2();
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+        resolveFunction: resolveObject?.displayName,
+      );
+    } else if (dependencyReader.instanceOf(
+      const TypeChecker.typeNamed(Presolve, inPackage: 'stacked_shared'),
+    )) {
+      final ConstantReader? presolveUsing = dependencyReader.peek(
+        'presolveUsing',
+      );
+      final presolveObject = presolveUsing?.objectValue.toFunctionValue();
       return PresolveSingletonDependency(
-          instanceName: instanceName,
-          import: import!,
-          className: className,
-          abstractedTypeClassName: abstractedTypeClassName,
-          abstractedImport: abstractedImport,
-          environments: environments,
-          presolveFunction: presolveObject?.displayName);
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+        presolveFunction: presolveObject?.displayName,
+      );
     } else if (dependencyReader.instanceOf(_initializableSingletonChecker)) {
       return InitializableSingletonDependency(
         instanceName: instanceName,
@@ -151,13 +156,14 @@ class DependencyConfigFactory {
         }
       }
       return FactoryParamDependency(
-          instanceName: instanceName,
-          import: import!,
-          className: className,
-          abstractedTypeClassName: abstractedTypeClassName,
-          abstractedImport: abstractedImport,
-          environments: environments,
-          params: clazzParams);
+        instanceName: instanceName,
+        import: import!,
+        className: className,
+        abstractedTypeClassName: abstractedTypeClassName,
+        abstractedImport: abstractedImport,
+        environments: environments,
+        params: clazzParams,
+      );
     } else {
       throw UnimplementedError(
         'This Dependency ${dependencyReader.typeValue} is not implemented yet upgrading stacked_generator package to the latest version may fix the issue',

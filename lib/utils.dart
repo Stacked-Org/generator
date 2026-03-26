@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
@@ -12,13 +12,16 @@ String toDisplayString(DartType e) {
 String processedReturnType(String? returnType) {
   final returnTypeContainsBiggerOperatorWithOneOfRouteNames =
       returnType != null &&
-          returnType.contains('<') &&
-          returnType.contains(
-              RegExp('CustomRoute|MaterialRoute|CupertinoRoute|AdaptiveRoute'));
+      returnType.contains('<') &&
+      returnType.contains(
+        RegExp('CustomRoute|MaterialRoute|CupertinoRoute|AdaptiveRoute'),
+      );
 
   if (returnTypeContainsBiggerOperatorWithOneOfRouteNames) {
     final afterRemovingArrowHeads = returnType.substring(
-        returnType.indexOf('<') + 1, returnType.lastIndexOf('>'));
+      returnType.indexOf('<') + 1,
+      returnType.lastIndexOf('>'),
+    );
 
     return afterRemovingArrowHeads;
   } else {
@@ -26,19 +29,19 @@ String processedReturnType(String? returnType) {
   }
 }
 
-void throwIf(bool condition, String message,
-    {Element2? element, String todo = ''}) {
+void throwIf(
+  bool condition,
+  String message, {
+  Element? element,
+  String todo = '',
+}) {
   if (condition) {
     throwError(message, todo: todo, element: element);
   }
 }
 
-void throwError(String message, {Element2? element, String todo = ''}) {
-  throw InvalidGeneratorInputException(
-    message,
-    todo: todo,
-    element: element,
-  );
+void throwError(String message, {Element? element, String todo = ''}) {
+  throw InvalidGeneratorInputException(message, todo: todo, element: element);
 }
 
 List<ParamConfig> notQueryNorPath(List<ParamConfig> parameters) {
@@ -57,9 +60,11 @@ String capitalize(String s) {
   return s[0].toUpperCase() + s.substring(1);
 }
 
-String toKababCase(String s) {
-  return s.replaceAllMapped(RegExp('(.+?)([A-Z])'),
-      (match) => '${match.group(1)}-${match.group(2)}'.toLowerCase());
+String toKebabCase(String s) {
+  return s.replaceAllMapped(
+    RegExp('(.+?)([A-Z])'),
+    (match) => '${match.group(1)}-${match.group(2)}'.toLowerCase(),
+  );
 }
 
 String valueOr(String? value, String or) {
@@ -74,7 +79,7 @@ Future<String> getStackedAppFileName() async {
   return stackedAppFilePath.substring(0, stackedAppFilePath.length - 5);
 }
 
-extension IterableExtenstion<E> on Iterable<E> {
+extension IterableExtension<E> on Iterable<E> {
   E? firstOrNull(bool Function(E element) test) {
     for (var e in this) {
       if (test(e)) {

@@ -37,10 +37,9 @@ class RouteConfigFactory {
   });
 
   RouteConfig fromResolver(ConstantReader stackedRoute) {
-    if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      CupertinoRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(CupertinoRoute, inPackage: 'stacked_shared'),
+    )) {
       return CupertinoRouteConfig(
         className: className,
         classImport: classImport,
@@ -55,10 +54,9 @@ class RouteConfigFactory {
         cupertinoNavTitle: stackedRoute.peek('title')?.stringValue,
         parentClassName: parentClassName,
       );
-    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      AdaptiveRoute,
-      inPackage: 'stacked_shared',
-    ))) {
+    } else if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(AdaptiveRoute, inPackage: 'stacked_shared'),
+    )) {
       return AdaptiveRouteConfig(
         className: className,
         classImport: classImport,
@@ -73,22 +71,23 @@ class RouteConfigFactory {
         cupertinoNavTitle: stackedRoute.peek('cupertinoPageTitle')?.stringValue,
         parentClassName: parentClassName,
       );
-    } else if (stackedRoute.instanceOf(const TypeChecker.typeNamed(
-      CustomRoute,
-      inPackage: 'stacked_shared',
-    ))) {
-      final function = stackedRoute
-          .peek('transitionsBuilder')
-          ?.objectValue
-          .toFunctionValue2();
+    } else if (stackedRoute.instanceOf(
+      const TypeChecker.typeNamed(CustomRoute, inPackage: 'stacked_shared'),
+    )) {
+      final function =
+          stackedRoute
+              .peek('transitionsBuilder')
+              ?.objectValue
+              .toFunctionValue();
 
       ResolvedType? customTransitionBuilder;
       if (function != null) {
         final displayName = function.displayName.replaceFirst(RegExp('^_'), '');
         final enclosingDisplayName = function.enclosingElement?.displayName;
-        final functionName = function.isStatic && enclosingDisplayName != null
-            ? '$enclosingDisplayName.$displayName'
-            : displayName;
+        final functionName =
+            function.isStatic && enclosingDisplayName != null
+                ? '$enclosingDisplayName.$displayName'
+                : displayName;
 
         customTransitionBuilder = ResolvedType(
           name: functionName,

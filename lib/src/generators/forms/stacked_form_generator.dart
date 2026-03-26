@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
@@ -14,14 +14,16 @@ class StackedFormGenerator extends GeneratorForAnnotation<FormView> {
   @override
   FutureOr<String> generateForAnnotatedElement(
     // ignore: avoid_renaming_method_parameters
-    Element2 classForAnnotation,
+    Element classForAnnotation,
     // ignore: avoid_renaming_method_parameters
     ConstantReader formView,
     BuildStep buildStep,
   ) async {
     var libs = await buildStep.resolver.libraries.toList();
-    var importResolver =
-        ImportResolver(libs, classForAnnotation.firstFragment.libraryFragment?.source.uri.path ?? '');
+    var importResolver = ImportResolver(
+      libs,
+      classForAnnotation.firstFragment.libraryFragment?.source.uri.path ?? '',
+    );
 
     final viewName = classForAnnotation.displayName;
 
@@ -32,10 +34,12 @@ class StackedFormGenerator extends GeneratorForAnnotation<FormView> {
 
     if (fieldsConfig != null) {
       for (final fieldConfig in fieldsConfig) {
-        final serialisedField = _readFieldConfig(
-            fieldConfig: fieldConfig, importResolver: importResolver);
+        final serializedField = _readFieldConfig(
+          fieldConfig: fieldConfig,
+          importResolver: importResolver,
+        );
 
-        fields.add(serialisedField);
+        fields.add(serializedField);
       }
     }
 
@@ -55,28 +59,31 @@ FieldConfig _readFieldConfig({
 }) {
   var fieldReader = ConstantReader(fieldConfig);
 
-  bool isTextField = fieldReader.instanceOf(const TypeChecker.typeNamed(
-    FormTextField,
-    inPackage: 'stacked_shared',
-  ));
-  bool isDateField = fieldReader.instanceOf(const TypeChecker.typeNamed(
-    FormDateField,
-    inPackage: 'stacked_shared',
-  ));
-  bool isDropdownField = fieldReader.instanceOf(const TypeChecker.typeNamed(
-    FormDropdownField,
-    inPackage: 'stacked_shared',
-  ));
+  bool isTextField = fieldReader.instanceOf(
+    const TypeChecker.typeNamed(FormTextField, inPackage: 'stacked_shared'),
+  );
+  bool isDateField = fieldReader.instanceOf(
+    const TypeChecker.typeNamed(FormDateField, inPackage: 'stacked_shared'),
+  );
+  bool isDropdownField = fieldReader.instanceOf(
+    const TypeChecker.typeNamed(FormDropdownField, inPackage: 'stacked_shared'),
+  );
 
   if (isTextField) {
     return _readTextFieldConfig(
-        fieldReader: fieldReader, importResolver: importResolver);
+      fieldReader: fieldReader,
+      importResolver: importResolver,
+    );
   } else if (isDateField) {
     return _readDateFieldConfig(
-        fieldReader: fieldReader, importResolver: importResolver);
+      fieldReader: fieldReader,
+      importResolver: importResolver,
+    );
   } else if (isDropdownField) {
     return _readDropdownFieldConfig(
-        fieldReader: fieldReader, importResolver: importResolver);
+      fieldReader: fieldReader,
+      importResolver: importResolver,
+    );
   } else {
     throw ArgumentError('Unknown form field $fieldConfig');
   }
@@ -88,21 +95,24 @@ FieldConfig _readTextFieldConfig({
 }) {
   final String name = (fieldReader.peek('name')?.stringValue) ?? '';
   final String? initialValue = (fieldReader.peek('initialValue')?.stringValue);
-  final ExecutableElement2? validatorFunction =
-      (fieldReader.peek('validator')?.objectValue)?.toFunctionValue2();
-  final ExecutableElement2? customTextEditingController =
+  final ExecutableElement? validatorFunction =
+      (fieldReader.peek('validator')?.objectValue)?.toFunctionValue();
+  final ExecutableElement? customTextEditingController =
       (fieldReader.peek('customTextEditingController')?.objectValue)
-          ?.toFunctionValue2();
+          ?.toFunctionValue();
   return TextFieldConfig(
     name: name,
     initialValue: initialValue,
-    validatorFunction: validatorFunction == null
-        ? null
-        : ExecutableElementData.fromExecutableElement(validatorFunction),
-    customTextEditingController: customTextEditingController == null
-        ? null
-        : ExecutableElementData.fromExecutableElement(
-            customTextEditingController),
+    validatorFunction:
+        validatorFunction == null
+            ? null
+            : ExecutableElementData.fromExecutableElement(validatorFunction),
+    customTextEditingController:
+        customTextEditingController == null
+            ? null
+            : ExecutableElementData.fromExecutableElement(
+              customTextEditingController,
+            ),
   );
 }
 
@@ -111,9 +121,7 @@ FieldConfig _readDateFieldConfig({
   required ImportResolver importResolver,
 }) {
   final String name = (fieldReader.peek('name')?.stringValue) ?? '';
-  return DateFieldConfig(
-    name: name,
-  );
+  return DateFieldConfig(name: name);
 }
 
 FieldConfig _readDropdownFieldConfig({
@@ -123,15 +131,12 @@ FieldConfig _readDropdownFieldConfig({
   final String name = (fieldReader.peek('name')?.stringValue) ?? '';
   final List<DropdownFieldItem> items =
       (fieldReader.peek('items')?.listValue.map((dartObject) {
-            final itemReader = ConstantReader(dartObject);
-            final title = itemReader.peek('title')?.stringValue ?? '';
-            final value = itemReader.peek('value')?.stringValue ?? '';
+        final itemReader = ConstantReader(dartObject);
+        final title = itemReader.peek('title')?.stringValue ?? '';
+        final value = itemReader.peek('value')?.stringValue ?? '';
 
-            return DropdownFieldItem(title: title, value: value);
-          }).toList()) ??
-          <DropdownFieldItem>[];
-  return DropdownFieldConfig(
-    name: name,
-    items: items,
-  );
+        return DropdownFieldItem(title: title, value: value);
+      }).toList()) ??
+      <DropdownFieldItem>[];
+  return DropdownFieldConfig(name: name, items: items);
 }
