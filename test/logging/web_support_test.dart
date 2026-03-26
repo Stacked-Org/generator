@@ -7,14 +7,17 @@ List<String> _splitClassNameWords(String className) {
       .toList();
 }
 
-/// When the faulty word exists in the begging this method will not be very usefull
+/// When the faulty word exists in the begging this method will not be very useful
 String _findMostMatchedTrace(List<String> stackTraces, List<String> keyWords) {
   String match = stackTraces.firstWhere(
-      (trace) => _doesTraceContainsAllKeywords(trace, keyWords),
-      orElse: () => '');
+    (trace) => _doesTraceContainsAllKeywords(trace, keyWords),
+    orElse: () => '',
+  );
   if (match.isEmpty) {
     match = _findMostMatchedTrace(
-        stackTraces, keyWords.sublist(0, keyWords.length - 1));
+      stackTraces,
+      keyWords.sublist(0, keyWords.length - 1),
+    );
   }
   return match;
 }
@@ -54,47 +57,63 @@ void main() {
     ];
     group('_splitClassNameWords -', () {
       test(
-          'When class name is UserService, Should return two words [user, service]',
-          () {
-        expect(_splitClassNameWords('UserService'), ['user', 'service']);
-      });
+        'When class name is UserService, Should return two words [user, service]',
+        () {
+          expect(_splitClassNameWords('UserService'), ['user', 'service']);
+        },
+      );
       group('_doesTraceContainsAllKeywords -', () {
         test(
-            'When call on a trace, Should return true if it contains all the words and false otherwise ',
-            () {
-          const trace =
-              "packages/intake/services/user_service.dart 26:9                      syncUserAccount";
+          'When call on a trace, Should return true if it contains all the words and false otherwise ',
+          () {
+            const trace =
+                "packages/intake/services/user_service.dart 26:9                      syncUserAccount";
 
-          expect(_doesTraceContainsAllKeywords(trace, ['user', 'service']),
-              isTrue);
+            expect(
+              _doesTraceContainsAllKeywords(trace, ['user', 'service']),
+              isTrue,
+            );
 
-          expect(_doesTraceContainsAllKeywords(trace, ['user', 'greate']),
-              isFalse);
-        });
+            expect(
+              _doesTraceContainsAllKeywords(trace, ['user', 'greate']),
+              isFalse,
+            );
+          },
+        );
       });
       group('_findMostMatchedTrace -', () {
         test(
-            'When call on a list of traces, Should return the first most matched trace with the provided keywords',
-            () {
-          final firstMostMatchedTrace = _findMostMatchedTrace(
-              exampleStackTraceOfWebAppLog, ['user', 'service']);
+          'When call on a list of traces, Should return the first most matched trace with the provided keywords',
+          () {
+            final firstMostMatchedTrace = _findMostMatchedTrace(
+              exampleStackTraceOfWebAppLog,
+              ['user', 'service'],
+            );
 
-          expect(firstMostMatchedTrace, exampleStackTraceOfWebAppLog[4]);
-          expect(firstMostMatchedTrace, example2StackTraceOfWebAppLog[1]);
-        });
+            expect(firstMostMatchedTrace, exampleStackTraceOfWebAppLog[4]);
+            expect(firstMostMatchedTrace, example2StackTraceOfWebAppLog[1]);
+          },
+        );
         test(
-            'When call on a list of traces and don\'t find all the keywords, Should remove a keyword from the list and try again',
-            () {
-          final firstMostMatchedTrace = _findMostMatchedTrace(
-              exampleStackTraceOfWebAppLog, ['user', 'service', 'office']);
+          'When call on a list of traces and don\'t find all the keywords, Should remove a keyword from the list and try again',
+          () {
+            final firstMostMatchedTrace = _findMostMatchedTrace(
+              exampleStackTraceOfWebAppLog,
+              ['user', 'service', 'office'],
+            );
 
-          expect(firstMostMatchedTrace, exampleStackTraceOfWebAppLog[4]);
-        });
+            expect(firstMostMatchedTrace, exampleStackTraceOfWebAppLog[4]);
+          },
+        );
         test('Given a stacktrace from web log, Should return method name', () {
           expect(
-              _findMostMatchedTrace(exampleStackTraceOfWebAppLog,
-                  ['user', 'service', 'office']).split(' ').last,
-              'syncUserAccount');
+            _findMostMatchedTrace(exampleStackTraceOfWebAppLog, [
+              'user',
+              'service',
+              'office',
+            ]).split(' ').last,
+            'syncUserAccount',
+          );
         });
       });
     });
