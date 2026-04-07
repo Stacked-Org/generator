@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
@@ -41,7 +41,7 @@ class DependencyConfigFactory {
     final DartType? dependencyAbstractedClassType =
         dependencyReader.peek('asType')?.typeValue;
 
-    final classElement = dependencyClassType.element3 as ClassElement2?;
+    final classElement = dependencyClassType.element as ClassElement?;
 
     throwIf(
       classElement == null,
@@ -60,7 +60,7 @@ class DependencyConfigFactory {
     final import = importResolver.resolve(classElement!);
 
     final abstractedClassElement =
-        dependencyAbstractedClassType?.element3 as ClassElement2?;
+        dependencyAbstractedClassType?.element as ClassElement?;
 
     final abstractedImport = importResolver.resolve(abstractedClassElement);
 
@@ -71,7 +71,7 @@ class DependencyConfigFactory {
         : null;
 
     // NOTE: This can be used for actual dependency inject. We do service location instead.
-    final constructor = classElement.unnamedConstructor2;
+    final constructor = classElement.unnamedConstructor;
 
     if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
       Factory,
@@ -91,7 +91,7 @@ class DependencyConfigFactory {
     ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
 
       return SingletonDependency(
           instanceName: instanceName,
@@ -107,7 +107,7 @@ class DependencyConfigFactory {
     ))) {
       final ConstantReader? resolveUsing =
           dependencyReader.peek('resolveUsing');
-      final resolveObject = resolveUsing?.objectValue.toFunctionValue2();
+      final resolveObject = resolveUsing?.objectValue.toFunctionValue();
 
       return LazySingletonDependency(
           instanceName: instanceName,
@@ -118,12 +118,13 @@ class DependencyConfigFactory {
           environments: environments,
           resolveFunction: resolveObject?.displayName);
     } else if (dependencyReader.instanceOf(const TypeChecker.typeNamed(
+      // ignore: deprecated_member_use
       Presolve,
       inPackage: 'stacked_shared',
     ))) {
       final ConstantReader? presolveUsing =
           dependencyReader.peek('presolveUsing');
-      final presolveObject = presolveUsing?.objectValue.toFunctionValue2();
+      final presolveObject = presolveUsing?.objectValue.toFunctionValue();
       return PresolveSingletonDependency(
           instanceName: instanceName,
           import: import!,

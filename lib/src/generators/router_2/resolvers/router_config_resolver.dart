@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/utils.dart';
@@ -21,7 +21,7 @@ class RouterConfigResolver {
 
   RouterConfig resolve(
     ConstantReader stackedApp,
-    ClassElement2 clazz, {
+    ClassElement clazz, {
     bool usesPartBuilder = false,
   }) {
     int routeType = RouteType.material;
@@ -55,12 +55,12 @@ class RouterConfigResolver {
       customRouteBarrierDismissible =
           stackedApp.peek('barrierDismissible')?.boolValue;
       final function =
-          stackedApp.peek('transitionsBuilder')?.objectValue.toFunctionValue2();
+          stackedApp.peek('transitionsBuilder')?.objectValue.toFunctionValue();
       if (function != null) {
         transitionBuilder = _typeResolver.resolveFunctionType(function);
       }
       final customRouteBuilderValue =
-          stackedApp.peek('customRouteBuilder')?.objectValue.toFunctionValue2();
+          stackedApp.peek('customRouteBuilder')?.objectValue.toFunctionValue();
       if (customRouteBuilderValue != null) {
         customRouteBuilder =
             _typeResolver.resolveFunctionType(customRouteBuilderValue);

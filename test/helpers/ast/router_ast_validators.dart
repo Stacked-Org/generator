@@ -447,7 +447,7 @@ class RouteClassGeneratorAstValidator {
         reason: 'Router class $routerClassName should exist');
 
     // Check inheritance
-    expect(routerClass!.extendsClause?.superclass.name2.lexeme,
+    expect(routerClass!.extendsClause?.superclass.name.lexeme,
         contains('RouterBase'),
         reason: '$routerClassName should extend RouterBase');
 
@@ -944,7 +944,7 @@ class NavigationExtensionAstValidator {
     ExtensionDeclaration extension,
     String methodName,
   ) {
-    for (final member in extension.members) {
+    for (final member in extension.body.members) {
       if (member is MethodDeclaration && member.name.lexeme == methodName) {
         return member;
       }

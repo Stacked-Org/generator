@@ -25,7 +25,7 @@ class AstHelper {
   static ClassDeclaration? findClass(CompilationUnit unit, String className) {
     return unit.declarations
         .whereType<ClassDeclaration>()
-        .where((c) => c.name.lexeme == className)
+        .where((c) => c.namePart.typeName.lexeme == className)
         .firstOrNull;
   }
 
@@ -57,12 +57,18 @@ class AstHelper {
 
   /// Return all method declarations in a class.
   static List<MethodDeclaration> findMethods(ClassDeclaration classDecl) {
-    return classDecl.members.whereType<MethodDeclaration>().toList();
+    return (classDecl.body as BlockClassBody)
+        .members
+        .whereType<MethodDeclaration>()
+        .toList();
   }
 
   /// Return all field declarations in a class.
   static List<FieldDeclaration> findFields(ClassDeclaration classDecl) {
-    return classDecl.members.whereType<FieldDeclaration>().toList();
+    return (classDecl.body as BlockClassBody)
+        .members
+        .whereType<FieldDeclaration>()
+        .toList();
   }
 
   /// Find a method by name in a class; returns null if not found.
@@ -85,18 +91,20 @@ class AstHelper {
   /// Returns null when the constructor is not present.
   static ConstructorDeclaration? findConstructor(
       ClassDeclaration classDecl, String constructorName) {
-    return classDecl.members
+    return (classDecl.body as BlockClassBody)
+        .members
         .whereType<ConstructorDeclaration>()
         .where((c) =>
             c.name?.lexeme == constructorName ||
-            (c.name == null && constructorName == classDecl.name.lexeme))
+            (c.name == null &&
+                constructorName == classDecl.namePart.typeName.lexeme))
         .firstOrNull;
   }
 
   /// Find a method by name in an extension; returns null if not found.
   static MethodDeclaration? findMethodInExtension(
       ExtensionDeclaration extension, String methodName) {
-    return extension.members
+    return extension.body.members
         .whereType<MethodDeclaration>()
         .where((m) => m.name.lexeme == methodName)
         .firstOrNull;
@@ -129,7 +137,7 @@ class AstHelper {
   /// Check whether a method has an @override annotation.
   static bool hasOverrideAnnotation(MethodDeclaration method) {
     return method.metadata
-        .any((annotation) => annotation.name.name == 'override');
+        .any((annotation) => annotation.name.toSource() == 'override');
   }
 
   /// Get a method's return type as string, or null for void/implicit.

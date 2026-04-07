@@ -145,7 +145,8 @@ class BottomsheetClassGeneratorAstValidator {
     // Find the BottomSheetType enum
     EnumDeclaration? bottomsheetTypeEnum;
     for (final declaration in unit.declarations) {
-      if (declaration is EnumDeclaration && declaration.name.lexeme == 'BottomSheetType') {
+      if (declaration is EnumDeclaration &&
+          declaration.namePart.typeName.lexeme == 'BottomSheetType') {
         bottomsheetTypeEnum = declaration;
         break;
       }
@@ -153,7 +154,8 @@ class BottomsheetClassGeneratorAstValidator {
     expect(bottomsheetTypeEnum, isNotNull, reason: 'Should contain BottomSheetType enum');
     
     if (bottomsheetTypeEnum != null) {
-      final enumValues = bottomsheetTypeEnum.constants.map((c) => c.name.lexeme).toList();
+      final enumValues =
+          bottomsheetTypeEnum.body.constants.map((c) => c.name.lexeme).toList();
       expect(enumValues.length, equals(expectedBottomsheetTypes.length), 
           reason: 'BottomSheetType enum should have ${expectedBottomsheetTypes.length} values');
       

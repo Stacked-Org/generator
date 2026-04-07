@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
@@ -60,7 +60,7 @@ class RouteParameterResolver {
 
     throwIf(
       pathParamAnnotation != null && queryParamAnnotation != null,
-      '${parameterElement.name3} can not be both a pathParam and a queryParam!',
+      '${parameterElement.name} can not be both a pathParam and a queryParam!',
       element: parameterElement,
     );
 

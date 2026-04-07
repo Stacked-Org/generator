@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
 import 'package:stacked_generator/src/generators/dialogs/generate/dialog_class_generator.dart';
+import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
 import 'dialog_config_resolver.dart';
@@ -12,7 +13,7 @@ import 'dialog_config_resolver.dart';
 class StackedDialogGenerator extends GeneratorForAnnotation<StackedApp> {
   @override
   FutureOr<String> generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
@@ -20,7 +21,7 @@ class StackedDialogGenerator extends GeneratorForAnnotation<StackedApp> {
     final libs = await buildStep.resolver.libraries.toList();
     final importResolver = ImportResolver(
       libs,
-      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+      elementSourceUri(element)?.path ?? '',
     );
 
     /// If the dialogs parameter is not mentioned in the StackedApp

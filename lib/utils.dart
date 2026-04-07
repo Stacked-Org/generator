@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
@@ -27,18 +27,22 @@ String processedReturnType(String? returnType) {
 }
 
 void throwIf(bool condition, String message,
-    {Element2? element, String todo = ''}) {
+    {Element? element, String todo = ''}) {
   if (condition) {
     throwError(message, todo: todo, element: element);
   }
 }
 
-void throwError(String message, {Element2? element, String todo = ''}) {
+void throwError(String message, {Element? element, String todo = ''}) {
   throw InvalidGeneratorInputException(
     message,
     todo: todo,
     element: element,
   );
+}
+
+Uri? elementSourceUri(Element? element) {
+  return element?.firstFragment.libraryFragment?.source.uri;
 }
 
 List<ParamConfig> notQueryNorPath(List<ParamConfig> parameters) {

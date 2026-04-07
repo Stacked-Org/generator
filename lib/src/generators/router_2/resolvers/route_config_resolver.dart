@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/extensions/string_utils_extension.dart';
@@ -72,12 +72,12 @@ class RouteConfigResolver {
     }
 
     throwIf(
-      page.element3 is! ClassElement2,
+      page.element is! ClassElement,
       '${page.getDisplayString()} is not a class element',
-      element: page.element3,
+      element: page.element,
     );
 
-    final classElement = page.element3 as ClassElement2;
+    final classElement = page.element as ClassElement;
     final import = _typeResolver.resolveImport(classElement);
     final hasWrappedRoute = classElement.allSupertypes
         .any((e) => e.getDisplayString() == 'AutoRouteWrapper');
@@ -164,14 +164,14 @@ class RouteConfigResolver {
       final function = stackedRoute
           .peek('transitionsBuilder')
           ?.objectValue
-          .toFunctionValue2();
+          .toFunctionValue();
       if (function != null) {
         transitionBuilder = _typeResolver.resolveFunctionType(function);
       }
       final builderFunction = stackedRoute
           .peek('customRouteBuilder')
           ?.objectValue
-          .toFunctionValue2();
+          .toFunctionValue();
       if (builderFunction != null) {
         customRouteBuilder = _typeResolver.resolveFunctionType(builderFunction);
       }
@@ -246,7 +246,7 @@ class RouteConfigResolver {
 
     var replacementInRouteName = _routerConfig.replaceInRouteName;
 
-    final constructor = classElement.unnamedConstructor2;
+    final constructor = classElement.unnamedConstructor;
     throwIf(
       constructor == null,
       'Route widgets must have an unnamed constructor',

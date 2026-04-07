@@ -348,7 +348,7 @@ void main() {
         test(
           'When called, Should add registerations function for a focusNodes',
           () {
-            builder.addGetFocuNode();
+            builder.addGetFocusNode();
 
             expect(
               builder.serializeStringBuffer,
@@ -361,7 +361,7 @@ void main() {
         test(
           'When called, Should add registerations function for a TextEditingController',
           () {
-            builder.addGetTextEditinController();
+            builder.addGetTextEditingController();
             final output = builder.serializeStringBuffer;
             expect(
               output,

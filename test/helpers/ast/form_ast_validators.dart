@@ -290,7 +290,7 @@ class FormBuilderAstValidator {
 
   /// Finds a method in a mixin declaration.
   static MethodDeclaration? _findMethodInMixin(MixinDeclaration mixin, String methodName) {
-    for (final member in mixin.members) {
+    for (final member in mixin.body.members) {
       if (member is MethodDeclaration && member.name.lexeme == methodName) {
         return member;
       }
@@ -384,7 +384,7 @@ class FormFieldAstValidator {
 
   /// Finds a method in a mixin declaration.
   static MethodDeclaration? _findMethodInMixin(MixinDeclaration mixin, String methodName) {
-    for (final member in mixin.members) {
+    for (final member in mixin.body.members) {
       if (member is MethodDeclaration && member.name.lexeme == methodName) {
         return member;
       }

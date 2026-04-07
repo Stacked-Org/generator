@@ -1,9 +1,10 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/import_resolver.dart';
+import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
 import 'logger_class_generator.dart';
@@ -12,7 +13,7 @@ import 'logger_config_resolver.dart';
 class StackedLoggerGenerator extends GeneratorForAnnotation<StackedApp> {
   @override
   FutureOr<String> generateForAnnotatedElement(
-    Element2 element,
+    Element element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async {
@@ -20,7 +21,7 @@ class StackedLoggerGenerator extends GeneratorForAnnotation<StackedApp> {
     var libs = await buildStep.resolver.libraries.toList();
     var importResolver = ImportResolver(
       libs,
-      element.firstFragment.libraryFragment?.source.uri.path ?? '',
+      elementSourceUri(element)?.path ?? '',
     );
 
     final loggerConfig = await loggerResolver.resolve(

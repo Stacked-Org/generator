@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/source/source.dart';
 
 /// Custom mock source that returns a specific URI
@@ -43,11 +43,11 @@ class _MockClassFragment implements ClassFragment {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-/// Custom mock ClassElement2
-class _MockClassElement2 implements ClassElement2 {
+/// Custom mock ClassElement.
+class _MockClassElement implements ClassElement {
   final ClassFragment _firstFragment;
-  
-  _MockClassElement2(this._firstFragment);
+
+  _MockClassElement(this._firstFragment);
 
   @override
   ClassFragment get firstFragment => _firstFragment;
@@ -57,16 +57,16 @@ class _MockClassElement2 implements ClassElement2 {
   dynamic noSuchMethod(Invocation invocation) => throw UnimplementedError();
 }
 
-/// Creates a mock ClassElement2 for testing Router 2.0 code generation
-/// 
+/// Creates a mock ClassElement for testing Router 2.0 code generation.
+///
 /// [fileName] - The filename to use for the mock element (defaults to 'test_app.dart')
-ClassElement2 createMockClassElement2({String fileName = 'test_app.dart'}) {
+ClassElement createMockClassElement({String fileName = 'test_app.dart'}) {
   // Create the chain from bottom up
   final uri = Uri.parse('package:test_app/lib/$fileName');
   final mockSource = _MockSource(uri);
   final mockLibraryFragment = _MockLibraryFragment(mockSource);
   final mockClassFragment = _MockClassFragment(mockLibraryFragment);
-  final mockElement = _MockClassElement2(mockClassFragment);
-  
+  final mockElement = _MockClassElement(mockClassFragment);
+
   return mockElement;
 }

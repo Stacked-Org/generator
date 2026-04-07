@@ -1,3 +1,11 @@
+## 3.0.0
+
+### Breaking Changes
+
+* require Dart 3.9+
+* support analyzer 10.x only
+* migrate generator internals to the analyzer 10 element API
+
 ## [2.0.1](https://github.com/Stacked-Org/generator/compare/v2.0.0...v2.0.1) (2026-03-07)
 
 
