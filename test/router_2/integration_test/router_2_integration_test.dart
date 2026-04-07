@@ -6,7 +6,7 @@ import 'package:stacked_generator/src/generators/router_common/models/router_con
 import 'package:stacked_generator/src/generators/router/route_config/material_route_config.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
-import '../../helpers/element2_mock_helper.dart';
+import '../../helpers/element_mock_helper.dart';
 
 void main() {
   group('Router 2.0 Integration Tests -', () {
@@ -42,7 +42,7 @@ void main() {
           routerClassName: 'AppRouter',
           routesClassName: 'AppRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'app_router.dart'),
+          element: createMockClassElement(fileName: 'app_router.dart'),
         );
 
         final result = generateLibrary(config);
@@ -82,7 +82,7 @@ void main() {
           routerClassName: 'UserRouter',
           routesClassName: 'UserRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'user_router.dart'),
+          element: createMockClassElement(fileName: 'user_router.dart'),
         );
 
         final result = generateLibrary(config);
@@ -129,7 +129,7 @@ void main() {
           routerClassName: 'ArticleRouter',
           routesClassName: 'ArticleRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'article_router.dart'),
+          element: createMockClassElement(fileName: 'article_router.dart'),
         );
 
         final result = generateLibrary(config);
@@ -157,7 +157,7 @@ void main() {
           routerClassName: 'CustomRouter',
           routesClassName: 'CustomRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'custom_router.dart'),
+          element: createMockClassElement(fileName: 'custom_router.dart'),
         );
 
         final result = generateLibrary(config);
@@ -173,7 +173,7 @@ void main() {
           routerClassName: 'EmptyRouter',
           routesClassName: 'EmptyRoutes',
           routes: [],
-          element: createMockClassElement2(fileName: 'empty_router.dart'),
+          element: createMockClassElement(fileName: 'empty_router.dart'),
         );
 
         // Currently the Router 2.0 generator doesn't handle empty routes well
@@ -207,7 +207,7 @@ void main() {
           routerClassName: 'InvalidRouter',
           routesClassName: 'InvalidRoutes',
           routes: duplicateRoutes,
-          element: createMockClassElement2(fileName: 'invalid_router.dart'),
+          element: createMockClassElement(fileName: 'invalid_router.dart'),
         );
 
         expect(
@@ -233,7 +233,7 @@ void main() {
           routerClassName: 'TestRouter',
           routesClassName: 'TestRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'test_router.dart'),
+          element: createMockClassElement(fileName: 'test_router.dart'),
         );
 
         final result = generateLibrary(config);
@@ -265,7 +265,7 @@ void main() {
           routerClassName: 'ImportTestRouter',
           routesClassName: 'ImportTestRoutes',
           routes: routes,
-          element: createMockClassElement2(fileName: 'import_test_router.dart'),
+          element: createMockClassElement(fileName: 'import_test_router.dart'),
         );
 
         final result = generateLibrary(config);

@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 
 import 'route_config.dart';
 
@@ -11,7 +11,7 @@ class RouterConfig {
   final String routerClassName;
   final RouterConfig? parent;
   final String? replaceInRouteName;
-  final ClassElement2? element;
+  final ClassElement? element;
   final bool deferredLoading;
 
   RouterConfig({
@@ -36,7 +36,7 @@ class RouterConfig {
     String? routerClassName,
     RouterConfig? parent,
     String? replaceInRouteName,
-    ClassElement2? element,
+    ClassElement? element,
     bool? deferredLoading,
   }) {
     return RouterConfig(

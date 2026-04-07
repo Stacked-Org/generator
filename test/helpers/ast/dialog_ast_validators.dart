@@ -90,7 +90,7 @@ class DialogClassGeneratorAstValidator {
     EnumDeclaration? dialogTypeEnum;
     for (final declaration in unit.declarations) {
       if (declaration is EnumDeclaration &&
-          declaration.name.lexeme == 'DialogType') {
+          declaration.namePart.typeName.lexeme == 'DialogType') {
         dialogTypeEnum = declaration;
         break;
       }
@@ -99,7 +99,7 @@ class DialogClassGeneratorAstValidator {
 
     if (dialogTypeEnum != null) {
       final enumValues =
-          dialogTypeEnum.constants.map((c) => c.name.lexeme).toList();
+          dialogTypeEnum.body.constants.map((c) => c.name.lexeme).toList();
       expect(enumValues.length, equals(expectedDialogTypes.length),
           reason:
               'DialogType enum should have ${expectedDialogTypes.length} values');

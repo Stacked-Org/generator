@@ -137,7 +137,7 @@ class LoggerComponentAstValidator {
     if (printerClass != null) {
       // Should extend LogPrinter
       final extendsClause = printerClass.extendsClause;
-      expect(extendsClause?.superclass.name2.lexeme, equals('LogPrinter'),
+      expect(extendsClause?.superclass.name.lexeme, equals('LogPrinter'),
           reason: 'SimpleLogPrinter should extend LogPrinter');
       
       // Validate required fields

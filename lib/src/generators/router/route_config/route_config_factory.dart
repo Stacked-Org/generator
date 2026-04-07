@@ -1,6 +1,7 @@
 import 'package:source_gen/source_gen.dart';
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
 import 'package:stacked_generator/src/generators/router_common/models/route_config.dart';
+import 'package:stacked_generator/utils.dart';
 import 'package:stacked_shared/stacked_shared.dart';
 
 import '../../router_common/models/route_parameter_config.dart';
@@ -80,7 +81,7 @@ class RouteConfigFactory {
       final function = stackedRoute
           .peek('transitionsBuilder')
           ?.objectValue
-          .toFunctionValue2();
+          .toFunctionValue();
 
       ResolvedType? customTransitionBuilder;
       if (function != null) {
@@ -92,7 +93,7 @@ class RouteConfigFactory {
 
         customTransitionBuilder = ResolvedType(
           name: functionName,
-          import: function.firstFragment.libraryFragment.source.uri.toString(),
+          import: elementSourceUri(function)?.toString(),
         );
       }
 

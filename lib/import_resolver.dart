@@ -1,14 +1,15 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:path/path.dart' as p;
+import 'package:stacked_generator/utils.dart';
 
 class ImportResolver {
-  final List<LibraryElement2> libs;
+  final List<LibraryElement> libs;
   final String targetFilePath;
 
   const ImportResolver(this.libs, this.targetFilePath);
 
-  String? resolve(Element2? element) {
+  String? resolve(Element? element) {
     // return early if source is null or element is a core type
     final elementSourceUri = _sourceUriOfElement(element);
     if (elementSourceUri == null || _isCoreDartType(element)) {
@@ -44,12 +45,12 @@ class ImportResolver {
   }
 
   Uri? _sourceUriOfElement(Element? element) {
-    return element?.firstFragment.libraryFragment?.source.uri;
+    return elementSourceUri(element);
   }
 
   Set<String> resolveAll(DartType type) {
     final imports = <String>{};
-    final resolvedValue = resolve(type.element3);
+    final resolvedValue = resolve(type.element);
     if (resolvedValue != null) {
       imports.add(resolvedValue);
     }
@@ -61,7 +62,7 @@ class ImportResolver {
     final imports = <String>{};
     if (typeToCheck is ParameterizedType) {
       for (DartType type in typeToCheck.typeArguments) {
-        final resolvedValue = resolve(type.element3);
+        final resolvedValue = resolve(type.element);
         if (resolvedValue != null) {
           imports.add(resolvedValue);
         }

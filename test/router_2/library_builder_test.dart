@@ -6,7 +6,7 @@ import 'package:stacked_generator/src/generators/router/route_config/material_ro
 import 'package:stacked_generator/src/generators/router_common/models/route_parameter_config.dart';
 import 'package:test/test.dart';
 
-import '../helpers/element2_mock_helper.dart';
+import '../helpers/element_mock_helper.dart';
 import 'package:stacked_generator/src/generators/exceptions/invalid_generator_input_exception.dart';
 
 void main() {
@@ -61,7 +61,7 @@ void main() {
         routerClassName: 'AppRouter',
         routesClassName: 'AppRoutes',
         routes: testRoutes,
-        element: createMockClassElement2(fileName: 'app_router.dart'),
+        element: createMockClassElement(fileName: 'app_router.dart'),
       );
     });
 
@@ -138,7 +138,7 @@ void main() {
           routerClassName: 'TestRouter',
           routesClassName: 'TestRoutes',
           routes: duplicateRoutes,
-          element: createMockClassElement2(fileName: 'test_router.dart'),
+          element: createMockClassElement(fileName: 'test_router.dart'),
         );
 
         expect(
@@ -162,7 +162,7 @@ void main() {
           routerClassName: 'EmptyRouter',
           routesClassName: 'EmptyRoutes',
           routes: [],
-          element: createMockClassElement2(fileName: 'empty_router.dart'),
+          element: createMockClassElement(fileName: 'empty_router.dart'),
         );
 
         // Empty routes currently cause an error in the generator
@@ -187,7 +187,7 @@ void main() {
           routerClassName: 'GuardedRouter',
           routesClassName: 'GuardedRoutes',
           routes: guardedRoutes,
-          element: createMockClassElement2(fileName: 'guarded_router.dart'),
+          element: createMockClassElement(fileName: 'guarded_router.dart'),
         );
 
         final result = generateLibrary(configWithGuards);
