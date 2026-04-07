@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/Stacked-Org/generator/compare/v2.0.1...v2.0.2) (2026-04-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency analyzer to v12 ([#69](https://github.com/Stacked-Org/generator/issues/69)) ([a192357](https://github.com/Stacked-Org/generator/commit/a192357ba2c3d1d53792117d114d39e642ad5b8a))
+
 ## 3.0.0
 
 ### Breaking Changes
