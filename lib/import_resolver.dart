@@ -32,7 +32,19 @@ class ImportResolver {
       }
     }
 
-    return null;
+    // No library in `libs` re-exports `element`. This can happen under
+    // build systems whose codegen resolvers expose a narrower library set
+    // than build_runner does — e.g. Bazel's rules_dart codegen action,
+    // which provides each transitive package's `src/` libraries but not
+    // their public re-exporting library. Without this fallback, callers
+    // (e.g. dependency_config_factory) end up emitting `import null;` for
+    // perfectly reachable types like StackedService.
+    //
+    // The element's own source URI is always a valid Dart import — it
+    // just points at a `src/` path rather than the public re-export.
+    // Generated code compiles and behaves identically. Prefer this over
+    // returning null, which strands the caller with no recoverable info.
+    return elementSourceUri.toString();
   }
 
   bool _isCoreDartType(Element? element) {
