@@ -100,10 +100,6 @@ void main() {
         'a CustomRoute with a customRouteBuilder still generates the same PageRouteBuilder output '
         '(Navigator 1 cannot invoke customRouteBuilder without a BuildContext)',
         () {
-          // This mirrors what RouteConfigResolver (shared by both the
-          // Navigator 1 and Navigator 2 generators) produces for a
-          // `CustomRoute` annotation: a plain `RouteConfig` with
-          // `routeType: RouteType.custom`.
           const withoutBuilder = RouteConfig(
             name: 'bottomSheetView',
             pathName: 'bottomSheetPath',

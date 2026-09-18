@@ -156,11 +156,7 @@ mixin class RouterClassBuilderHelper {
         routeTypeImport: 'package:flutter/material.dart',
       );
     } else if (route.routeType == RouteType.custom) {
-      // `customRouteBuilder` can only be invoked with a `BuildContext`,
-      // which Navigator 1's `onGenerateRoute(RouteSettings)` never has.
-      // Rather than silently dropping the option (or crashing a build that
-      // previously succeeded), let the developer know it's ignored here
-      // and point them at the router that does support it.
+      // Navigator 1 has no BuildContext to call customRouteBuilder with.
       if (route.customRouteBuilder != null) {
         // ignore: avoid_print
         print(
