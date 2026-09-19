@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:stacked_generator/src/generators/router/generator/router_class/router_class_builder.dart';
 import 'package:stacked_generator/src/generators/router/route_config/material_route_config.dart';
 import 'package:stacked_generator/src/generators/router_common/models/importable_type.dart';
@@ -91,6 +93,110 @@ void main() {
           expect(generatedCode.trim(), isNotEmpty, reason: 'Should generate non-empty code');
           expect(generatedCode, contains('Map'), reason: 'Should contain Map type');
           expect(generatedCode, contains('MaterialPageRoute'), reason: 'Should contain MaterialPageRoute for routes');
+        },
+      );
+
+      test(
+        'a CustomRoute with a customRouteBuilder still generates the same PageRouteBuilder output '
+        '(Navigator 1 cannot invoke customRouteBuilder without a BuildContext)',
+        () {
+          const withoutBuilder = RouteConfig(
+            name: 'bottomSheetView',
+            pathName: 'bottomSheetPath',
+            className: 'BottomSheetClass',
+            classImport: 'ui/bottom_sheet_class.dart',
+            routeType: RouteType.custom,
+          );
+
+          final withBuilder = RouteConfig(
+            name: 'bottomSheetView',
+            pathName: 'bottomSheetPath',
+            className: 'BottomSheetClass',
+            classImport: 'ui/bottom_sheet_class.dart',
+            routeType: RouteType.custom,
+            customRouteBuilder: ResolvedType(
+              name: 'RouteBuilders.bottomSheetBuilder',
+              import: 'ui/route_builders.dart',
+            ),
+          );
+
+          final generatedWithout = routerClassBuilderHelper
+              .mapOfPages([withoutBuilder]).buildLibraryForClass;
+          final generatedWith = routerClassBuilderHelper
+              .mapOfPages([withBuilder]).buildLibraryForClass;
+
+          expect(generatedWith, equals(generatedWithout),
+              reason:
+                  'Setting customRouteBuilder must not change the Navigator 1 output: '
+                  'it still falls back to PageRouteBuilder unchanged, since Navigator 1 '
+                  'has no BuildContext to invoke the builder with.');
+          expect(generatedWith, contains('PageRouteBuilder'));
+          expect(generatedWith, isNot(contains('bottomSheetBuilder')));
+        },
+      );
+
+      test(
+        'a CustomRoute with a customRouteBuilder emits a warning pointing to navigator2',
+        () async {
+          final routes = <RouteConfig>[
+            RouteConfig(
+              name: 'bottomSheetView',
+              pathName: 'bottomSheetPath',
+              className: 'BottomSheetClass',
+              classImport: 'ui/bottom_sheet_class.dart',
+              routeType: RouteType.custom,
+              customRouteBuilder: ResolvedType(
+                name: 'RouteBuilders.bottomSheetBuilder',
+                import: 'ui/route_builders.dart',
+              ),
+            ),
+          ];
+
+          final printedLines = <String>[];
+          await runZoned(
+            () async {
+              routerClassBuilderHelper.mapOfPages(routes);
+            },
+            zoneSpecification: ZoneSpecification(
+              print: (self, parent, zone, line) => printedLines.add(line),
+            ),
+          );
+
+          final combined = printedLines.join('\n');
+          expect(combined, contains('WARNING'));
+          expect(combined, contains('customRouteBuilder'));
+          expect(combined, contains(routes.first.routeName));
+          expect(combined, contains('navigator2: true'));
+          expect(combined, contains('Navigator 2'));
+        },
+      );
+
+      test(
+        'a CustomRoute without a customRouteBuilder does not emit any warning',
+        () async {
+          final routes = <RouteConfig>[
+            const RouteConfig(
+              name: 'bottomSheetView',
+              pathName: 'bottomSheetPath',
+              className: 'BottomSheetClass',
+              classImport: 'ui/bottom_sheet_class.dart',
+              routeType: RouteType.custom,
+            ),
+          ];
+
+          final printedLines = <String>[];
+          await runZoned(
+            () async {
+              routerClassBuilderHelper.mapOfPages(routes);
+            },
+            zoneSpecification: ZoneSpecification(
+              print: (self, parent, zone, line) => printedLines.add(line),
+            ),
+          );
+
+          expect(printedLines, isEmpty,
+              reason:
+                  'No warning should be printed when customRouteBuilder is not set');
         },
       );
     });
