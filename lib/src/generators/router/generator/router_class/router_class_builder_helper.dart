@@ -161,7 +161,7 @@ mixin class RouterClassBuilderHelper {
         // ignore: avoid_print
         print(
             '\nWARNING => CustomRoute.customRouteBuilder on \'${route.routeName}\' is only supported by the Navigator 2 router.\n'
-            'Set `navigator2: true` in your @StackedApp / stacked config to use it; it is ignored by the default router.\n');
+            'Set `navigator2: true` in the stacked_generator|stackedRouterGenerator builder options in build.yaml to use it; it is ignored by the default router.\n');
       }
       return route.getRouteRegisterCode(
         routeType: 'PageRouteBuilder',
