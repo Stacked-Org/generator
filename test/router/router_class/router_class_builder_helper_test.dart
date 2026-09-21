@@ -122,8 +122,13 @@ void main() {
 
           final generatedWithout = routerClassBuilderHelper
               .mapOfPages([withoutBuilder]).buildLibraryForClass;
-          final generatedWith = routerClassBuilderHelper
-              .mapOfPages([withBuilder]).buildLibraryForClass;
+          final generatedWith = runZoned(
+            () => routerClassBuilderHelper
+                .mapOfPages([withBuilder]).buildLibraryForClass,
+            zoneSpecification: ZoneSpecification(
+              print: (self, parent, zone, line) {},
+            ),
+          );
 
           expect(generatedWith, equals(generatedWithout),
               reason:
