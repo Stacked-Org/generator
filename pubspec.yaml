@@ -8,7 +8,7 @@ environment:
   sdk: ">=3.9.0 <4.0.0"
 
 dependencies:
-  build: ^4.0.3
+  build: ^5.0.0
   path: ^1.9.1
   recase: ^4.1.0
   source_gen: ^4.2.0
