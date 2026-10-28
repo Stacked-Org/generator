@@ -156,6 +156,13 @@ mixin class RouterClassBuilderHelper {
         routeTypeImport: 'package:flutter/material.dart',
       );
     } else if (route.routeType == RouteType.custom) {
+      // Navigator 1 has no BuildContext to call customRouteBuilder with.
+      if (route.customRouteBuilder != null) {
+        // ignore: avoid_print
+        print(
+            '\nWARNING => CustomRoute.customRouteBuilder on \'${route.routeName}\' is only supported by the Navigator 2 router.\n'
+            'Set `navigator2: true` in the stacked_generator|stackedRouterGenerator builder options in build.yaml to use it; it is ignored by the default router.\n');
+      }
       return route.getRouteRegisterCode(
         routeType: 'PageRouteBuilder',
         routeTypeImport: 'package:flutter/material.dart',
